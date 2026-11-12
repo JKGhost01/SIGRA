@@ -1,0 +1,29 @@
+name: PHP lint
+
+on:
+  push:
+    branches: ["main", "master", "develop"]
+  pull_request:
+
+jobs:
+  lint:
+    name: Syntax check
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: "8.2"
+          extensions: intl, mbstring, mysqli, curl
+          coverage: none
+
+      - name: Lint application files
+        run: |
+          find app public -name '*.php' -print0 | xargs -0 -n1 php -l
+
+      - name: Lint entry points
+        run: |
+          php -l index.php
+          php -l spark

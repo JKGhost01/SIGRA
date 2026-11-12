@@ -1,0 +1,104 @@
+# ---------------------------------------------------------------------
+# Secretos y configuración local
+# ---------------------------------------------------------------------
+.env
+.env.*
+!.env.example
+/.aws/
+/.codex/
+/.agents/
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db
+desktop.ini
+local.properties
+keystore.properties
+signing.properties
+google-services.json
+serviceAccountKey.json
+*service-account*.json
+*service_account*.json
+*firebase-adminsdk-*.json
+*.key
+*.pem
+*.p12
+*.pfx
+*.jks
+*.keystore
+
+# ---------------------------------------------------------------------
+# Dependencias
+# ---------------------------------------------------------------------
+/vendor/
+node_modules/
+# composer.lock y package-lock.json se conservan en Git.
+
+# ---------------------------------------------------------------------
+# Runtime de CodeIgniter
+# ---------------------------------------------------------------------
+/writable/**
+# Permitir recorrer directorios y conservar solo estructura/protección.
+!/writable/**/
+!/writable/**/.gitkeep
+!/writable/**/.htaccess
+!/writable/**/index.html
+
+# ---------------------------------------------------------------------
+# Logs y temporales
+# ---------------------------------------------------------------------
+*.log
+error_log
+error_log.*
+*.tmp
+*.temp
+*.swp
+*.swo
+*~
+*.orig
+*.rej
+php.ini
+php_ini_overrides.ini
+.user.ini
+.ftpquota
+
+# ---------------------------------------------------------------------
+# Respaldos y volcados de bases de datos (no contienen código PHP)
+# ---------------------------------------------------------------------
+/backup/
+/backups/
+/dumps/
+*.bak
+*.backup
+*.sql
+*.sql.gz
+*.sql.zip
+*.sql.bz2
+*.sql.xz
+*.dump
+*.dump.gz
+
+# ---------------------------------------------------------------------
+# Informes generados por herramientas de prueba
+# ---------------------------------------------------------------------
+/coverage/
+/.phpunit.cache/
+.phpunit.result.cache
+/test-results/
+/playwright-report/
+__pycache__/
+*.pyc
+
+# ---------------------------------------------------------------------
+# App Android separada y artefactos de compilación
+# ---------------------------------------------------------------------
+/mobile/
+/sigra-mobile/
+.gradle/
+.kotlin/
+*.apk
+*.aab
+*.iml
+captures/
+.externalNativeBuild/
+.cxx/

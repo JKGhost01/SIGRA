@@ -1,0 +1,112 @@
+<?php
+
+return array (
+  'history' => 
+  array (
+    '1.1.1' => [
+            'name' => 'Reportes contrastados con SGC',
+            'summary' => 'Los reportes ciudadanos permanecen privados y solo aportan un conteo a un sismo oficial del SGC tras alcanzar el umbral de participantes.',
+            'changes' => [
+                'Una sola tabla citizen_reports en la misma base MySQL; los reportes no crean eventos sísmicos.',
+                'Mínimo de tres participantes distintos y coincidencia única con SGC en tiempo y distancia; casos ambiguos siguen pendientes.',
+                'Conteo “Reportado por N usuarios” en mapa, listado, histórico, detalle y API, separado del dato oficial de reportes sentidos.',
+                'CSRF, desafío de sesión de un solo uso, campo trampa y límites de frecuencia por sesión y red.',
+                'Identificadores HMAC, deduplicación por red e IPv6 /64 y retención acotada de datos privados.',
+                'Reportes antiguos ocultos en las consultas públicas, sin borrarlos ni contarlos como participantes identificados.',
+                'Edición y eliminación públicas bloqueadas para impedir cambios sin autenticación en eventos oficiales.',
+                'Pruebas de lógica y de protección HTTP; prueba MySQL con datos temporales revertidos en la base existente.',
+            ],
+        ],
+        '1.1.0' => [
+            'name' => 'API y contratos',
+            'summary' => 'Validación de entradas y respuestas JSON coherentes en la API de sismos y de la red ciudadana.',
+            'changes' => [
+                'Validación de coordenadas, radio, orden y parámetros numéricos antes de consultar datos.',
+                'Validación del cuerpo JSON y normalización de booleanos en las solicitudes de dispositivos.',
+                'Respuestas JSON y Cache-Control no-store también en errores de autenticación y persistencia.',
+                'Cabeceras X-SIGRA-Version y X-API-Version en las respuestas de ambas APIs.',
+                'Comparación de claves con hash_equals y rechazo de rutas protegidas sin clave configurada en producción.',
+                'Tokens de dispositivo opcionales inválidos devuelven 401 en lugar de tratarse como anónimos.',
+                'Rutas y campos de Android conservados; el contrato de la API sigue en v1.',
+                'Documentación de ambas APIs y pruebas de rutas CGI y respuestas con persistencia aislada.',
+            ],
+        ],
+        '1.0.4' => array (
+  'name' => 'Filtros y presentación',
+  'summary' => 'Correcciones del filtro por distancia, traducción del historial e iconos vectoriales.',
+  'changes' => 
+  array (
+    0 => 'Selector de radio disponible desde el inicio y solicitud de ubicación al elegir una distancia.',
+    1 => 'Tiempo límite y reintento de geolocalización por IP; preferencias utilizables sin almacenamiento local.',
+    2 => 'Traducción completa del historial y del canal de versiones en español e inglés.',
+    3 => 'Sustitución de emojis de la interfaz por iconos SVG locales.',
+    4 => 'Renovación de caché y actualización por red de scripts y estilos.',
+    5 => 'Pruebas de regresión del filtro de distancia sin navegador ni MySQL.',
+  ),
+),
+        '1.0.3' => 
+    array (
+      'name' => 'Alcance global',
+      'summary' => 'SIGRA deja de ser solo Colombia: unifica SGC y USGS en un único mapa mundial con filtro por radio desde la ubicación del usuario.',
+      'changes' => 
+      array (
+        0 => 'Ingesta unificada de SGC (Colombia) y USGS (mundo) en la misma tabla y el mismo mapa.',
+        1 => 'Deduplicación automática entre fuentes para no mostrar dos veces el mismo sismo.',
+        2 => 'Filtro “Cerca de mí” con radio configurable (50 km a 5.000 km) y orden por distancia.',
+        3 => 'Filtro por fuente y búsqueda por lugar en todo el mundo.',
+        4 => 'Filtro por rango de magnitud (M2.5+ a M6+) y panel de filtros compacto y plegable.',
+        5 => 'Interfaz bilingüe español/inglés con selector en el navbar y traducción automática.',
+        6 => 'Nuevos iconos y colores para “Reportar sismo” y las alertas del navegador.',
+        7 => 'Avisos legales de terceros en LICENSE y THIRD_PARTY_NOTICES.md.',
+        8 => 'Sincronización global con caché en disco y comando `php spark sigra:sync` para cron.',
+        9 => 'API `/api/sismos/recent` con lat, lng, radius_km y order=distancia.',
+        10 => 'Ficha técnica adaptada a USGS (alerta, tsunami, significancia y reporte oficial).',
+        11 => 'Preparación open source: README, licencia, guía de contribución, seguridad y .env de ejemplo.',
+      ),
+    ),
+    '1.0.2' => 
+    array (
+      'name' => 'Red en vivo',
+      'summary' => 'La red ciudadana pasa al navbar, se eliminan los SMS y llegan las alertas del navegador, la PWA y la propagación animada de ondas.',
+      'changes' => 
+      array (
+        0 => '“Red en vivo” como entrada principal del navbar, con contador de teléfonos y estado de alerta.',
+        1 => 'Alertas del navegador con Web Notifications, sonido y overlay de emergencia con cuenta atrás hasta la onda S.',
+        2 => 'PWA instalable: manifest, service worker, iconos y página offline.',
+        3 => 'Propagación animada de ondas P y S sobre el mapa de /red.',
+        4 => 'Panel “Tu riesgo ahora” con distancia, ETA y nivel de riesgo usando la ubicación solo en el navegador.',
+        5 => 'Reproducción animada de la actividad sísmica en /sismos.',
+        6 => 'Alertas compartibles desde /red con Web Share API o portapapeles.',
+        7 => 'Eliminación completa de SMS, OTP, Twilio y la tabla sms_subscriptions.',
+        8 => 'Endurecimiento de .htaccess, health check con versión y documentación de pruebas.',
+      ),
+    ),
+    '1.0.1' => 
+    array (
+      'name' => 'Red de teléfonos',
+      'summary' => 'Primera versión de la red ciudadana de ondas P y de la app Android.',
+      'changes' => 
+      array (
+        0 => 'Backend de red: dispositivos, detecciones, alertas y entregas.',
+        1 => 'Fusión TDOA, estimación de magnitud, confianza y ETA de onda S.',
+        2 => 'API /api/red/* para registro, latido, detección y alertas.',
+        3 => 'Panel público /red con estadísticas y mapa de la red.',
+        4 => 'App Android con servicio en primer plano, sensor y notificaciones.',
+        5 => 'FCM opcional y polling de respaldo.',
+      ),
+    ),
+    '1.0.0' => 
+    array (
+      'name' => 'Mapa sísmico',
+      'summary' => 'Primera versión pública del visor de eventos del SGC.',
+      'changes' => 
+      array (
+        0 => 'Mapa interactivo con Leaflet y OpenStreetMap.',
+        1 => 'Sincronización con el feed oficial del SGC.',
+        2 => 'Histórico consultable, filtros y ficha técnica del evento.',
+        3 => 'Reporte ciudadano de ubicación.',
+        4 => 'Temas claro/oscuro y alertas visuales y sonoras.',
+      ),
+    ),
+  ),
+);

@@ -1,0 +1,47 @@
+{
+  "name": "SIGRA · Red Sísmica Ciudadana",
+  "short_name": "SIGRA",
+  "description": "Mapa sísmico del SGC, red de detección temprana con teléfonos y alertas de ondas P.",
+  "start_url": "/sismos",
+  "scope": "/",
+  "display": "standalone",
+  "orientation": "portrait-primary",
+  "background_color": "#F5F8F7",
+  "theme_color": "#087F78",
+  "lang": "es-CO",
+  "categories": ["news", "utilities", "weather"],
+  "icons": [
+    {
+      "src": "/public/assets/images/icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "/public/assets/images/icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "/public/assets/images/icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "maskable"
+    }
+  ],
+  "shortcuts": [
+    {
+      "name": "Red en vivo",
+      "short_name": "Red",
+      "url": "/red",
+      "icons": [{ "src": "/public/assets/images/icon-192.png", "sizes": "192x192" }]
+    },
+    {
+      "name": "Mapa sísmico",
+      "short_name": "Mapa",
+      "url": "/sismos",
+      "icons": [{ "src": "/public/assets/images/icon-192.png", "sizes": "192x192" }]
+    }
+  ]
+}

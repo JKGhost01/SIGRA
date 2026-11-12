@@ -1,0 +1,13 @@
+{
+  "name": "sigra-web-tests",
+  "private": true,
+  "version": "1.0.0",
+  "description": "Pruebas de humo con navegador real para SIGRA.",
+  "scripts": {
+    "test": "node test-web.js",
+    "test:filters": "node test-map-filters.js"
+  },
+  "dependencies": {
+    "playwright-core": "^1.49.0"
+  }
+}

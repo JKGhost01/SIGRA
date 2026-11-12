@@ -1,0 +1,165 @@
+<?php
+
+declare(strict_types=1);
+
+namespace Config;
+
+use CodeIgniter\Config\BaseConfig;
+
+/**
+ * Identidad y versionado de SIGRA.
+ *
+ * La versión se muestra en el navbar, el footer y la página Acerca de.
+ * Se puede sobrescribir con sigra.version y sigra.build en .env.
+ */
+class Sigra extends BaseConfig
+{
+    public string $project = 'SIGRA';
+    public string $tagline = 'Monitor sísmico global y red ciudadana';
+    public string $version = '1.1.1';
+    public string $releaseName = 'Reportes contrastados con SGC';
+    public string $releaseDate = '2026-11-12';
+    public string $build = '20261112.3';
+    public string $channel = 'stable';
+    public string $apiVersion = 'v1';
+    public string $mobileVersion = '1.0.0';
+    public string $license = 'MIT';
+    public string $author = 'Andrés Felipe Loaiza Granobles';
+
+    /**
+     * Días de histórico sísmico que se conservan en la base de datos.
+     * El feed oficial del SGC solo publica 5 días, así que este valor
+     * solo limita el archivo histórico. 0 desactiva la purga.
+     */
+    public int $sismosRetentionDays = 730;
+
+    /** Máximo de eventos que devuelve el histórico en una consulta. */
+    public int $historicoLimit = 500;
+
+    /**
+     * Historial de versiones. Se muestra en /acerca-de.
+     *
+     * @var array<string, array{date: string, name: string, summary: string, changes: list<string>}>
+     */
+    public array $changelog = [
+        '1.1.1' => [
+            'date' => '2026-11-12',
+            'name' => 'Reportes contrastados con SGC',
+            'summary' => 'Los reportes ciudadanos permanecen privados y solo aportan un conteo a un sismo oficial del SGC tras alcanzar el umbral de participantes.',
+            'changes' => [
+                'Una sola tabla citizen_reports en la misma base MySQL; los reportes no crean eventos sísmicos.',
+                'Mínimo de tres participantes distintos y coincidencia única con SGC en tiempo y distancia; casos ambiguos siguen pendientes.',
+                'Conteo “Reportado por N usuarios” en mapa, listado, histórico, detalle y API, separado del dato oficial de reportes sentidos.',
+                'CSRF, desafío de sesión de un solo uso, campo trampa y límites de frecuencia por sesión y red.',
+                'Identificadores HMAC, deduplicación por red e IPv6 /64 y retención acotada de datos privados.',
+                'Reportes antiguos ocultos en las consultas públicas, sin borrarlos ni contarlos como participantes identificados.',
+                'Edición y eliminación públicas bloqueadas para impedir cambios sin autenticación en eventos oficiales.',
+                'Pruebas de lógica y de protección HTTP; prueba MySQL con datos temporales revertidos en la base existente.',
+            ],
+        ],
+        '1.1.0' => [
+            'date' => '2026-11-12',
+            'name' => 'API y contratos',
+            'summary' => 'Validación de entradas y respuestas JSON coherentes en la API de sismos y de la red ciudadana.',
+            'changes' => [
+                'Validación de coordenadas, radio, orden y parámetros numéricos antes de consultar datos.',
+                'Validación del cuerpo JSON y normalización de booleanos en las solicitudes de dispositivos.',
+                'Respuestas JSON y Cache-Control no-store también en errores de autenticación y persistencia.',
+                'Cabeceras X-SIGRA-Version y X-API-Version en las respuestas de ambas APIs.',
+                'Comparación de claves con hash_equals y rechazo de rutas protegidas sin clave configurada en producción.',
+                'Tokens de dispositivo opcionales inválidos devuelven 401 en lugar de tratarse como anónimos.',
+                'Rutas y campos de Android conservados; el contrato de la API sigue en v1.',
+                'Documentación de ambas APIs y pruebas de rutas CGI y respuestas con persistencia aislada.',
+            ],
+        ],
+        '1.0.4' => [
+            'date' => '2026-11-12',
+            'name' => 'Filtros y presentación',
+            'summary' => 'Correcciones del filtro por distancia, traducción del historial e iconos vectoriales.',
+            'changes' => [
+                'Selector de radio disponible desde el inicio y solicitud de ubicación al elegir una distancia.',
+                'Tiempo límite y reintento de geolocalización por IP; preferencias utilizables sin almacenamiento local.',
+                'Traducción completa del historial y del canal de versiones en español e inglés.',
+                'Sustitución de emojis de la interfaz por iconos SVG locales.',
+                'Renovación de caché y actualización por red de scripts y estilos.',
+                'Pruebas de regresión del filtro de distancia sin navegador ni MySQL.',
+            ],
+        ],
+        '1.0.3' => [
+            'date' => '2026-11-11',
+            'name' => 'Alcance global',
+            'summary' => 'SIGRA deja de ser solo Colombia: unifica SGC y USGS en un único mapa mundial con filtro por radio desde la ubicación del usuario.',
+            'changes' => [
+                'Ingesta unificada de SGC (Colombia) y USGS (mundo) en la misma tabla y el mismo mapa.',
+                'Deduplicación automática entre fuentes para no mostrar dos veces el mismo sismo.',
+                'Filtro “Cerca de mí” con radio configurable (50 km a 5.000 km) y orden por distancia.',
+                'Filtro por fuente y búsqueda por lugar en todo el mundo.',
+                'Filtro por rango de magnitud (M2.5+ a M6+) y panel de filtros compacto y plegable.',
+                'Interfaz bilingüe español/inglés con selector en el navbar y traducción automática.',
+                'Nuevos iconos y colores para “Reportar sismo” y las alertas del navegador.',
+                'Avisos legales de terceros en LICENSE y THIRD_PARTY_NOTICES.md.',
+                'Sincronización global con caché en disco y comando `php spark sigra:sync` para cron.',
+                'API `/api/sismos/recent` con lat, lng, radius_km y order=distancia.',
+                'Ficha técnica adaptada a USGS (alerta, tsunami, significancia y reporte oficial).',
+                'Preparación open source: README, licencia, guía de contribución, seguridad y .env de ejemplo.',
+            ],
+        ],
+        '1.0.2' => [
+            'date' => '2026-11-03',
+            'name' => 'Red en vivo',
+            'summary' => 'La red ciudadana pasa al navbar, se eliminan los SMS y llegan las alertas del navegador, la PWA y la propagación animada de ondas.',
+            'changes' => [
+                '“Red en vivo” como entrada principal del navbar, con contador de teléfonos y estado de alerta.',
+                'Alertas del navegador con Web Notifications, sonido y overlay de emergencia con cuenta atrás hasta la onda S.',
+                'PWA instalable: manifest, service worker, iconos y página offline.',
+                'Propagación animada de ondas P y S sobre el mapa de /red.',
+                'Panel “Tu riesgo ahora” con distancia, ETA y nivel de riesgo usando la ubicación solo en el navegador.',
+                'Reproducción animada de la actividad sísmica en /sismos.',
+                'Alertas compartibles desde /red con Web Share API o portapapeles.',
+                'Eliminación completa de SMS, OTP, Twilio y la tabla sms_subscriptions.',
+                'Endurecimiento de .htaccess, health check con versión y documentación de pruebas.',
+            ],
+        ],
+        '1.0.1' => [
+            'date' => '2026-11-03',
+            'name' => 'Red de teléfonos',
+            'summary' => 'Primera versión de la red ciudadana de ondas P y de la app Android.',
+            'changes' => [
+                'Backend de red: dispositivos, detecciones, alertas y entregas.',
+                'Fusión TDOA, estimación de magnitud, confianza y ETA de onda S.',
+                'API /api/red/* para registro, latido, detección y alertas.',
+                'Panel público /red con estadísticas y mapa de la red.',
+                'App Android con servicio en primer plano, sensor y notificaciones.',
+                'FCM opcional y polling de respaldo.',
+            ],
+        ],
+        '1.0.0' => [
+            'date' => '2026-09-21',
+            'name' => 'Mapa sísmico',
+            'summary' => 'Primera versión pública del visor de eventos del SGC.',
+            'changes' => [
+                'Mapa interactivo con Leaflet y OpenStreetMap.',
+                'Sincronización con el feed oficial del SGC.',
+                'Histórico consultable, filtros y ficha técnica del evento.',
+                'Reporte ciudadano de ubicación.',
+                'Temas claro/oscuro y alertas visuales y sonoras.',
+            ],
+        ],
+    ];
+
+    public function __construct()
+    {
+        parent::__construct();
+
+        $this->version = (string) env('sigra.version', $this->version);
+        $this->build = (string) env('sigra.build', $this->build);
+        $this->channel = (string) env('sigra.channel', $this->channel);
+        $this->sismosRetentionDays = (int) env('sigra.sismosRetentionDays', $this->sismosRetentionDays);
+        $this->historicoLimit = (int) env('sigra.historicoLimit', $this->historicoLimit);
+    }
+
+    public function label(): string
+    {
+        return 'v' . $this->version;
+    }
+}

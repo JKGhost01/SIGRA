@@ -1,0 +1,63 @@
+name: Bug report
+description: Report a reproducible problem in SIGRA
+title: "[bug] "
+labels: ["bug"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for helping improve SIGRA. Please remove secrets and personal data
+        from logs before submitting.
+  - type: input
+    id: version
+    attributes:
+      label: SIGRA version
+      description: Output of `/api/health` or the badge in the navbar.
+      placeholder: "1.0.3"
+    validations:
+      required: true
+  - type: input
+    id: environment
+    attributes:
+      label: Environment
+      description: PHP, database and browser/OS (or Android device).
+      placeholder: "PHP 8.2, MariaDB 10.4, Firefox 128 / Windows 11"
+    validations:
+      required: true
+  - type: textarea
+    id: steps
+    attributes:
+      label: Steps to reproduce
+      placeholder: |
+        1. Open /sismos
+        2. Press "Mi ubicación"
+        3. ...
+    validations:
+      required: true
+  - type: textarea
+    id: expected
+    attributes:
+      label: Expected behavior
+    validations:
+      required: true
+  - type: textarea
+    id: actual
+    attributes:
+      label: Actual behavior
+    validations:
+      required: true
+  - type: textarea
+    id: logs
+    attributes:
+      label: Relevant logs
+      description: Lines from `writable/logs/` with secrets removed.
+      render: shell
+  - type: checkboxes
+    id: checks
+    attributes:
+      label: Checklist
+      options:
+        - label: I searched existing issues.
+          required: true
+        - label: I removed credentials and personal data from this report.
+          required: true
