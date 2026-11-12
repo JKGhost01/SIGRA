@@ -256,6 +256,16 @@ Good first issues:
 - Translate the UI to English and Portuguese.
 - Improve accessibility of the map and emergency overlay.
 
+## Donations
+
+If SIGRA is useful to you, you can support its development and maintenance with
+a voluntary donation. Thank you for supporting the project!
+
+| Method | Donation details |
+|---|---|
+| **Nequi** | `315 9287929` |
+| **Bancolombia** | Account `912-982627-76` |
+
 ## Versioning
 
 SIGRA follows semantic versioning. The current release is **1.1.1 · Reports checked against SGC** (2026-11-12, build `20261112.3`). See [docs/VERSIONES.md](docs/VERSIONES.md).

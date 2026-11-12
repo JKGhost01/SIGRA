@@ -252,6 +252,16 @@ Buenos primeros aportes:
 - Traducir la interfaz a inglés y portugués.
 - Mejorar la accesibilidad del mapa y del overlay de emergencia.
 
+## Donaciones
+
+Si SIGRA te resulta útil, puedes apoyar su desarrollo y mantenimiento con una
+donación voluntaria. ¡Gracias por aportar al proyecto!
+
+| Medio | Número para donar |
+|---|---|
+| **Nequi** | `315 9287929` |
+| **Bancolombia** | Cuenta `912-982627-76` |
+
 ## Versionado
 
 SIGRA usa versionado semántico. La versión actual es **1.1.1 · Reportes contrastados con SGC**

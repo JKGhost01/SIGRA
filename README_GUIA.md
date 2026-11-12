@@ -271,6 +271,16 @@ el navegador para calcular distancias.
    la notificación del sistema.
 4. El botón de campana del navbar permite activar o desactivar el canal en cualquier página.
 
+## Donaciones
+
+Si SIGRA te resulta útil, puedes apoyar su desarrollo y mantenimiento con una
+donación voluntaria. ¡Gracias por aportar al proyecto!
+
+| Medio | Número para donar |
+|---|---|
+| **Nequi** | `315 9287929` |
+| **Bancolombia** | Cuenta `912-982627-76` |
+
 ## Documentación adicional
 
 - [Red de teléfonos y algoritmo](docs/RED_TELEFONOS.md).
