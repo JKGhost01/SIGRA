@@ -4,6 +4,16 @@ All notable changes to SIGRA are documented here. The project follows
 [Semantic Versioning](https://semver.org/), with an optional fourth revision component
 for small patch adjustments such as `1.3.1.1`.
 
+## [1.3.1.2] — 2026-11-13 · “Source status and progressive cooldowns”
+
+- About page shows all six sources, HTTP codes and timestamps for the last attempt, result and valid response.
+- Display the next permitted request; refreshing the panel does not contact providers or change cooldowns.
+- HTTP 401/403: two hours after the first consecutive failure and 24 hours from the second, across all sources.
+- A valid response resets the failure counter; honor Retry-After and existing cooldowns.
+- Responsive Spanish and English panel; do not infer missing timestamps in legacy states.
+- Local architecture, transport, diagnostics and HTTP contract tests; desktop and mobile visual checks.
+- Build `20261113.4`; no new migrations. Preserve `writable/cache/providers`.
+
 ## [1.3.1.1] — 2026-11-13 · “SGC polling interval”
 
 - Use a fifteen-minute interval per SGC host, shared by the map, CLI and PHP workers.

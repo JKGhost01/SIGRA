@@ -11,7 +11,7 @@ SIGRA usa **versionado semántico** (`MAYOR.MENOR.PARCHE`):
 | `PARCHE` | Correcciones, mejoras visuales y cambios internos. |
 
 Para ajustes pequeños de un parche se permite un cuarto componente de revisión,
-como `1.3.1.1`.
+como `1.3.1.2`.
 
 La versión se define en `app/Config/Sigra.php` y se muestra en:
 
@@ -24,29 +24,40 @@ La versión se define en `app/Config/Sigra.php` y se muestra en:
 Se puede sobrescribir sin tocar código con:
 
 ```ini
-sigra.version = '1.3.1.1'
-sigra.build = '20261113.3'
+sigra.version = '1.3.1.2'
+sigra.build = '20261113.4'
 sigra.channel = 'stable'
 ```
 
 ## Versión actual
 
-**v1.3.1.1 · Intervalo de consultas SGC**
+**v1.3.1.2 · Estado de fuentes y pausas progresivas**
 
 - Fecha: 2026-11-13
-- Build: `20261113.3`
+- Build: `20261113.4`
 - Canal: `stable`
 - API: `v1`
 - App Android: `v1.0.0`
 - Licencia: MIT
 
-La versión de la aplicación (`1.3.1.1`) es independiente del contrato de la API
+La versión de la aplicación (`1.3.1.2`) es independiente del contrato de la API
 (`v1`). Se conservan las rutas y los campos de las respuestas válidas para Android.
 Se añaden rutas /api/v1 con errores estructurados; las rutas antiguas conservan su formato.
 La sincronización del mapa funciona automáticamente: no requiere configurar cron.
 La auditoría requiere la migración aditiva o el SQL de despliegue, sin reiniciar la base.
 
 ## Historial
+
+### v1.3.1.2 · Estado de fuentes y pausas progresivas · 2026-11-13
+
+- Panel en Acerca de con estado de las seis fuentes, código HTTP y fechas del último intento, resultado y respuesta válida.
+- Próxima consulta permitida visible; actualizar el panel no consulta proveedores ni modifica sus pausas.
+- HTTP 401/403: dos horas tras el primer fallo consecutivo y 24 horas desde el segundo, para todas las fuentes.
+- Una respuesta válida reinicia el contador; Retry-After y las pausas existentes se respetan.
+- Panel en español e inglés, adaptable a móvil, con estados antiguos sin fechas inventadas.
+- Pruebas locales de arquitectura, transporte, diagnóstico y contratos HTTP; revisión visual en escritorio y móvil.
+- Build `20261113.4`; sin nuevas migraciones. Conservar `writable/cache/providers`.
+
 
 ### v1.3.1.1 · Intervalo de consultas SGC · 2026-11-13
 

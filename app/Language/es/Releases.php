@@ -3,6 +3,17 @@
 return array (
   'history' => 
   array (
+        '1.3.1.2' => [
+            'name' => 'Estado de fuentes y pausas progresivas',
+            'summary' => 'Estado de las conexiones visible y pausas progresivas ante rechazos de los proveedores.',
+            'changes' => [
+                'Panel en Acerca de con estado de las seis fuentes, código HTTP y fechas del último intento, resultado y respuesta válida.',
+                'Próxima consulta permitida visible; actualizar el panel no consulta proveedores ni modifica sus pausas.',
+                'HTTP 401/403: dos horas tras el primer fallo consecutivo y 24 horas desde el segundo, para todas las fuentes.',
+                'Una respuesta válida reinicia el contador; Retry-After y las pausas existentes se respetan.',
+                'Panel en español e inglés, adaptable a móvil, con estados antiguos sin fechas inventadas.',
+            ],
+        ],
         '1.3.1.1' => [
             'name' => 'Intervalo de consultas SGC',
             'summary' => 'El intervalo mínimo entre consultas al SGC aumenta de cinco a quince minutos.',

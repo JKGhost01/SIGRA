@@ -52,13 +52,46 @@ try {
     $newTransport()->json($url, 10, []);
     expectArchitecture($calls[2][1]['If-None-Match'] === '"v1"', '304 without new validator discarded ETag');
 
-    $response = ['status' => 403, 'headers' => [], 'body' => 'Forbidden'];
-    $before = count($calls);
-    $refused('https://blocked.example/feed');
-    for ($i = 0; $i < 25; $i++) $refused('https://blocked.example/another-feed');
-    $clock->timestamp += 86399;
-    $refused('https://blocked.example/feed');
-    expectArchitecture(count($calls) === $before + 1, '403 caused a retry or endpoint switch before 24h');
+    foreach ([401, 403] as $deniedStatus) {
+        $url = 'https://blocked' . $deniedStatus . '.example/feed';
+        $statePath = $directory . '/' . hash('sha256', 'blocked' . $deniedStatus . '.example') . '.json';
+        $response = ['status' => $deniedStatus, 'headers' => [], 'body' => 'Denied'];
+        $before = count($calls);
+        $refused($url);
+        $state = json_decode(file_get_contents($statePath), true);
+        $delay = $state['next_at'] - $clock->timestamp;
+        expectArchitecture($state['failures'] === 1 && $delay >= 7200 && $delay <= 7920,
+            'First 401/403 must pause for two hours plus jitter');
+        for ($i = 0; $i < 25; $i++) $refused('https://blocked' . $deniedStatus . '.example/another-feed');
+        $clock->timestamp = $state['next_at'] - 1;
+        $refused($url);
+        expectArchitecture(count($calls) === $before + 1, 'First denial retried before its two-hour pause expired');
+        $clock->timestamp++;
+        $refused($url);
+        $state = json_decode(file_get_contents($statePath), true);
+        $delay = $state['next_at'] - $clock->timestamp;
+        expectArchitecture($state['failures'] === 2 && $delay >= 86400 && $delay <= 95040,
+            'Second consecutive denial must pause for 24 hours plus jitter');
+        $clock->timestamp = $state['next_at'] - 1;
+        $refused($url);
+        expectArchitecture(count($calls) === $before + 2, 'Second denial retried before its 24-hour pause expired');
+        $clock->timestamp++;
+        $refused($url);
+        $state = json_decode(file_get_contents($statePath), true);
+        expectArchitecture($state['failures'] === 3 && $state['next_at'] - $clock->timestamp >= 86400,
+            'Further consecutive denials must retain the 24-hour pause');
+        $clock->timestamp = $state['next_at'];
+        $response = ['status' => 200, 'headers' => [], 'body' => '{"features":[]}'];
+        $newTransport()->json($url, 10, []);
+        $state = json_decode(file_get_contents($statePath), true);
+        expectArchitecture($state['failures'] === 0, 'Success did not reset consecutive failures');
+        $clock->timestamp = $state['next_at'];
+        $response = ['status' => $deniedStatus, 'headers' => [], 'body' => 'Denied'];
+        $refused($url);
+        $state = json_decode(file_get_contents($statePath), true);
+        expectArchitecture($state['failures'] === 1 && $state['next_at'] - $clock->timestamp <= 7920,
+            'First denial after recovery did not return to the two-hour pause');
+    }
 
     foreach ([0, 1] as $index) {
         $retry = $index === 0 ? '120000' : gmdate('D, d M Y H:i:s \G\M\T', $clock->timestamp + 120000);

@@ -97,6 +97,20 @@ class Services extends BaseService
                 WRITEPATH . 'cache', max(300, config(Quakes::class)->cacheSeconds), static::sigraClock(), service('logger')),
             static::syncEvents());
     }
+    public static function providerHealth(bool $getShared = true): \App\Modules\SeismicIngestion\Infrastructure\Sources\FileProviderHealth
+    {
+        if ($getShared) return static::getSharedInstance('providerHealth');
+        $q = config(Quakes::class);
+        return new \App\Modules\SeismicIngestion\Infrastructure\Sources\FileProviderHealth(
+            WRITEPATH . 'cache/providers', [
+                'SGC' => ['url' => config(Sgc::class)->feedUrl, 'enabled' => $q->sgcEnabled],
+                'USGS' => ['url' => $q->usgsEndpoint, 'enabled' => $q->globalEnabled],
+                'EMSC' => ['url' => $q->emscEndpoint, 'enabled' => $q->emscEnabled],
+                'GEONET' => ['url' => $q->geonetEndpoint, 'enabled' => $q->geonetEnabled],
+                'GEOFON' => ['url' => $q->geofonEndpoint, 'enabled' => $q->geofonEnabled],
+                'INGV' => ['url' => $q->ingvEndpoint, 'enabled' => $q->ingvEnabled],
+            ], static::sigraClock());
+    }
     public static function healthCheck(bool $getShared = true): \App\Modules\System\Application\Queries\HealthHandler
     {
         if ($getShared) return static::getSharedInstance('healthCheck');

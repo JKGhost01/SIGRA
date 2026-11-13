@@ -38,7 +38,7 @@ el archivo original no retira copias con otro nombre.
 Abre mapa, histórico, detalle, formulario de reporte, `/red` y `/acerca-de`.
 `/api/health` comprueba acceso a la base; no certifica frescura del catálogo.
 `/api/red/health` indica actividad del backend; no certifica detección en campo.
-La versión esperada de este cambio es **1.3.1.1**; un override en `.env` puede prevalecer.
+La versión esperada de este cambio es **1.3.1.2**; un override en `.env` puede prevalecer.
 Comprueba assets, manifest y service worker, y revisa errores del hosting sin exponerlos.
 Las APIs autenticadas deben rechazar claves ausentes o incorrectas.
 
