@@ -26,6 +26,19 @@ $refused = static function (string $url) use ($newTransport): void {
     catch (RuntimeException) {}
 };
 try {
+    $sgcUrl = 'https://archive.sgc.gov.co/feed/v1.0.1/summary/five_days_2.json';
+    $newTransport()->json($sgcUrl, 10, []);
+    $sgcCalls = count($calls);
+    $clock->timestamp += 899;
+    $newTransport()->json($sgcUrl, 10, []);
+    expectArchitecture(count($calls) === $sgcCalls, 'SGC queried before its 15-minute interval');
+    $refused('https://archive.sgc.gov.co/another-feed');
+    expectArchitecture(count($calls) === $sgcCalls, 'Alternate SGC URL bypassed host interval');
+    $clock->timestamp++;
+    $newTransport()->json($sgcUrl, 10, []);
+    expectArchitecture(count($calls) === $sgcCalls + 1, 'SGC did not resume after 15 minutes');
+    $calls = [];
+
     $url = 'https://success.example/feed';
     expectArchitecture($newTransport()->json($url, 10, []) === ['features' => []], 'Valid feed rejected');
     for ($i = 0; $i < 25; $i++) $newTransport()->json($url, 10, []);

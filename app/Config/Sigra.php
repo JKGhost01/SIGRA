@@ -18,10 +18,10 @@ class Sigra extends BaseConfig
 
     public string $project = 'SIGRA';
     public string $tagline = 'Monitor sísmico global y red ciudadana';
-    public string $version = '1.3.1';
-    public string $releaseName = 'Cabeceras HTTP y recuperación de fuentes';
+    public string $version = '1.3.1.1';
+    public string $releaseName = 'Intervalo de consultas SGC';
     public string $releaseDate = '2026-11-13';
-    public string $build = '20261113.2';
+    public string $build = '20261113.3';
     public string $channel = 'stable';
     public string $apiVersion = 'v1';
     public string $mobileVersion = '1.0.0';
@@ -44,6 +44,16 @@ class Sigra extends BaseConfig
      * @var array<string, array{date: string, name: string, summary: string, changes: list<string>}>
      */
     public array $changelog = [
+        '1.3.1.1' => [
+            'date' => '2026-11-13',
+            'name' => 'Intervalo de consultas SGC',
+            'summary' => 'El intervalo mínimo entre consultas al SGC aumenta de cinco a quince minutos.',
+            'changes' => [
+                'Intervalo de quince minutos por host SGC, compartido por mapa, CLI y procesos PHP.',
+                'Las demás fuentes conservan su intervalo mínimo de cinco minutos; el timeout SGC sigue en diez segundos.',
+                'Pruebas sin red verifican el intervalo SGC y la protección compartida entre URLs.',
+            ],
+        ],
         '1.3.1' => [
             'date' => '2026-11-13',
             'name' => 'Cabeceras HTTP y recuperación de fuentes',

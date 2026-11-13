@@ -1,7 +1,15 @@
 # Changelog
 
 All notable changes to SIGRA are documented here. The project follows
-[Semantic Versioning](https://semver.org/).
+[Semantic Versioning](https://semver.org/), with an optional fourth revision component
+for small patch adjustments such as `1.3.1.1`.
+
+## [1.3.1.1] — 2026-11-13 · “SGC polling interval”
+
+- Use a fifteen-minute interval per SGC host, shared by the map, CLI and PHP workers.
+- Other sources retain their five-minute minimum; the SGC response timeout remains ten seconds.
+- Offline tests verify the SGC interval and shared protection across URLs.
+- Build `20261113.3`; no new migrations. Preserve existing provider cooldowns.
 
 ## [1.3.1] — 2026-11-13 · “HTTP headers and source recovery”
 

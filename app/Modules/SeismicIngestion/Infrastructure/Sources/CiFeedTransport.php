@@ -29,7 +29,9 @@ final class CiFeedTransport implements FeedTransport
         if (!is_dir($this->directory) && !@mkdir($this->directory, 0700, true) && !is_dir($this->directory)) {
             throw new \RuntimeException('No se pudo preparar la protección de proveedores.');
         }
-        $host = hash('sha256', strtolower($parts['host']));
+        $hostname = strtolower($parts['host']);
+        $minimumInterval = $hostname === 'archive.sgc.gov.co' ? 900 : 300;
+        $host = hash('sha256', $hostname);
         // Rolling FDSN windows change the URL; they still share the cached catalogue.
         parse_str($parts['query'] ?? '', $query);
         if (isset($query['starttime'], $query['endtime'])) {
@@ -53,7 +55,7 @@ final class CiFeedTransport implements FeedTransport
                 throw new \RuntimeException('Proveedor en pausa hasta ' . gmdate('c', (int) $state['next_at']) . '.');
             }
             // Persist before I/O: crashes/timeouts cannot cause immediate re-entry.
-            $this->write($statePath, ['next_at' => $now + 300, 'error' => true, 'failures' => $state['failures'] ?? 0]);
+            $this->write($statePath, ['next_at' => $now + $minimumInterval, 'error' => true, 'failures' => $state['failures'] ?? 0]);
             if (($cache['url'] ?? '') === $url) {
                 if (!empty($cache['etag'])) $headers['If-None-Match'] = $cache['etag'];
                 if (!empty($cache['modified'])) $headers['If-Modified-Since'] = $cache['modified'];
@@ -91,7 +93,7 @@ final class CiFeedTransport implements FeedTransport
             } elseif (is_file($cachePath)) {
                 unlink($cachePath);
             }
-            $delay = 300;
+            $delay = $minimumInterval;
             if (preg_match('/(?:^|,)\s*max-age=(\d+)/i', $cacheControl, $matches)) {
                 $delay = max($delay, min(PHP_INT_MAX - $now, (int) $matches[1]));
             }

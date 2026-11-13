@@ -1,8 +1,8 @@
-# API de la Red SIGRA de teléfonos · SIGRA 1.3.1 · contrato v1
+# API de la Red SIGRA de teléfonos · SIGRA 1.3.1.1 · contrato v1
 
 Base: `https://tu-dominio/` (o tu dominio).
 Todas las respuestas son JSON y usan `Cache-Control: no-store`.
-También incluyen `X-SIGRA-Version: 1.3.1` y `X-API-Version: v1`.
+También incluyen `X-SIGRA-Version: 1.3.1.1` y `X-API-Version: v1`.
 La versión de aplicación y el contrato son independientes; se conservan rutas
 y campos de respuestas válidas usados por Android.
 

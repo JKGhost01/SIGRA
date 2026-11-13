@@ -15,7 +15,7 @@ return [
 
     // Navegación y layout
     'navLive'          => 'Red en vivo',
-    'releaseName'      => 'Cabeceras HTTP y recuperación de fuentes',
+    'releaseName'      => 'Intervalo de consultas SGC',
     'tagline'          => 'Monitor sísmico global y red ciudadana',
     'navMap'           => 'Mapa global',
     'navHistory'       => 'Histórico',
