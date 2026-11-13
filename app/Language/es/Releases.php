@@ -3,6 +3,15 @@
 return array (
   'history' => 
   array (
+        '1.3.1.1' => [
+            'name' => 'Intervalo de consultas SGC',
+            'summary' => 'El intervalo mínimo entre consultas al SGC aumenta de cinco a quince minutos.',
+            'changes' => [
+                'Intervalo de quince minutos por host SGC, compartido por mapa, CLI y procesos PHP.',
+                'Las demás fuentes conservan su intervalo mínimo de cinco minutos; el timeout SGC sigue en diez segundos.',
+                'Pruebas sin red verifican el intervalo SGC y la protección compartida entre URLs.',
+            ],
+        ],
         '1.3.1' => [
             'name' => 'Cabeceras HTTP y recuperación de fuentes',
             'summary' => 'Lectura de cabeceras Cache-Control repetidas sin rechazar respuestas válidas de los proveedores.',

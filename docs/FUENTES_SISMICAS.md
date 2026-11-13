@@ -12,6 +12,8 @@ No se hicieron nuevas consultas reales durante las pruebas de protección.
 - El transporte añade un bloqueo y presupuesto por hostname, compartidos por
   procesos PHP y por las distintas URLs del proveedor. También cubre llamadas
   directas del adaptador heredado y ejecuciones forzadas del coordinador.
+- Para SGC (`archive.sgc.gov.co`), el intervalo mínimo entre consultas es de
+  15 minutos; las demás fuentes conservan el mínimo de cinco minutos.
 - Cada turno hace como máximo una petición HTTP por host, sin seguir redirecciones
   ni reintentar dentro de la misma llamada. TLS permanece verificado.
 - HTTP 401/403: pausa de al menos 24 horas, con una pequeña variación aleatoria.

@@ -2,6 +2,15 @@
 
 return [
     'history' => [
+        '1.3.1.1' => [
+            'name' => 'SGC polling interval',
+            'summary' => 'Increase the minimum interval between SGC requests from five to fifteen minutes.',
+            'changes' => [
+                'Use a fifteen-minute interval per SGC host, shared by the map, CLI and PHP workers.',
+                'Other sources retain their five-minute minimum; the SGC response timeout remains ten seconds.',
+                'Offline tests verify the SGC interval and shared protection across URLs.',
+            ],
+        ],
         '1.3.1' => [
             'name' => 'HTTP headers and source recovery',
             'summary' => 'Read repeated Cache-Control headers without rejecting valid provider responses.',

@@ -18,7 +18,7 @@ return [
 
     // Navigation and layout
     'navLive'          => 'Live network',
-    'releaseName'      => 'HTTP headers and source recovery',
+    'releaseName'      => 'SGC polling interval',
     'tagline'          => 'Global seismic monitor and citizen network',
     'navMap'           => 'Global map',
     'navHistory'       => 'History',
