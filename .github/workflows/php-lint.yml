@@ -7,7 +7,9 @@ on:
 
 jobs:
   checks:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
+    env:
+      PHP_CGI: /usr/bin/php-cgi8.2
     services:
       mariadb:
         image: mariadb:10.11
@@ -21,6 +23,12 @@ jobs:
           --health-interval=10s --health-timeout=5s --health-retries=10
     steps:
       - uses: actions/checkout@v4
+      - name: Enable PHP packages for Ubuntu
+        # setup-php can provide PHP without leaving its APT repository enabled.
+        # CGI needs the PHP 8.2 repository too; Ubuntu 24.04 defaults to PHP 8.3.
+        run: |
+          sudo add-apt-repository --yes --no-update ppa:ondrej/php
+          sudo apt-get update
       - uses: shivammathur/setup-php@v2
         with:
           php-version: "8.2"
@@ -45,7 +53,10 @@ jobs:
         with:
           python-version: '3.x'
       - name: Install PHP CGI for HTTP contract tests
-        run: sudo apt-get update && sudo apt-get install -y php8.2-cgi
+        run: |
+          sudo apt-get install --yes --no-install-recommends php8.2-cgi
+          "$PHP_CGI" --version
+          "$PHP_CGI" -m
       - name: Check source visibility and ignored artifacts
         run: python3 tools/check-git.py
       - name: Architecture, domain, provider, PWA and HTTP checks
