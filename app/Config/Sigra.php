@@ -24,7 +24,7 @@ class Sigra extends BaseConfig
     public string $build = '20261113.4';
     public string $channel = 'stable';
     public string $apiVersion = 'v1';
-    public string $mobileVersion = '1.0.0';
+    public string $mobileVersion = '1.0.0.0';
     public string $license = 'MIT';
     public string $author = 'Andrés Felipe Loaiza Granobles';
 

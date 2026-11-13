@@ -92,7 +92,7 @@ ob_start();
         <div class="red-status" id="red-estado"><i class="red-status-dot"></i><span><?= esc(lang('Sigra.redChecking')) ?></span></div>
         <div class="red-cta">
             <button class="btn btn-report" type="button" data-sigra-alerts-toggle><?= esc(lang('Sigra.redEnableAlerts')) ?></button>
-            <a href="#instalar" class="btn btn-outline-secondary"><?= esc(lang('Sigra.redInstallApp')) ?></a>
+            <a href="<?= site_url('app-movil') ?>" class="btn btn-outline-secondary"><?= esc(lang('Sigra.redInstallApp')) ?></a>
             <button class="btn btn-outline-secondary" type="button" data-pwa-install hidden><?= esc(lang('Sigra.redInstallWeb')) ?></button>
         </div>
         <p class="small text-secondary mt-3 mb-0"><?= esc(lang('Sigra.redNoSms')) ?></p>

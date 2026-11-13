@@ -226,9 +226,14 @@ Geolocation is **opt-in** and stays in the browser:
 
 ## Android app
 
-The Android client is under development in a separate repository. This backend does
-not include mobile sources or an APK build. Its integration contract is documented
-in [OpenAPI](docs/api/openapi.yaml).
+The Android client is available in [SIGRA_MOBILE](https://github.com/JKGhost01/SIGRA_MOBILE).
+The website includes `/app-movil` with registered and online device counts and
+an APK download section. Its version and download link come from GitHub Releases;
+until a stable release exists, it shows the source version and pending publication.
+The About page uses the same metadata.
+
+Publishing and caching: [docs/APP_MOVIL.md](docs/APP_MOVIL.md) (Spanish).
+Integration contract: [OpenAPI](docs/api/openapi.yaml).
 
 ## Documentation
 
