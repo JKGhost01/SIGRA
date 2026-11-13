@@ -18,10 +18,10 @@ class Sigra extends BaseConfig
 
     public string $project = 'SIGRA';
     public string $tagline = 'Monitor sísmico global y red ciudadana';
-    public string $version = '1.3.0';
-    public string $releaseName = 'Fuentes globales, consultas responsables y mapa corregido';
+    public string $version = '1.3.1';
+    public string $releaseName = 'Cabeceras HTTP y recuperación de fuentes';
     public string $releaseDate = '2026-11-13';
-    public string $build = '20261113.1';
+    public string $build = '20261113.2';
     public string $channel = 'stable';
     public string $apiVersion = 'v1';
     public string $mobileVersion = '1.0.0';
@@ -44,6 +44,18 @@ class Sigra extends BaseConfig
      * @var array<string, array{date: string, name: string, summary: string, changes: list<string>}>
      */
     public array $changelog = [
+        '1.3.1' => [
+            'date' => '2026-11-13',
+            'name' => 'Cabeceras HTTP y recuperación de fuentes',
+            'summary' => 'Lectura de cabeceras Cache-Control repetidas sin rechazar respuestas válidas de los proveedores.',
+            'changes' => [
+                'Lectura de cabeceras Cache-Control repetidas sin rechazar respuestas válidas de los proveedores.',
+                'Respuesta HTTP entrante sin las cabeceras predeterminadas de páginas HTML de CodeIgniter.',
+                'Retry-After múltiple respeta la espera más larga; validadores ETag y Last-Modified contradictorios no se reutilizan.',
+                'Rutas con métodos GET/POST en mayúsculas para eliminar avisos deprecados repetidos.',
+                'Pruebas con respuestas reales de CodeIgniter para cabeceras múltiples, 304 y no-store; pausas y límites conservados.',
+            ],
+        ],
         '1.3.0' => [
             'date' => '2026-11-13',
             'name' => 'Fuentes globales, consultas responsables y mapa corregido',

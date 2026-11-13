@@ -18,7 +18,7 @@ return [
 
     // Navigation and layout
     'navLive'          => 'Live network',
-    'releaseName'      => 'Global sources, responsible polling and corrected map',
+    'releaseName'      => 'HTTP headers and source recovery',
     'tagline'          => 'Global seismic monitor and citizen network',
     'navMap'           => 'Global map',
     'navHistory'       => 'History',

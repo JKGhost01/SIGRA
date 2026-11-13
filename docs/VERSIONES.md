@@ -21,29 +21,39 @@ La versión se define en `app/Config/Sigra.php` y se muestra en:
 Se puede sobrescribir sin tocar código con:
 
 ```ini
-sigra.version = '1.3.0'
-sigra.build = '20261113.1'
+sigra.version = '1.3.1'
+sigra.build = '20261113.2'
 sigra.channel = 'stable'
 ```
 
 ## Versión actual
 
-**v1.3.0 · Fuentes globales, consultas responsables y mapa corregido**
+**v1.3.1 · Cabeceras HTTP y recuperación de fuentes**
 
 - Fecha: 2026-11-13
-- Build: `20261113.1`
+- Build: `20261113.2`
 - Canal: `stable`
 - API: `v1`
 - App Android: `v1.0.0`
 - Licencia: MIT
 
-La versión de la aplicación (`1.3.0`) es independiente del contrato de la API
+La versión de la aplicación (`1.3.1`) es independiente del contrato de la API
 (`v1`). Se conservan las rutas y los campos de las respuestas válidas para Android.
 Se añaden rutas /api/v1 con errores estructurados; las rutas antiguas conservan su formato.
 La sincronización del mapa funciona automáticamente: no requiere configurar cron.
 La auditoría requiere la migración aditiva o el SQL de despliegue, sin reiniciar la base.
 
 ## Historial
+
+### v1.3.1 · Cabeceras HTTP y recuperación de fuentes · 2026-11-13
+
+- Lectura de cabeceras Cache-Control repetidas sin rechazar respuestas válidas de los proveedores.
+- Respuesta HTTP entrante sin las cabeceras predeterminadas de páginas HTML de CodeIgniter.
+- Retry-After múltiple respeta la espera más larga; validadores ETag y Last-Modified contradictorios no se reutilizan.
+- Rutas con métodos GET/POST en mayúsculas para eliminar avisos deprecados repetidos.
+- Pruebas con respuestas reales de CodeIgniter para cabeceras múltiples, 304 y no-store; pausas y límites conservados.
+- Build `20261113.2`; sin nuevas migraciones. Las pausas existentes se conservan hasta su vencimiento.
+
 
 ### v1.3.0 · Fuentes globales, consultas responsables y mapa corregido · 2026-11-13
 

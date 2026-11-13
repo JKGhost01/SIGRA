@@ -3,7 +3,7 @@
 Aplicación CodeIgniter 4 para visualizar sismos de todo el mundo (SGC, USGS, EMSC, GeoNet, GEOFON e INGV), conservar
 un histórico, recibir reportes ciudadanos y operar una red de detección temprana con teléfonos.
 
-## Estado del proyecto: versión 1.3.0 · Fuentes globales, consultas responsables y mapa corregido
+## Estado del proyecto: versión 1.3.1 · Cabeceras HTTP y recuperación de fuentes
 
 Desde la versión 1.0.3 se unifica el feed colombiano del SGC con la red mundial USGS en un solo
 mapa, listado, histórico y API. Incluye filtro por radio desde la ubicación del usuario,

@@ -1,8 +1,8 @@
 # SIGRA · Monitor sísmico global y red ciudadana
 
-> **v1.3.0 · Fuentes globales, consultas responsables y mapa corregido** — eventos de seis fuentes oficiales en un mapa, con monitoreo ciudadano experimental.
+> **v1.3.1 · Cabeceras HTTP y recuperación de fuentes** — eventos de seis fuentes oficiales en un mapa, con monitoreo ciudadano experimental.
 
-[![Versión](https://img.shields.io/badge/versi%C3%B3n-1.3.0-087f78.svg)](#versionado)
+[![Versión](https://img.shields.io/badge/versi%C3%B3n-1.3.1-087f78.svg)](#versionado)
 [![PHP](https://img.shields.io/badge/PHP-%3E%3D8.2-777bb4.svg)](https://www.php.net/)
 [![CodeIgniter](https://img.shields.io/badge/CodeIgniter-4.7-ee4323.svg)](https://codeigniter.com/)
 [![Licencia](https://img.shields.io/badge/licencia-MIT-blue.svg)](LICENSE)
@@ -271,8 +271,8 @@ la disponibilidad del SGC. Ver [fuentes y límites](docs/FUENTES_SISMICAS.md).
 
 ## Versionado
 
-SIGRA usa versionado semántico. La versión actual es **1.3.0 · Fuentes globales, consultas responsables y mapa corregido**
-(2026-11-13, build `20261113.1`). Ver [docs/VERSIONES.md](docs/VERSIONES.md).
+SIGRA usa versionado semántico. La versión actual es **1.3.1 · Cabeceras HTTP y recuperación de fuentes**
+(2026-11-13, build `20261113.2`). Ver [docs/VERSIONES.md](docs/VERSIONES.md).
 
 Contratos API: [Sismos](docs/API_SISMOS.md) · [Red ciudadana](docs/API_RED.md).
 

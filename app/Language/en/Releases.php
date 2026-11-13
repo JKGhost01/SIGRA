@@ -2,6 +2,17 @@
 
 return [
     'history' => [
+        '1.3.1' => [
+            'name' => 'HTTP headers and source recovery',
+            'summary' => 'Read repeated Cache-Control headers without rejecting valid provider responses.',
+            'changes' => [
+                'Read repeated Cache-Control headers without rejecting valid provider responses.',
+                'Remove CodeIgniter outgoing-page defaults from incoming provider responses.',
+                'Repeated Retry-After headers respect the longest delay; conflicting ETag and Last-Modified validators are not reused.',
+                'Use uppercase GET/POST route methods to eliminate repeated deprecation warnings.',
+                'Exercise real CodeIgniter responses for repeated headers, 304 and no-store; retain cooldowns and request budgets.',
+            ],
+        ],
         '1.3.0' => [
             'name' => 'Global sources, responsible polling and corrected map',
             'summary' => 'Six official sources, persistent provider protection and repaired USGS coordinates in the map and history.',

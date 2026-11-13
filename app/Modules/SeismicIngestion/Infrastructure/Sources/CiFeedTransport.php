@@ -106,15 +106,43 @@ final class CiFeedTransport implements FeedTransport
 
     private function send(string $url, int $timeoutSeconds, array $headers): array
     {
-        if ($this->request !== null) return ($this->request)($url, $timeoutSeconds, $headers);
-        $response = \Config\Services::curlrequest(['timeout' => $timeoutSeconds,
-            'connect_timeout' => min(5, $timeoutSeconds), 'http_errors' => false,
-            'allow_redirects' => false, 'verify' => true, 'headers' => $headers], null, null, false)->get($url);
+        if ($this->request !== null) {
+            $response = ($this->request)($url, $timeoutSeconds, $headers);
+        } else {
+            $incoming = new \CodeIgniter\HTTP\Response(config(\Config\App::class));
+            // Response defaults describe outgoing HTML pages, not the remote provider's cache policy.
+            $incoming->removeHeader('Cache-Control');
+            $incoming->removeHeader('Content-Type');
+            $response = \Config\Services::curlrequest(['timeout' => $timeoutSeconds,
+                'connect_timeout' => min(5, $timeoutSeconds), 'http_errors' => false,
+                'allow_redirects' => false, 'verify' => true, 'headers' => $headers], $incoming, null, false)->get($url);
+        }
+        if (is_array($response)) return $response;
         $resultHeaders = [];
         foreach (['ETag', 'Last-Modified', 'Retry-After', 'Cache-Control'] as $name) {
-            $resultHeaders[$name] = $response->getHeaderLine($name);
+            $resultHeaders[$name] = $this->responseHeader($response, $name);
         }
         return ['status' => $response->getStatusCode(), 'headers' => $resultHeaders, 'body' => $response->getBody()];
+    }
+
+    private function responseHeader(\CodeIgniter\HTTP\ResponseInterface $response, string $name): string
+    {
+        $header = $response->getHeader($name);
+        if ($header === null) return '';
+        $values = [];
+        foreach (is_array($header) ? $header : [$header] as $entry) {
+            $value = trim($entry->getValueLine());
+            if ($value !== '') $values[] = $value;
+        }
+        if ($values === []) return '';
+        if ($name === 'Cache-Control') return implode(', ', $values);
+        if ($name === 'Retry-After') {
+            // HTTP dates contain commas. Parse each header separately and respect the longest delay.
+            $now = $this->clock->now()->getTimestamp();
+            return (string) max(array_map(fn (string $value): int => $this->retryDelay($value, $now), $values));
+        }
+        // Different ETags or modification dates cannot form a valid conditional request.
+        return count(array_unique($values)) === 1 ? $values[0] : '';
     }
 
     private function defer(string $path, array $state, int $status, string $retry, int $now): void

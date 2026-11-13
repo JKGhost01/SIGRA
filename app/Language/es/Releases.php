@@ -3,6 +3,17 @@
 return array (
   'history' => 
   array (
+        '1.3.1' => [
+            'name' => 'Cabeceras HTTP y recuperación de fuentes',
+            'summary' => 'Lectura de cabeceras Cache-Control repetidas sin rechazar respuestas válidas de los proveedores.',
+            'changes' => [
+                'Lectura de cabeceras Cache-Control repetidas sin rechazar respuestas válidas de los proveedores.',
+                'Respuesta HTTP entrante sin las cabeceras predeterminadas de páginas HTML de CodeIgniter.',
+                'Retry-After múltiple respeta la espera más larga; validadores ETag y Last-Modified contradictorios no se reutilizan.',
+                'Rutas con métodos GET/POST en mayúsculas para eliminar avisos deprecados repetidos.',
+                'Pruebas con respuestas reales de CodeIgniter para cabeceras múltiples, 304 y no-store; pausas y límites conservados.',
+            ],
+        ],
         '1.3.0' => [
             'name' => 'Fuentes globales, consultas responsables y mapa corregido',
             'summary' => 'Seis fuentes oficiales, protección persistente de proveedores y reparación de las coordenadas USGS del mapa y el histórico.',

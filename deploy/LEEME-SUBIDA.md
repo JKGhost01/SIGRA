@@ -44,3 +44,11 @@ registrar esta migración sin recrear sus datos.
 **No uses `sigra:db-reset` para actualizar.** El helper `tools/setup-remoto.php`
 fue deshabilitado. Si lo subiste como `__setup.php` u otro nombre, elimina también
 esa copia del hosting. Conserva antes una copia privada de archivos y base de datos.
+
+## Parche 1.3.1
+
+Corrige la lectura de cabeceras múltiples y elimina las cabeceras de página HTML
+que CodeIgniter añadía a las respuestas entrantes. No requiere nuevas migraciones
+si ya aplicaste la reparación USGS de 1.3.0. Conserva los JSON y `.lock` de
+`writable/cache/providers`: el siguiente intento permitido usará el código corregido.
+Este parche no cancela las pausas ni garantiza que un proveedor vuelva a estar disponible.

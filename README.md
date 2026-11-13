@@ -1,8 +1,8 @@
 # SIGRA · Global Seismic Monitor & Citizen Network
 
-> **v1.3.0 · Global sources, responsible polling and corrected map** — Published earthquakes from six official sources in one map, with experimental citizen monitoring.
+> **v1.3.1 · HTTP headers and source recovery** — Published earthquakes from six official sources in one map, with experimental citizen monitoring.
 
-[![Version](https://img.shields.io/badge/version-1.3.0-087f78.svg)](#versioning)
+[![Version](https://img.shields.io/badge/version-1.3.1-087f78.svg)](#versioning)
 [![PHP](https://img.shields.io/badge/PHP-%3E%3D8.2-777bb4.svg)](https://www.php.net/)
 [![CodeIgniter](https://img.shields.io/badge/CodeIgniter-4.7-ee4323.svg)](https://codeigniter.com/)
 [![License](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
@@ -275,7 +275,7 @@ is not restored by this release. See [provider details](docs/FUENTES_SISMICAS.md
 
 ## Versioning
 
-SIGRA follows semantic versioning. The current release is **1.3.0 · Global sources, responsible polling and corrected map** (2026-11-13, build `20261113.1`). See [docs/VERSIONES.md](docs/VERSIONES.md).
+SIGRA follows semantic versioning. The current release is **1.3.1 · HTTP headers and source recovery** (2026-11-13, build `20261113.2`). See [docs/VERSIONES.md](docs/VERSIONES.md).
 
 API contracts: [Earthquakes](docs/API_SISMOS.md) · [Citizen network](docs/API_RED.md).
 
