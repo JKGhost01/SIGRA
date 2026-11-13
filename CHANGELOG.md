@@ -3,6 +3,15 @@
 All notable changes to SIGRA are documented here. The project follows
 [Semantic Versioning](https://semver.org/).
 
+## [1.3.1] — 2026-11-13 · “HTTP headers and source recovery”
+
+- Read repeated Cache-Control headers without rejecting valid provider responses.
+- Remove CodeIgniter outgoing-page defaults from incoming provider responses.
+- Repeated Retry-After headers respect the longest delay; conflicting ETag and Last-Modified validators are not reused.
+- Use uppercase GET/POST route methods to eliminate repeated deprecation warnings.
+- Exercise real CodeIgniter responses for repeated headers, 304 and no-store; retain cooldowns and request budgets.
+- Build `20261113.2`; no new migrations. Preserve existing provider cooldowns until they expire.
+
 ## [1.3.0] — 2026-11-13 · “Global sources, responsible polling and corrected map”
 
 - EMSC, GeoNet, GEOFON/GFZ and INGV join SGC and USGS in the catalog, API and filters; source references survive correlation.

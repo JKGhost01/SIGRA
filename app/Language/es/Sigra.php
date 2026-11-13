@@ -15,7 +15,7 @@ return [
 
     // Navegación y layout
     'navLive'          => 'Red en vivo',
-    'releaseName'      => 'Fuentes globales, consultas responsables y mapa corregido',
+    'releaseName'      => 'Cabeceras HTTP y recuperación de fuentes',
     'tagline'          => 'Monitor sísmico global y red ciudadana',
     'navMap'           => 'Mapa global',
     'navHistory'       => 'Histórico',

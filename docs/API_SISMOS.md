@@ -1,12 +1,12 @@
-# API de sismos · SIGRA 1.3.0 · contrato v1
+# API de sismos · SIGRA 1.3.1 · contrato v1
 
-Las rutas y los campos usados por Android se conservan. `1.3.0` identifica la
+Las rutas y los campos usados por Android se conservan. `1.3.1` identifica la
 aplicación; `v1` identifica el contrato. Todas las respuestas de los endpoints
 listados son JSON y llevan:
 
 ```http
 Cache-Control: no-store, max-age=0
-X-SIGRA-Version: 1.3.0
+X-SIGRA-Version: 1.3.1
 X-API-Version: v1
 ```
 

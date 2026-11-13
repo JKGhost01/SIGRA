@@ -10,7 +10,7 @@ $routes->get('sismos/globales', $web . '::globales');
 $routes->get('sismos/historico', $web . '::history');
 $routes->get('sismos/detalle/(:segment)', $web . '::detail/$1');
 foreach (['edit', 'delete'] as $operation) {
-    $routes->match(['get', 'post'], 'sismos/' . $operation . '/(:segment)', $web . '::denied', ['filter' => 'denyeventwrites']);
+    $routes->match(['GET', 'POST'], 'sismos/' . $operation . '/(:segment)', $web . '::denied', ['filter' => 'denyeventwrites']);
 }
 foreach (['api/sismos', 'api/v1/sismos'] as $prefix) {
     foreach (['recent' => 'recent', 'ultimo' => 'latest', 'alertas' => 'alerts', 'detalle/(:segment)' => 'detail/$1'] as $path => $action) {
