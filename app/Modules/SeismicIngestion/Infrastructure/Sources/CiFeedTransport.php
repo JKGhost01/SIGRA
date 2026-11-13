@@ -54,8 +54,11 @@ final class CiFeedTransport implements FeedTransport
                 if (empty($state['error']) && isset($cache['body']) && ($cache['reusable'] ?? true)) return $cache['body'];
                 throw new \RuntimeException('Proveedor en pausa hasta ' . gmdate('c', (int) $state['next_at']) . '.');
             }
+            $state['last_attempt_at'] = $now;
             // Persist before I/O: crashes/timeouts cannot cause immediate re-entry.
-            $this->write($statePath, ['next_at' => $now + $minimumInterval, 'error' => true, 'failures' => $state['failures'] ?? 0]);
+            $this->write($statePath, ['next_at' => $now + $minimumInterval, 'error' => true, 'failures' => $state['failures'] ?? 0,
+                'last_attempt_at' => $now, 'last_success_at' => $state['last_success_at'] ?? null,
+                'last_checked_at' => $state['last_checked_at'] ?? null, 'status' => null, 'outcome' => 'pending']);
             if (($cache['url'] ?? '') === $url) {
                 if (!empty($cache['etag'])) $headers['If-None-Match'] = $cache['etag'];
                 if (!empty($cache['modified'])) $headers['If-Modified-Since'] = $cache['modified'];
@@ -80,7 +83,7 @@ final class CiFeedTransport implements FeedTransport
             } catch (\Throwable $error) {
                 // HTTP errors already recorded their server-directed or longer pause.
                 if (!isset($status) || in_array($status, [200, 204, 304], true)) {
-                    $this->defer($statePath, $state, 0, '', $this->clock->now()->getTimestamp());
+                    $this->defer($statePath, $state, $status ?? 0, '', $this->clock->now()->getTimestamp());
                 }
                 throw new \RuntimeException('No se pudo consultar el proveedor.', 0, $error);
             }
@@ -98,7 +101,9 @@ final class CiFeedTransport implements FeedTransport
                 $delay = max($delay, min(PHP_INT_MAX - $now, (int) $matches[1]));
             }
             $delay = max($delay, $this->retryDelay($responseHeaders['retry-after'] ?? '', $now));
-            $this->write($statePath, ['next_at' => $now + $delay, 'error' => false, 'failures' => 0]);
+            $this->write($statePath, ['next_at' => $now + $delay, 'error' => false, 'failures' => 0,
+                'last_attempt_at' => $state['last_attempt_at'] ?? $now, 'last_checked_at' => $now,
+                'last_success_at' => $now, 'status' => $status, 'outcome' => 'success']);
             return $body;
         } finally {
             flock($lock, LOCK_UN);
@@ -150,11 +155,14 @@ final class CiFeedTransport implements FeedTransport
     private function defer(string $path, array $state, int $status, string $retry, int $now): void
     {
         $failures = min(12, (int) ($state['failures'] ?? 0) + 1);
-        $base = match ($status) { 401, 403 => 86400, 429 => 900, default => 600 };
+        $base = match ($status) { 401, 403 => $failures === 1 ? 7200 : 86400, 429 => 900, default => 600 };
         $delay = in_array($status, [401, 403], true) ? $base : min(21600, $base * (2 ** ($failures - 1)));
         $delay += random_int(0, (int) ($delay / 10));
         $delay = max($delay, $this->retryDelay($retry, $now));
-        $this->write($path, ['next_at' => $now + $delay, 'error' => true, 'failures' => $failures, 'status' => $status]);
+        $this->write($path, ['next_at' => $now + $delay, 'error' => true, 'failures' => $failures, 'status' => $status,
+            'last_attempt_at' => $state['last_attempt_at'] ?? $now, 'last_checked_at' => $now,
+            'last_success_at' => $state['last_success_at'] ?? null,
+            'outcome' => $status === 0 ? 'connection_error' : (in_array($status, [200, 204, 304], true) ? 'invalid_response' : 'http_error')]);
     }
 
     private function retryDelay(string $value, int $now): int

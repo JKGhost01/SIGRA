@@ -5,6 +5,23 @@ activa otro endpoint ni un reintento inmediato. La última comprobación real
 recibió HTTP 403; ese código no acredita por sí solo un bloqueo por tráfico.
 No se hicieron nuevas consultas reales durante las pruebas de protección.
 
+## Estado de las conexiones
+
+En `/acerca-de#sources-health` se muestra una tarjeta por fuente con el estado
+local, último intento, último resultado, última respuesta válida, código HTTP y
+próxima consulta permitida. Las fechas se muestran en UTC. El botón «Actualizar
+estado» recarga la información guardada; no contacta a los proveedores ni levanta
+sus pausas. Una comprobación correcta de transporte no certifica la cobertura
+ni la actualidad del catálogo sísmico.
+
+Los registros anteriores a este panel pueden carecer de fechas o código HTTP:
+se muestran como «Sin registro», sin inferir fechas a partir de la pausa.
+Las siguientes consultas registran esos datos automáticamente. Un éxito cuyo
+intervalo ya venció se presenta como pendiente de actualización. La próxima
+consulta requiere actividad del mapa o cron; no es una ejecución programada.
+Los fallos de conexión y las respuestas inválidas se distinguen de los errores
+HTTP sin publicar mensajes de excepción ni credenciales de configuración.
+
 ## Frecuencia y pausas persistentes
 
 - Mapa y CLI usan el mismo coordinador, con un mínimo de 300 segundos incluso
@@ -16,7 +33,10 @@ No se hicieron nuevas consultas reales durante las pruebas de protección.
   15 minutos; las demás fuentes conservan el mínimo de cinco minutos.
 - Cada turno hace como máximo una petición HTTP por host, sin seguir redirecciones
   ni reintentar dentro de la misma llamada. TLS permanece verificado.
-- HTTP 401/403: pausa de al menos 24 horas, con una pequeña variación aleatoria.
+- HTTP 401/403, en todas las fuentes: pausa de al menos dos horas en el primer
+  fallo consecutivo y de al menos 24 horas desde el segundo. Una respuesta válida
+  reinicia el contador de fallos. Se añade una pequeña variación aleatoria.
+  Las pausas ya guardadas conservan su vencimiento.
 - HTTP 429: pausa inicial de al menos 15 minutos. Otros fallos: al menos 10 minutos.
   Los fallos repetidos duplican la espera hasta seis horas, más variación aleatoria.
 - `Retry-After`, en segundos o fecha HTTP, siempre puede ampliar esas pausas.

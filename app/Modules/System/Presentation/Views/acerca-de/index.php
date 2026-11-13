@@ -23,6 +23,20 @@ ob_start();
     .about-status-dot { width: .65rem; height: .65rem; flex: 0 0 .65rem; border-radius: 50%; background: #d97706; box-shadow: 0 0 0 .3rem rgba(217, 119, 6, .14); }
     .about-status-dot.ok { background: #16a34a; box-shadow: 0 0 0 .3rem rgba(22, 163, 74, .15); }
     .about-status-dot.error { background: #dc2626; box-shadow: 0 0 0 .3rem rgba(220, 38, 38, .15); }
+    .provider-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 290px), 1fr)); gap: 1rem; margin-top: 1rem; }
+    .provider-card { border: 1px solid var(--line); border-radius: 14px; padding: 1rem; background: var(--surface); }
+    .provider-card header { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: .5rem; }
+    .provider-card h3 { margin: 0; font-size: 1rem; }
+    .provider-card .provider-host { color: var(--muted); font-size: .76rem; overflow-wrap: anywhere; margin: .5rem 0; }
+    .provider-badge { border: 1px solid currentColor; border-radius: 999px; padding: .2rem .5rem; font-size: .72rem; color: var(--muted); }
+    .provider-badge.ok { color: var(--teal); }
+    .provider-badge.paused, .provider-badge.error, .provider-badge.invalid { color: #b45309; }
+    html[data-bs-theme="dark"] .provider-badge.paused, html[data-bs-theme="dark"] .provider-badge.error, html[data-bs-theme="dark"] .provider-badge.invalid { color: #fbbf24; }
+    .provider-result { font-size: .84rem; min-height: 2.5em; }
+    .provider-card dl { margin: 0; }
+    .provider-card dl > div { padding: .5rem 0; border-top: 1px solid var(--line); }
+    .provider-card dt { color: var(--muted); font-size: .74rem; font-weight: 500; }
+    .provider-card dd { margin: .15rem 0 0; font-size: .82rem; font-variant-numeric: tabular-nums; }
     .about-changelog { display: grid; gap: 1rem; margin-top: 1rem; }
     .about-release { padding: .15rem 0 .15rem 1rem; border-left: 3px solid var(--teal); }
     .about-release header { display: flex; flex-wrap: wrap; align-items: baseline; gap: .5rem; }
@@ -53,6 +67,7 @@ ob_start();
     </header>
 
     <nav class="about-quick-links" aria-label="<?= esc(lang('Sigra.aboutNavAria')) ?>">
+        <a href="#sources-health"><?= esc(lang('Sigra.providerTitle')) ?></a>
         <a href="#version"><?= esc(lang('Sigra.aboutNavVersion')) ?></a>
         <a href="#changelog"><?= esc(lang('Sigra.aboutNavChanges')) ?></a>
         <a href="<?= site_url('red') ?>"><?= esc(lang('Sigra.navLive')) ?></a>
@@ -92,6 +107,47 @@ ob_start();
                 <div><dt><?= esc(lang('Sigra.factsBuild')) ?></dt><dd><?= esc($sigra->build) ?> · <?= esc($channelLabel) ?></dd></div>
                 <div><dt><?= esc(lang('Sigra.factsLicense')) ?></dt><dd><?= esc($sigra->license) ?></dd></div>
             </dl>
+        </section>
+
+        <section class="about-section" id="sources-health" aria-labelledby="sources-health-title">
+            <div class="about-version-head">
+                <div>
+                    <h2 id="sources-health-title"><?= esc(lang('Sigra.providerTitle')) ?></h2>
+                    <p><?= esc(lang('Sigra.providerIntro')) ?></p>
+                </div>
+                <a class="about-version-pill" href="<?= site_url('acerca-de') ?>#sources-health"><?= esc(lang('Sigra.providerRefresh')) ?></a>
+            </div>
+            <p class="small"><?= esc(lang('Sigra.providerTimezone')) ?></p>
+            <div class="provider-grid">
+                <?php foreach ($providerHealth as $provider): ?>
+                <article class="provider-card">
+                    <header>
+                        <h3><?= esc($provider['name']) ?></h3>
+                        <span class="provider-badge <?= esc($provider['state'], 'attr') ?>"><?= esc(lang('Sigra.providerState_' . $provider['state'])) ?></span>
+                    </header>
+                    <p class="provider-host"><?= esc($provider['host']) ?></p>
+                    <p class="provider-result">
+                        <?php if ($provider['http'] !== null): ?><strong>HTTP <?= esc((string) $provider['http']) ?></strong> · <?php endif; ?>
+                        <?= esc(lang($provider['outcome'] !== null ? 'Sigra.providerOutcome_' . $provider['outcome'] : 'Sigra.providerNoResult')) ?>
+                        <?php if (in_array($provider['http'], [403, 429], true)): ?><br><?= esc(lang('Sigra.providerHttp' . $provider['http'])) ?><?php endif; ?>
+                    </p>
+                    <dl>
+                    <?php foreach (['last_attempt' => 'providerLastAttempt', 'last_check' => 'providerLastCheck', 'last_success' => 'providerLastSuccess', 'next_check' => 'providerNextCheck'] as $field => $label): ?>
+                        <div>
+                            <dt><?= esc(lang('Sigra.' . $label)) ?></dt>
+                            <dd>
+                                <?php if ($provider[$field] !== null): ?>
+                                    <time datetime="<?= esc(gmdate('c', $provider[$field]), 'attr') ?>"><?= esc(gmdate('d/m/Y H:i:s', $provider[$field])) ?> UTC</time>
+                                    <?php if ($field === 'next_check' && $provider['retry_due'] && $provider['state'] !== 'disabled'): ?><br><?= esc(lang('Sigra.providerDue')) ?><?php endif; ?>
+                                <?php else: ?><?= esc(lang('Sigra.providerUnknownDate')) ?><?php endif; ?>
+                            </dd>
+                        </div>
+                    <?php endforeach; ?>
+                    </dl>
+                </article>
+                <?php endforeach; ?>
+            </div>
+            <p class="small mt-3"><?= esc(lang('Sigra.providerLegacy')) ?></p>
         </section>
 
         <section class="about-section" id="version">

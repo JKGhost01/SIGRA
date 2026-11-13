@@ -18,10 +18,10 @@ class Sigra extends BaseConfig
 
     public string $project = 'SIGRA';
     public string $tagline = 'Monitor sísmico global y red ciudadana';
-    public string $version = '1.3.1.1';
-    public string $releaseName = 'Intervalo de consultas SGC';
+    public string $version = '1.3.1.2';
+    public string $releaseName = 'Estado de fuentes y pausas progresivas';
     public string $releaseDate = '2026-11-13';
-    public string $build = '20261113.3';
+    public string $build = '20261113.4';
     public string $channel = 'stable';
     public string $apiVersion = 'v1';
     public string $mobileVersion = '1.0.0';
@@ -44,6 +44,18 @@ class Sigra extends BaseConfig
      * @var array<string, array{date: string, name: string, summary: string, changes: list<string>}>
      */
     public array $changelog = [
+        '1.3.1.2' => [
+            'date' => '2026-11-13',
+            'name' => 'Estado de fuentes y pausas progresivas',
+            'summary' => 'Estado de las conexiones visible y pausas progresivas ante rechazos de los proveedores.',
+            'changes' => [
+                'Panel en Acerca de con estado de las seis fuentes, código HTTP y fechas del último intento, resultado y respuesta válida.',
+                'Próxima consulta permitida visible; actualizar el panel no consulta proveedores ni modifica sus pausas.',
+                'HTTP 401/403: dos horas tras el primer fallo consecutivo y 24 horas desde el segundo, para todas las fuentes.',
+                'Una respuesta válida reinicia el contador; Retry-After y las pausas existentes se respetan.',
+                'Panel en español e inglés, adaptable a móvil, con estados antiguos sin fechas inventadas.',
+            ],
+        ],
         '1.3.1.1' => [
             'date' => '2026-11-13',
             'name' => 'Intervalo de consultas SGC',

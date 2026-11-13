@@ -75,6 +75,13 @@ expectArchitecture(lang('Sigra.releaseName') === config(Config\Sigra::class)->re
 foreach (['about', 'privacy', 'cookies', 'terms'] as $method) {
     $pages = new App\Modules\System\Http\Controllers\PagesController();
     $pages->initController($request, new Response(config(Config\App::class)), service('logger'));
-    expectArchitecture(strlen($pages->$method()) > 1000, 'Static page did not render');
+    $page = $pages->$method();
+    expectArchitecture(strlen($page) > 1000, 'Static page did not render');
+    if ($method === 'about') {
+        expectArchitecture(str_contains($page, 'id="sources-health"') && substr_count($page, 'class="provider-card"') === 6,
+            'About page lacks six provider health cards');
+        expectArchitecture(str_contains($page, 'Último intento') && str_contains($page, 'Próxima consulta permitida'),
+            'Provider check details missing');
+    }
 }
 echo "Modular views, XSS escaping, automatic polling with stale-data fallback and original JSON fixture passed.\n";
