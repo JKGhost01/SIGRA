@@ -102,3 +102,11 @@ __pycache__/
 captures/
 .externalNativeBuild/
 .cxx/
+
+# Paquetes y manifiestos generados para el hosting (no son código fuente).
+/dist/
+/docs/deployment/
+
+# Esta excepción es esquema versionado, sin datos ni credenciales.
+# Los demás volcados SQL siguen ignorados por las reglas anteriores.
+!/deploy/auditoria-modular.sql

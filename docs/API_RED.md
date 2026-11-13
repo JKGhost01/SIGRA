@@ -1,8 +1,8 @@
-# API de la Red SIGRA de teléfonos · SIGRA 1.1.1 · contrato v1
+# API de la Red SIGRA de teléfonos · SIGRA 1.2.1 · contrato v1
 
 Base: `https://tu-dominio/` (o tu dominio).
 Todas las respuestas son JSON y usan `Cache-Control: no-store`.
-También incluyen `X-SIGRA-Version: 1.1.1` y `X-API-Version: v1`.
+También incluyen `X-SIGRA-Version: 1.2.1` y `X-API-Version: v1`.
 La versión de aplicación y el contrato son independientes; se conservan rutas
 y campos de respuestas válidas usados por Android.
 
@@ -283,7 +283,7 @@ La cobertura y sus límites se describen en [API_SISMOS.md](API_SISMOS.md#verifi
 La app funciona con polling cada 5 s. Para push en segundo plano:
 
 1. Crea un proyecto Firebase y agrega una app Android con paquete `com.sigra.app`.
-2. Descarga `google-services.json` en `mobile/app/`.
+2. Configura el cliente Firebase en el futuro repositorio Android independiente; este backend no contiene ese archivo móvil.
 3. Descarga la cuenta de servicio y configura en `.env`:
 
 ```ini
@@ -301,3 +301,21 @@ red.fcmCredentials = '/ruta/segura/service-account.json'
 - El panel público redondea las coordenadas de teléfonos a 2 decimales (~1 km) y no publica tokens.
 - Las coordenadas exactas solo se usan para calcular distancias y entregar alertas.
 - La baja en `/api/red/desactivar` borra el token y desactiva el dispositivo.
+
+## Arquitectura y rutas versionadas
+
+La API se compone desde los módulos y comparte autenticación y manejo de errores.
+Las rutas equivalentes `/api/v1/sismos/*`, `/api/v1/red/*` y `/api/v1/health`
+están descritas en [OpenAPI](api/openapi.yaml). Los errores legacy se conservan;
+los versionados contienen `error.code`, `error.message` y `request_id`.
+`X-Request-ID` se genera en el servidor para correlación. Health ya no expone `environment`.
+Las lecturas API no descargan fuentes ni escriben entregas. La ruta de compatibilidad
+`GET /sismos/sync` sí solicita la ingesta al vencer la caché compartida; no necesita cron.
+
+## Nuevo registro y rotación de identidad
+
+El primer registro de un UUID nuevo usa la clave de aplicación. Volver a registrar un
+UUID existente exige además su token actual en `X-Device-Token`; sin él devuelve 401.
+La clave de aplicación por sí sola no puede reemplazar las credenciales de otro
+dispositivo. Una rotación aceptada devuelve un token nuevo y deja inválido el anterior.
+No existe un endpoint público de recuperación de tokens perdidos.

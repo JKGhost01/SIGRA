@@ -33,7 +33,7 @@ def check(url, status, *, method="GET", body="", key=True, content_type="applica
         "database.default.hostname": "127.0.0.1", "database.default.port": "1",
         "database.default.username": "sigra_test", "database.default.password": "",
         "database.default.database": "sigra_test_unreachable",
-        "SCRIPT_FILENAME": str(ROOT / "index.php"), "SCRIPT_NAME": "/index.php",
+        "SCRIPT_FILENAME": str(ROOT / "tests/Support/cgi.php"), "SCRIPT_NAME": "/index.php",
         "REQUEST_URI": url, "QUERY_STRING": uri.query, "REQUEST_METHOD": method,
         "SERVER_NAME": "localhost", "SERVER_PORT": "8080", "HTTP_HOST": "localhost:8080",
         "REDIRECT_STATUS": "200", "CONTENT_TYPE": content_type,
@@ -58,6 +58,8 @@ def check(url, status, *, method="GET", body="", key=True, content_type="applica
     assert "no-store" in headers.get("cache-control", ""), url
     assert headers.get("x-sigra-version") == VERSION, url
     assert headers.get("x-api-version") == "v1", url
+    if "request_id" in payload:
+        assert payload["request_id"] == headers.get("x-request-id"), url
     if status >= 400:
         assert payload["status"] in ("error", "degraded"), url
         assert "<html" not in data.lower() and "Backtrace" not in data, url
@@ -102,4 +104,12 @@ for route in ["/api/sismos/recent", "/api/red/registro"]:
     check(route, 401, method="POST" if "registro" in route else "GET", key=False,
           extra={"CI_ENVIRONMENT": "production", "APP_API_TOKEN": "", "red.appKey": "",
                  "app.apiToken": "", "app_apiToken": ""})
+v1 = check("/api/v1/sismos/recent", 401, key=False)
+assert v1["error"]["code"] == "AUTHENTICATION_REQUIRED" and len(v1["request_id"]) == 32
+v1 = check("/api/v1/sismos/recent?hours=0", 422)
+assert v1["error"]["code"] == "VALIDATION_FAILED"
+v1 = check("/api/v1/red/registro", 401, method="POST", key=False)
+assert v1["error"]["code"] == "AUTHENTICATION_REQUIRED"
+assert "environment" not in check("/api/red/health", 200, key=False)
+assert "environment" not in check("/api/v1/health", 503, key=False)
 print(f"{checks} API HTTP checks passed (database success paths are not covered).")

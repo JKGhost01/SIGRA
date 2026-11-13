@@ -3,12 +3,13 @@
  * Cachea solo estáticos y sirve una pantalla offline. Las APIs y páginas
  * dinámicas siempre van a la red para no mostrar datos sísmicos obsoletos.
  */
-const CACHE = 'sigra-static-v4';
+const CACHE = 'sigra-static-1.2.1';
 const CORE = [
   '/public/assets/images/sigra-logo.png',
   '/public/assets/images/icon-192.png',
   '/public/assets/images/icon-512.png',
   '/public/assets/js/mapa-sismos.js',
+  '/public/assets/js/modules/seismic-map/catalog.js',
   '/public/assets/js/sigra-red.js',
   '/offline.html'
 ];
@@ -22,7 +23,7 @@ self.addEventListener('install', (event) => {
 self.addEventListener('activate', (event) => {
   event.waitUntil(
     caches.keys().then((keys) =>
-      Promise.all(keys.filter((key) => key !== CACHE).map((key) => caches.delete(key)))
+      Promise.all(keys.filter((key) => key.startsWith('sigra-static-') && key !== CACHE).map((key) => caches.delete(key)))
     ).then(() => self.clients.claim())
   );
 });
@@ -33,7 +34,8 @@ self.addEventListener('fetch', (event) => {
 
   const url = new URL(request.url);
   if (url.origin !== self.location.origin) return;
-  if (url.pathname.startsWith('/api/')) return;
+  if (/^\/(?:index\.php\/)?api(?:\/|$)/.test(url.pathname)) return;
+  if (/^\/(?:index\.php\/)?sismos\/sync(?:\/|$)/.test(url.pathname)) return;
 
   if (request.mode === 'navigate') {
     event.respondWith(

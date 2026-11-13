@@ -1,0 +1,16 @@
+parameters:
+    level: 3
+    phpVersion: 80212
+    tmpDir: writable/cache/phpstan
+    paths:
+        - app/Shared/Domain
+        - app/Modules/SeismicCatalog/Domain
+        - app/Modules/SeismicCatalog/Application
+        - app/Modules/SeismicIngestion/Domain
+        - app/Modules/SeismicIngestion/Application
+        - app/Modules/CitizenReports/Domain
+        - app/Modules/CitizenReports/Application
+        - app/Modules/SensorNetwork/Application
+        - app/Modules/Alerting/Domain
+        - app/Modules/Alerting/Application
+        - app/Modules/System/Application

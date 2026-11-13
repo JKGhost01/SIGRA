@@ -5,15 +5,12 @@ const path = require('node:path');
 const vm = require('node:vm');
 
 const root = path.join(__dirname, '..');
-const view = fs.readFileSync(path.join(root, 'app/Views/sismos/list/index.php'), 'utf8');
 const dictionary = Object.fromEntries([...fs.readFileSync(
     path.join(root, 'app/Language/en/Sigra.php'), 'utf8')
     .matchAll(/'([^']+)'\s*=>\s*'((?:\\.|[^'\\])*)'/g)]
     .map(([, key, value]) => [key, value.replace(/\\'/g, "'").replace(/\\\\/g, '\\')]));
 const text = { ...dictionary, locale: 'en-US', months: [] };
-// PHP only supplies dictionaries and URLs to this script; execute all of its JS.
-const pageScript = [...view.matchAll(/<script>([\s\S]*?)<\/script>/g)].at(-1)[1]
-    .replace(/<\?=[\s\S]*?\?>/g, 'null').replace('const T = null;', 'const T = TEST_TEXT;');
+const pageScript = fs.readFileSync(path.join(root, 'public/assets/js/modules/seismic-map/catalog.js'), 'utf8');
 const mapScript = fs.readFileSync(path.join(root, 'public/assets/js/mapa-sismos.js'), 'utf8');
 
 function page({ saved = null, storageBlocked = false, permission = 'prompt', locate } = {}) {
@@ -33,7 +30,7 @@ function page({ saved = null, storageBlocked = false, permission = 'prompt', loc
     let requests = 0;
     let visible = [];
     const sandbox = {
-        TEST_TEXT: text,
+        SIGRA_MAP_TEXT: text, SIGRA_MAP_URLS: { sync: "/sismos/sync", detail: "/sismos/detalle" },
         SISMOS: [{ id: 'near', lat: 4.6, lng: -74.1, ubicacion: 'Nearby', magnitud: 3 },
             { id: 'far', lat: 45, lng: 20, ubicacion: 'Far away', magnitud: 4 }],
         navigator: { geolocation: {}, permissions: { query: async () => ({ state: permission }) } },

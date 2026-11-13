@@ -1,0 +1,30 @@
+{
+  "type": "FeatureCollection",
+  "fixture_provenance": {
+    "source": "synthetic",
+    "synthetic": true,
+    "note": "Synthetic example of the existing SGC adapter contract (latitude first). Not scientific validation or a captured official observation."
+  },
+  "features": [
+    {
+      "type": "Feature",
+      "id": "SGC-synthetic",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          4.6,
+          -74.1,
+          10
+        ]
+      },
+      "properties": {
+        "mag": 4.2,
+        "localTime": "2026-11-12 10:00",
+        "place": "Synthetic fixture",
+        "status": "reviewed",
+        "agency": "SGC",
+        "url": "https://example.org/synthetic-event"
+      }
+    }
+  ]
+}

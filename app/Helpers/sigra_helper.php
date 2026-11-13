@@ -19,3 +19,12 @@ function sigra_icon(string $name): string
 
     return '<svg class="sigra-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false">' . $paths[$name] . '</svg>';
 }
+
+/** Public assets in the recommended public/ webroot and the legacy root deployment. */
+function sigra_public_url(string $path): string
+{
+    $publicRoot = realpath(ROOTPATH . 'public');
+    $frontRoot = realpath(FCPATH);
+    $prefix = $publicRoot !== false && $frontRoot === $publicRoot ? '' : 'public/';
+    return base_url($prefix . ltrim($path, '/'));
+}

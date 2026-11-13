@@ -21,27 +21,52 @@ La versión se define en `app/Config/Sigra.php` y se muestra en:
 Se puede sobrescribir sin tocar código con:
 
 ```ini
-sigra.version = '1.1.1'
-sigra.build = '20261112.3'
+sigra.version = '1.2.1'
+sigra.build = '20261112.5'
 sigra.channel = 'stable'
 ```
 
 ## Versión actual
 
-**v1.1.1 · Reportes contrastados con SGC**
+**v1.2.1 · Instalación reproducible y robustez del backend**
 
 - Fecha: 2026-11-12
-- Build: `20261112.3`
+- Build: `20261112.5`
 - Canal: `stable`
 - API: `v1`
 - App Android: `v1.0.0`
 - Licencia: MIT
 
-La versión de la aplicación (`1.1.1`) es independiente del contrato de la API
+La versión de la aplicación (`1.2.1`) es independiente del contrato de la API
 (`v1`). Se conservan las rutas y los campos de las respuestas válidas para Android.
-Las entradas inválidas ahora reciben errores explícitos en vez de ignorarse.
+Se añaden rutas /api/v1 con errores estructurados; las rutas antiguas conservan su formato.
+La sincronización del mapa funciona automáticamente: no requiere configurar cron.
+La auditoría requiere la migración aditiva o el SQL de despliegue, sin reiniciar la base.
 
 ## Historial
+
+### v1.2.1 · Instalación reproducible y robustez del backend · 2026-11-12
+
+- Identidad y autoload Composer corregidos, lock compatible con PHP 8.2 e instalación documentada desde cero.
+- Generación local de secretos sin exponer valores ni reemplazar claves existentes; reinicio remoto por HTTP retirado.
+- Registro de UUID existente protegido con el token vigente; rotación autenticada que invalida el anterior.
+- Validación de campos y enlaces externos, verificación TLS, reintentos acotados y umbral de magnitud en la correlación.
+- Estado de actualización del catálogo visible, assets compatibles con ambas raíces web y APIs fuera de la caché PWA.
+- Documentación ES/EN coherente, Android separado y experimentalidad explícita; PHPStan y pruebas MySQL aisladas en CI.
+- Build `20261112.5`; contrato API `v1`. Re-registrar un UUID existente requiere su token vigente.
+
+### v1.2.0 · Arquitectura modular y sincronización automática · 2026-11-12
+
+- Módulos por capacidad: catálogo, ingesta, reportes ciudadanos, sensores, alertas y sistema, con contratos y dependencias explícitos.
+- Controladores ligeros y vistas de presentación; consulta y procesamiento fuera de Views, con JavaScript del catálogo en archivos públicos.
+- Actualización automática del mapa con caché compartida de 60 segundos, bloqueo de concurrencia y conservación de datos ante fallos; cron opcional.
+- Rutas antiguas conservadas, endpoints /api/v1, errores versionados, IDs de correlación y contrato OpenAPI.
+- Auditoría de lotes y decisiones de alerta en dos tablas nuevas, con alerta y decisión en la misma transacción antes de la entrega.
+- Simulaciones aisladas, interruptor de publicación y cancelación de alertas desde la consola del servidor.
+- Correlación SGC/USGS con referencias de ambas fuentes y conservación de candidatos ambiguos.
+- Pruebas de arquitectura, contratos HTTP, actualización automática y persistencia en MySQL aislado, además de documentación de despliegue.
+- Build `20261112.4`; contrato API `v1` y versión móvil independientes.
+- Despliegue y migración en [architecture/migration.md](architecture/migration.md).
 
 ### v1.1.1 · Reportes contrastados con SGC · 2026-11-12
 
@@ -128,7 +153,9 @@ Las entradas inválidas ahora reciben errores explícitos en vez de ignorarse.
 ## Checklist para publicar una versión
 
 1. Actualizar `version`, `releaseName`, `releaseDate`, `build` y `changelog` en `app/Config/Sigra.php`.
-2. Actualizar `docs/VERSIONES.md` y el encabezado de `README.md`.
+2. Actualizar los historiales ES/EN, `docs/VERSIONES.md`, `CHANGELOG.md` y ambos README.
+   Si `.env` fija `sigra.version` o `sigra.build`, esos valores prevalecen y deben actualizarse.
+   Renovar la versión de caché en `sw.js` para distribuir los assets actualizados.
 3. Ejecutar `php tests/PwaveFusionTest.php`, `php tests/ApiRedContractTest.php` y `php tests/ApiSismosControllerTest.php`.
 4. Ejecutar `node tools/test-map-filters.js`, `php tests/ApiResponsesTest.php` y `python3 tests/ApiHttpTest.py` (requiere PHP-CGI).
 5. Ejecutar `node tools/test-web.js` con el servidor local.

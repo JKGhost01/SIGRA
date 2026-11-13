@@ -1,0 +1,4811 @@
+openapi: 3.0.3
+info:
+  title: SIGRA backend API
+  version: v1
+  description: Monolito modular. Las rutas legacy conservan sus errores; /api/v1 usa errores estructurados.
+    Coordenadas se envían juntas. Radio u orden distancia exige origen. Android está en desarrollo en repositorio
+    separado.
+servers:
+- url: /
+paths:
+  /api/sismos/recent:
+    get:
+      operationId: listEventsLegacy
+      tags:
+      - SeismicCatalog
+      security:
+      - BearerToken: []
+      parameters:
+      - name: hours
+        in: query
+        required: false
+        schema:
+          type: integer
+          minimum: 1
+          maximum: 336
+          default: 120
+      - name: limit
+        in: query
+        required: false
+        schema:
+          type: integer
+          minimum: 1
+          maximum: 1000
+          default: 300
+      - name: min_magnitude
+        in: query
+        required: false
+        schema:
+          type: number
+          minimum: -2
+          maximum: 10
+      - name: fuente
+        in: query
+        required: false
+        schema:
+          type: string
+      - name: lat
+        in: query
+        required: false
+        schema:
+          type: number
+          minimum: -90
+          maximum: 90
+      - name: lng
+        in: query
+        required: false
+        schema:
+          type: number
+          minimum: -180
+          maximum: 180
+      - name: radius_km
+        in: query
+        required: false
+        schema:
+          type: number
+          minimum: 0
+          maximum: 20000
+      - name: order
+        in: query
+        required: false
+        schema:
+          type: string
+          enum:
+          - fecha
+          - magnitud
+          - distancia
+          default: fecha
+      responses:
+        '200':
+          description: Respuesta JSON
+          headers:
+            X-Request-ID:
+              schema:
+                type: string
+            X-SIGRA-Version:
+              schema:
+                type: string
+            X-API-Version:
+              schema:
+                type: string
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RecentEvents'
+        '400':
+          description: Respuesta JSON
+          headers:
+            X-Request-ID:
+              schema:
+                type: string
+            X-SIGRA-Version:
+              schema:
+                type: string
+            X-API-Version:
+              schema:
+                type: string
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/LegacyError'
+        '401':
+          description: Respuesta JSON
+          headers:
+            X-Request-ID:
+              schema:
+                type: string
+            X-SIGRA-Version:
+              schema:
+                type: string
+            X-API-Version:
+              schema:
+                type: string
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/LegacyError'
+        '404':
+          description: Respuesta JSON
+          headers:
+            X-Request-ID:
+              schema:
+                type: string
+            X-SIGRA-Version:
+              schema:
+                type: string
+            X-API-Version:
+              schema:
+                type: string
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/LegacyError'
+        '413':
+          description: Respuesta JSON
+          headers:
+            X-Request-ID:
+              schema:
+                type: string
+            X-SIGRA-Version:
+              schema:
+                type: string
+            X-API-Version:
+              schema:
+                type: string
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/LegacyError'
+        '415':
+          description: Respuesta JSON
+          headers:
+            X-Request-ID:
+              schema:
+                type: string
+            X-SIGRA-Version:
+              schema:
+                type: string
+            X-API-Version:
+              schema:
+                type: string
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/LegacyError'
+        '422':
+          description: Respuesta JSON
+          headers:
+            X-Request-ID:
+              schema:
+                type: string
+            X-SIGRA-Version:
+              schema:
+                type: string
+            X-API-Version:
+              schema:
+                type: string
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/LegacyError'
+        '429':
+          description: Respuesta JSON
+          headers:
+            X-Request-ID:
+              schema:
+                type: string
+            X-SIGRA-Version:
+              schema:
+                type: string
+            X-API-Version:
+              schema:
+                type: string
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/LegacyError'
+        '500':
+          description: Respuesta JSON
+          headers:
+            X-Request-ID:
+              schema:
+                type: string
+            X-SIGRA-Version:
+              schema:
+                type: string
+            X-API-Version:
+              schema:
+                type: string
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/LegacyError'
+        '503':
+          description: Respuesta JSON
+          headers:
+            X-Request-ID:
+              schema:
+                type: string
+            X-SIGRA-Version:
+              schema:
+                type: string
+            X-API-Version:
+              schema:
+                type: string
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/LegacyError'
+  /api/sismos/ultimo:
+    get:
+      operationId: latestEventLegacy
+      tags:
+      - SeismicCatalog
+      security:
+      - BearerToken: []
+      parameters:
+      - name: lat
+        in: query
+        required: false
+        schema:
+          type: number
+          minimum: -90
+          maximum: 90
+      - name: lng
+        in: query
+        required: false
+        schema:
+          type: number
+          minimum: -180
+          maximum: 180
+      responses:
+        '200':
+          description: Respuesta JSON
+          headers:
+            X-Request-ID:
+              schema:
+                type: string
+            X-SIGRA-Version:
+              schema:
+                type: string
+            X-API-Version:
+              schema:
+                type: string
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/EventDetail'
+        '400':
+          description: Respuesta JSON
+          headers:
+            X-Request-ID:
+              schema:
+                type: string
+            X-SIGRA-Version:
+              schema:
+                type: string
+            X-API-Version:
+              schema:
+                type: string
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/LegacyError'
+        '401':
+          description: Respuesta JSON
+          headers:
+            X-Request-ID:
+              schema:
+                type: string
+            X-SIGRA-Version:
+              schema:
+                type: string
+            X-API-Version:
+              schema:
+                type: string
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/LegacyError'
+        '404':
+          description: Respuesta JSON
+          headers:
+            X-Request-ID:
+              schema:
+                type: string
+            X-SIGRA-Version:
+              schema:
+                type: string
+            X-API-Version:
+              schema:
+                type: string
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/LegacyError'
+        '413':
+          description: Respuesta JSON
+          headers:
+            X-Request-ID:
+              schema:
+                type: string
+            X-SIGRA-Version:
+              schema:
+                type: string
+            X-API-Version:
+              schema:
+                type: string
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/LegacyError'
+        '415':
+          description: Respuesta JSON
+          headers:
+            X-Request-ID:
+              schema:
+                type: string
+            X-SIGRA-Version:
+              schema:
+                type: string
+            X-API-Version:
+              schema:
+                type: string
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/LegacyError'
+        '422':
+          description: Respuesta JSON
+          headers:
+            X-Request-ID:
+              schema:
+                type: string
+            X-SIGRA-Version:
+              schema:
+                type: string
+            X-API-Version:
+              schema:
+                type: string
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/LegacyError'
+        '429':
+          description: Respuesta JSON
+          headers:
+            X-Request-ID:
+              schema:
+                type: string
+            X-SIGRA-Version:
+              schema:
+                type: string
+            X-API-Version:
+              schema:
+                type: string
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/LegacyError'
+        '500':
+          description: Respuesta JSON
+          headers:
+            X-Request-ID:
+              schema:
+                type: string
+            X-SIGRA-Version:
+              schema:
+                type: string
+            X-API-Version:
+              schema:
+                type: string
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/LegacyError'
+        '503':
+          description: Respuesta JSON
+          headers:
+            X-Request-ID:
+              schema:
+                type: string
+            X-SIGRA-Version:
+              schema:
+                type: string
+            X-API-Version:
+              schema:
+                type: string
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/LegacyError'
+  /api/sismos/alertas:
+    get:
+      operationId: eventDisplayLevelLegacy
+      tags:
+      - SeismicCatalog
+      security:
+      - BearerToken: []
+      parameters:
+      - name: lat
+        in: query
+        required: false
+        schema:
+          type: number
+          minimum: -90
+          maximum: 90
+      - name: lng
+        in: query
+        required: false
+        schema:
+          type: number
+          minimum: -180
+          maximum: 180
+      responses:
+        '200':
+          description: Respuesta JSON
+          headers:
+            X-Request-ID:
+              schema:
+                type: string
+            X-SIGRA-Version:
+              schema:
+                type: string
+            X-API-Version:
+              schema:
+                type: string
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/EventDisplayLevel'
+        '400':
+          description: Respuesta JSON
+          headers:
+            X-Request-ID:
+              schema:
+                type: string
+            X-SIGRA-Version:
+              schema:
+                type: string
+            X-API-Version:
+              schema:
+                type: string
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/LegacyError'
+        '401':
+          description: Respuesta JSON
+          headers:
+            X-Request-ID:
+              schema:
+                type: string
+            X-SIGRA-Version:
+              schema:
+                type: string
+            X-API-Version:
+              schema:
+                type: string
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/LegacyError'
+        '404':
+          description: Respuesta JSON
+          headers:
+            X-Request-ID:
+              schema:
+                type: string
+            X-SIGRA-Version:
+              schema:
+                type: string
+            X-API-Version:
+              schema:
+                type: string
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/LegacyError'
+        '413':
+          description: Respuesta JSON
+          headers:
+            X-Request-ID:
+              schema:
+                type: string
+            X-SIGRA-Version:
+              schema:
+                type: string
+            X-API-Version:
+              schema:
+                type: string
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/LegacyError'
+        '415':
+          description: Respuesta JSON
+          headers:
+            X-Request-ID:
+              schema:
+                type: string
+            X-SIGRA-Version:
+              schema:
+                type: string
+            X-API-Version:
+              schema:
+                type: string
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/LegacyError'
+        '422':
+          description: Respuesta JSON
+          headers:
+            X-Request-ID:
+              schema:
+                type: string
+            X-SIGRA-Version:
+              schema:
+                type: string
+            X-API-Version:
+              schema:
+                type: string
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/LegacyError'
+        '429':
+          description: Respuesta JSON
+          headers:
+            X-Request-ID:
+              schema:
+                type: string
+            X-SIGRA-Version:
+              schema:
+                type: string
+            X-API-Version:
+              schema:
+                type: string
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/LegacyError'
+        '500':
+          description: Respuesta JSON
+          headers:
+            X-Request-ID:
+              schema:
+                type: string
+            X-SIGRA-Version:
+              schema:
+                type: string
+            X-API-Version:
+              schema:
+                type: string
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/LegacyError'
+        '503':
+          description: Respuesta JSON
+          headers:
+            X-Request-ID:
+              schema:
+                type: string
+            X-SIGRA-Version:
+              schema:
+                type: string
+            X-API-Version:
+              schema:
+                type: string
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/LegacyError'
+  /api/sismos/detalle/{id}:
+    get:
+      operationId: getEventLegacy
+      tags:
+      - SeismicCatalog
+      security:
+      - BearerToken: []
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: string
+      - name: lat
+        in: query
+        required: false
+        schema:
+          type: number
+          minimum: -90
+          maximum: 90
+      - name: lng
+        in: query
+        required: false
+        schema:
+          type: number
+          minimum: -180
+          maximum: 180
+      responses:
+        '200':
+          description: Respuesta JSON
+          headers:
+            X-Request-ID:
+              schema:
+                type: string
+            X-SIGRA-Version:
+              schema:
+                type: string
+            X-API-Version:
+              schema:
+                type: string
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/EventDetail'
+        '400':
+          description: Respuesta JSON
+          headers:
+            X-Request-ID:
+              schema:
+                type: string
+            X-SIGRA-Version:
+              schema:
+                type: string
+            X-API-Version:
+              schema:
+                type: string
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/LegacyError'
+        '401':
+          description: Respuesta JSON
+          headers:
+            X-Request-ID:
+              schema:
+                type: string
+            X-SIGRA-Version:
+              schema:
+                type: string
+            X-API-Version:
+              schema:
+                type: string
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/LegacyError'
+        '404':
+          description: Respuesta JSON
+          headers:
+            X-Request-ID:
+              schema:
+                type: string
+            X-SIGRA-Version:
+              schema:
+                type: string
+            X-API-Version:
+              schema:
+                type: string
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/LegacyError'
+        '413':
+          description: Respuesta JSON
+          headers:
+            X-Request-ID:
+              schema:
+                type: string
+            X-SIGRA-Version:
+              schema:
+                type: string
+            X-API-Version:
+              schema:
+                type: string
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/LegacyError'
+        '415':
+          description: Respuesta JSON
+          headers:
+            X-Request-ID:
+              schema:
+                type: string
+            X-SIGRA-Version:
+              schema:
+                type: string
+            X-API-Version:
+              schema:
+                type: string
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/LegacyError'
+        '422':
+          description: Respuesta JSON
+          headers:
+            X-Request-ID:
+              schema:
+                type: string
+            X-SIGRA-Version:
+              schema:
+                type: string
+            X-API-Version:
+              schema:
+                type: string
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/LegacyError'
+        '429':
+          description: Respuesta JSON
+          headers:
+            X-Request-ID:
+              schema:
+                type: string
+            X-SIGRA-Version:
+              schema:
+                type: string
+            X-API-Version:
+              schema:
+                type: string
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/LegacyError'
+        '500':
+          description: Respuesta JSON
+          headers:
+            X-Request-ID:
+              schema:
+                type: string
+            X-SIGRA-Version:
+              schema:
+                type: string
+            X-API-Version:
+              schema:
+                type: string
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/LegacyError'
+        '503':
+          description: Respuesta JSON
+          headers:
+            X-Request-ID:
+              schema:
+                type: string
+            X-SIGRA-Version:
+              schema:
+                type: string
+            X-API-Version:
+              schema:
+                type: string
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/LegacyError'
+  /api/health:
+    get:
+      operationId: healthLegacy
+      tags:
+      - System
+      security: []
+      responses:
+        '200':
+          description: Respuesta JSON
+          headers:
+            X-Request-ID:
+              schema:
+                type: string
+            X-SIGRA-Version:
+              schema:
+                type: string
+            X-API-Version:
+              schema:
+                type: string
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Health'
+        '503':
+          description: Respuesta JSON
+          headers:
+            X-Request-ID:
+              schema:
+                type: string
+            X-SIGRA-Version:
+              schema:
+                type: string
+            X-API-Version:
+              schema:
+                type: string
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Health'
+  /api/red/config:
+    get:
+      operationId: configNetworkLegacy
+      tags:
+      - SensorNetwork
+      security: []
+      responses:
+        '200':
+          description: Respuesta JSON
+          headers:
+            X-Request-ID:
+              schema:
+                type: string
+            X-SIGRA-Version:
+              schema:
+                type: string
+            X-API-Version:
+              schema:
+                type: string
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NetworkResult'
+        '400':
+          description: Respuesta JSON
+          headers:
+            X-Request-ID:
+              schema:
+                type: string
+            X-SIGRA-Version:
+              schema:
+                type: string
+            X-API-Version:
+              schema:
+                type: string
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/LegacyError'
+        '401':
+          description: Respuesta JSON
+          headers:
+            X-Request-ID:
+              schema:
+                type: string
+            X-SIGRA-Version:
+              schema:
+                type: string
+            X-API-Version:
+              schema:
+                type: string
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/LegacyError'
+        '404':
+          description: Respuesta JSON
+          headers:
+            X-Request-ID:
+              schema:
+                type: string
+            X-SIGRA-Version:
+              schema:
+                type: string
+            X-API-Version:
+              schema:
+                type: string
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/LegacyError'
+        '413':
+          description: Respuesta JSON
+          headers:
+            X-Request-ID:
+              schema:
+                type: string
+            X-SIGRA-Version:
+              schema:
+                type: string
+            X-API-Version:
+              schema:
+                type: string
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/LegacyError'
+        '415':
+          description: Respuesta JSON
+          headers:
+            X-Request-ID:
+              schema:
+                type: string
+            X-SIGRA-Version:
+              schema:
+                type: string
+            X-API-Version:
+              schema:
+                type: string
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/LegacyError'
+        '422':
+          description: Respuesta JSON
+          headers:
+            X-Request-ID:
+              schema:
+                type: string
+            X-SIGRA-Version:
+              schema:
+                type: string
+            X-API-Version:
+              schema:
+                type: string
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/LegacyError'
+        '429':
+          description: Respuesta JSON
+          headers:
+            X-Request-ID:
+              schema:
+                type: string
+            X-SIGRA-Version:
+              schema:
+                type: string
+            X-API-Version:
+              schema:
+                type: string
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/LegacyError'
+        '500':
+          description: Respuesta JSON
+          headers:
+            X-Request-ID:
+              schema:
+                type: string
+            X-SIGRA-Version:
+              schema:
+                type: string
+            X-API-Version:
+              schema:
+                type: string
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/LegacyError'
+        '503':
+          description: Respuesta JSON
+          headers:
+            X-Request-ID:
+              schema:
+                type: string
+            X-SIGRA-Version:
+              schema:
+                type: string
+            X-API-Version:
+              schema:
+                type: string
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/LegacyError'
+  /api/red/red:
+    get:
+      operationId: redNetworkLegacy
+      tags:
+      - SensorNetwork
+      security: []
+      responses:
+        '200':
+          description: Respuesta JSON
+          headers:
+            X-Request-ID:
+              schema:
+                type: string
+            X-SIGRA-Version:
+              schema:
+                type: string
+            X-API-Version:
+              schema:
+                type: string
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NetworkResult'
+        '400':
+          description: Respuesta JSON
+          headers:
+            X-Request-ID:
+              schema:
+                type: string
+            X-SIGRA-Version:
+              schema:
+                type: string
+            X-API-Version:
+              schema:
+                type: string
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/LegacyError'
+        '401':
+          description: Respuesta JSON
+          headers:
+            X-Request-ID:
+              schema:
+                type: string
+            X-SIGRA-Version:
+              schema:
+                type: string
+            X-API-Version:
+              schema:
+                type: string
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/LegacyError'
+        '404':
+          description: Respuesta JSON
+          headers:
+            X-Request-ID:
+              schema:
+                type: string
+            X-SIGRA-Version:
+              schema:
+                type: string
+            X-API-Version:
+              schema:
+                type: string
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/LegacyError'
+        '413':
+          description: Respuesta JSON
+          headers:
+            X-Request-ID:
+              schema:
+                type: string
+            X-SIGRA-Version:
+              schema:
+                type: string
+            X-API-Version:
+              schema:
+                type: string
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/LegacyError'
+        '415':
+          description: Respuesta JSON
+          headers:
+            X-Request-ID:
+              schema:
+                type: string
+            X-SIGRA-Version:
+              schema:
+                type: string
+            X-API-Version:
+              schema:
+                type: string
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/LegacyError'
+        '422':
+          description: Respuesta JSON
+          headers:
+            X-Request-ID:
+              schema:
+                type: string
+            X-SIGRA-Version:
+              schema:
+                type: string
+            X-API-Version:
+              schema:
+                type: string
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/LegacyError'
+        '429':
+          description: Respuesta JSON
+          headers:
+            X-Request-ID:
+              schema:
+                type: string
+            X-SIGRA-Version:
+              schema:
+                type: string
+            X-API-Version:
+              schema:
+                type: string
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/LegacyError'
+        '500':
+          description: Respuesta JSON
+          headers:
+            X-Request-ID:
+              schema:
+                type: string
+            X-SIGRA-Version:
+              schema:
+                type: string
+            X-API-Version:
+              schema:
+                type: string
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/LegacyError'
+        '503':
+          description: Respuesta JSON
+          headers:
+            X-Request-ID:
+              schema:
+                type: string
+            X-SIGRA-Version:
+              schema:
+                type: string
+            X-API-Version:
+              schema:
+                type: string
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/LegacyError'
+      parameters:
+      - name: lat
+        in: query
+        required: false
+        schema:
+          type: number
+          minimum: -90
+          maximum: 90
+      - name: lng
+        in: query
+        required: false
+        schema:
+          type: number
+          minimum: -180
+          maximum: 180
+  /api/red/health:
+    get:
+      operationId: healthNetworkLegacy
+      tags:
+      - SensorNetwork
+      security: []
+      responses:
+        '200':
+          description: Respuesta JSON
+          headers:
+            X-Request-ID:
+              schema:
+                type: string
+            X-SIGRA-Version:
+              schema:
+                type: string
+            X-API-Version:
+              schema:
+                type: string
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NetworkResult'
+        '400':
+          description: Respuesta JSON
+          headers:
+            X-Request-ID:
+              schema:
+                type: string
+            X-SIGRA-Version:
+              schema:
+                type: string
+            X-API-Version:
+              schema:
+                type: string
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/LegacyError'
+        '401':
+          description: Respuesta JSON
+          headers:
+            X-Request-ID:
+              schema:
+                type: string
+            X-SIGRA-Version:
+              schema:
+                type: string
+            X-API-Version:
+              schema:
+                type: string
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/LegacyError'
+        '404':
+          description: Respuesta JSON
+          headers:
+            X-Request-ID:
+              schema:
+                type: string
+            X-SIGRA-Version:
+              schema:
+                type: string
+            X-API-Version:
+              schema:
+                type: string
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/LegacyError'
+        '413':
+          description: Respuesta JSON
+          headers:
+            X-Request-ID:
+              schema:
+                type: string
+            X-SIGRA-Version:
+              schema:
+                type: string
+            X-API-Version:
+              schema:
+                type: string
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/LegacyError'
+        '415':
+          description: Respuesta JSON
+          headers:
+            X-Request-ID:
+              schema:
+                type: string
+            X-SIGRA-Version:
+              schema:
+                type: string
+            X-API-Version:
+              schema:
+                type: string
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/LegacyError'
+        '422':
+          description: Respuesta JSON
+          headers:
+            X-Request-ID:
+              schema:
+                type: string
+            X-SIGRA-Version:
+              schema:
+                type: string
+            X-API-Version:
+              schema:
+                type: string
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/LegacyError'
+        '429':
+          description: Respuesta JSON
+          headers:
+            X-Request-ID:
+              schema:
+                type: string
+            X-SIGRA-Version:
+              schema:
+                type: string
+            X-API-Version:
+              schema:
+                type: string
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/LegacyError'
+        '500':
+          description: Respuesta JSON
+          headers:
+            X-Request-ID:
+              schema:
+                type: string
+            X-SIGRA-Version:
+              schema:
+                type: string
+            X-API-Version:
+              schema:
+                type: string
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/LegacyError'
+        '503':
+          description: Respuesta JSON
+          headers:
+            X-Request-ID:
+              schema:
+                type: string
+            X-SIGRA-Version:
+              schema:
+                type: string
+            X-API-Version:
+              schema:
+                type: string
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/LegacyError'
+  /api/red/registro:
+    post:
+      operationId: registroNetworkLegacy
+      description: >-
+        Registra un UUID nuevo. Si el UUID ya existe, exige su token vigente
+        en X-Device-Token; sin él responde 401. Un registro autorizado rota
+        el token y el anterior deja de ser válido. La clave de aplicación
+        también es obligatoria y no sustituye al token del dispositivo.
+      parameters:
+      - name: X-Device-Token
+        in: header
+        required: false
+        description: Obligatorio para volver a registrar un UUID existente.
+        schema:
+          type: string
+      tags:
+      - SensorNetwork
+      security:
+      - AppKey: []
+      - BearerToken: []
+      responses:
+        '200':
+          description: Respuesta JSON
+          headers:
+            X-Request-ID:
+              schema:
+                type: string
+            X-SIGRA-Version:
+              schema:
+                type: string
+            X-API-Version:
+              schema:
+                type: string
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NetworkResult'
+        '400':
+          description: Respuesta JSON
+          headers:
+            X-Request-ID:
+              schema:
+                type: string
+            X-SIGRA-Version:
+              schema:
+                type: string
+            X-API-Version:
+              schema:
+                type: string
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/LegacyError'
+        '401':
+          description: Respuesta JSON
+          headers:
+            X-Request-ID:
+              schema:
+                type: string
+            X-SIGRA-Version:
+              schema:
+                type: string
+            X-API-Version:
+              schema:
+                type: string
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/LegacyError'
+        '404':
+          description: Respuesta JSON
+          headers:
+            X-Request-ID:
+              schema:
+                type: string
+            X-SIGRA-Version:
+              schema:
+                type: string
+            X-API-Version:
+              schema:
+                type: string
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/LegacyError'
+        '413':
+          description: Respuesta JSON
+          headers:
+            X-Request-ID:
+              schema:
+                type: string
+            X-SIGRA-Version:
+              schema:
+                type: string
+            X-API-Version:
+              schema:
+                type: string
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/LegacyError'
+        '415':
+          description: Respuesta JSON
+          headers:
+            X-Request-ID:
+              schema:
+                type: string
+            X-SIGRA-Version:
+              schema:
+                type: string
+            X-API-Version:
+              schema:
+                type: string
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/LegacyError'
+        '422':
+          description: Respuesta JSON
+          headers:
+            X-Request-ID:
+              schema:
+                type: string
+            X-SIGRA-Version:
+              schema:
+                type: string
+            X-API-Version:
+              schema:
+                type: string
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/LegacyError'
+        '429':
+          description: Respuesta JSON
+          headers:
+            X-Request-ID:
+              schema:
+                type: string
+            X-SIGRA-Version:
+              schema:
+                type: string
+            X-API-Version:
+              schema:
+                type: string
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/LegacyError'
+        '500':
+          description: Respuesta JSON
+          headers:
+            X-Request-ID:
+              schema:
+                type: string
+            X-SIGRA-Version:
+              schema:
+                type: string
+            X-API-Version:
+              schema:
+                type: string
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/LegacyError'
+        '503':
+          description: Respuesta JSON
+          headers:
+            X-Request-ID:
+              schema:
+                type: string
+            X-SIGRA-Version:
+              schema:
+                type: string
+            X-API-Version:
+              schema:
+                type: string
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/LegacyError'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/DeviceRegistration'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/DeviceRegistration'
+  /api/red/estado:
+    post:
+      operationId: estadoNetworkLegacy
+      tags:
+      - SensorNetwork
+      security:
+      - AppKey: []
+        DeviceToken: []
+      - BearerToken: []
+        DeviceToken: []
+      responses:
+        '200':
+          description: Respuesta JSON
+          headers:
+            X-Request-ID:
+              schema:
+                type: string
+            X-SIGRA-Version:
+              schema:
+                type: string
+            X-API-Version:
+              schema:
+                type: string
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NetworkResult'
+        '400':
+          description: Respuesta JSON
+          headers:
+            X-Request-ID:
+              schema:
+                type: string
+            X-SIGRA-Version:
+              schema:
+                type: string
+            X-API-Version:
+              schema:
+                type: string
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/LegacyError'
+        '401':
+          description: Respuesta JSON
+          headers:
+            X-Request-ID:
+              schema:
+                type: string
+            X-SIGRA-Version:
+              schema:
+                type: string
+            X-API-Version:
+              schema:
+                type: string
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/LegacyError'
+        '404':
+          description: Respuesta JSON
+          headers:
+            X-Request-ID:
+              schema:
+                type: string
+            X-SIGRA-Version:
+              schema:
+                type: string
+            X-API-Version:
+              schema:
+                type: string
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/LegacyError'
+        '413':
+          description: Respuesta JSON
+          headers:
+            X-Request-ID:
+              schema:
+                type: string
+            X-SIGRA-Version:
+              schema:
+                type: string
+            X-API-Version:
+              schema:
+                type: string
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/LegacyError'
+        '415':
+          description: Respuesta JSON
+          headers:
+            X-Request-ID:
+              schema:
+                type: string
+            X-SIGRA-Version:
+              schema:
+                type: string
+            X-API-Version:
+              schema:
+                type: string
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/LegacyError'
+        '422':
+          description: Respuesta JSON
+          headers:
+            X-Request-ID:
+              schema:
+                type: string
+            X-SIGRA-Version:
+              schema:
+                type: string
+            X-API-Version:
+              schema:
+                type: string
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/LegacyError'
+        '429':
+          description: Respuesta JSON
+          headers:
+            X-Request-ID:
+              schema:
+                type: string
+            X-SIGRA-Version:
+              schema:
+                type: string
+            X-API-Version:
+              schema:
+                type: string
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/LegacyError'
+        '500':
+          description: Respuesta JSON
+          headers:
+            X-Request-ID:
+              schema:
+                type: string
+            X-SIGRA-Version:
+              schema:
+                type: string
+            X-API-Version:
+              schema:
+                type: string
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/LegacyError'
+        '503':
+          description: Respuesta JSON
+          headers:
+            X-Request-ID:
+              schema:
+                type: string
+            X-SIGRA-Version:
+              schema:
+                type: string
+            X-API-Version:
+              schema:
+                type: string
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/LegacyError'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/DeviceHeartbeat'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/DeviceHeartbeat'
+  /api/red/deteccion:
+    post:
+      operationId: deteccionNetworkLegacy
+      tags:
+      - SensorNetwork
+      security:
+      - AppKey: []
+        DeviceToken: []
+      - BearerToken: []
+        DeviceToken: []
+      responses:
+        '200':
+          description: Respuesta JSON
+          headers:
+            X-Request-ID:
+              schema:
+                type: string
+            X-SIGRA-Version:
+              schema:
+                type: string
+            X-API-Version:
+              schema:
+                type: string
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NetworkResult'
+        '400':
+          description: Respuesta JSON
+          headers:
+            X-Request-ID:
+              schema:
+                type: string
+            X-SIGRA-Version:
+              schema:
+                type: string
+            X-API-Version:
+              schema:
+                type: string
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/LegacyError'
+        '401':
+          description: Respuesta JSON
+          headers:
+            X-Request-ID:
+              schema:
+                type: string
+            X-SIGRA-Version:
+              schema:
+                type: string
+            X-API-Version:
+              schema:
+                type: string
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/LegacyError'
+        '404':
+          description: Respuesta JSON
+          headers:
+            X-Request-ID:
+              schema:
+                type: string
+            X-SIGRA-Version:
+              schema:
+                type: string
+            X-API-Version:
+              schema:
+                type: string
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/LegacyError'
+        '413':
+          description: Respuesta JSON
+          headers:
+            X-Request-ID:
+              schema:
+                type: string
+            X-SIGRA-Version:
+              schema:
+                type: string
+            X-API-Version:
+              schema:
+                type: string
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/LegacyError'
+        '415':
+          description: Respuesta JSON
+          headers:
+            X-Request-ID:
+              schema:
+                type: string
+            X-SIGRA-Version:
+              schema:
+                type: string
+            X-API-Version:
+              schema:
+                type: string
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/LegacyError'
+        '422':
+          description: Respuesta JSON
+          headers:
+            X-Request-ID:
+              schema:
+                type: string
+            X-SIGRA-Version:
+              schema:
+                type: string
+            X-API-Version:
+              schema:
+                type: string
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/LegacyError'
+        '429':
+          description: Respuesta JSON
+          headers:
+            X-Request-ID:
+              schema:
+                type: string
+            X-SIGRA-Version:
+              schema:
+                type: string
+            X-API-Version:
+              schema:
+                type: string
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/LegacyError'
+        '500':
+          description: Respuesta JSON
+          headers:
+            X-Request-ID:
+              schema:
+                type: string
+            X-SIGRA-Version:
+              schema:
+                type: string
+            X-API-Version:
+              schema:
+                type: string
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/LegacyError'
+        '503':
+          description: Respuesta JSON
+          headers:
+            X-Request-ID:
+              schema:
+                type: string
+            X-SIGRA-Version:
+              schema:
+                type: string
+            X-API-Version:
+              schema:
+                type: string
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/LegacyError'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Detection'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/Detection'
+  /api/red/alertas:
+    get:
+      operationId: alertasNetworkLegacy
+      tags:
+      - SensorNetwork
+      security:
+      - AppKey: []
+      - BearerToken: []
+      responses:
+        '200':
+          description: Respuesta JSON
+          headers:
+            X-Request-ID:
+              schema:
+                type: string
+            X-SIGRA-Version:
+              schema:
+                type: string
+            X-API-Version:
+              schema:
+                type: string
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NetworkResult'
+        '400':
+          description: Respuesta JSON
+          headers:
+            X-Request-ID:
+              schema:
+                type: string
+            X-SIGRA-Version:
+              schema:
+                type: string
+            X-API-Version:
+              schema:
+                type: string
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/LegacyError'
+        '401':
+          description: Respuesta JSON
+          headers:
+            X-Request-ID:
+              schema:
+                type: string
+            X-SIGRA-Version:
+              schema:
+                type: string
+            X-API-Version:
+              schema:
+                type: string
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/LegacyError'
+        '404':
+          description: Respuesta JSON
+          headers:
+            X-Request-ID:
+              schema:
+                type: string
+            X-SIGRA-Version:
+              schema:
+                type: string
+            X-API-Version:
+              schema:
+                type: string
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/LegacyError'
+        '413':
+          description: Respuesta JSON
+          headers:
+            X-Request-ID:
+              schema:
+                type: string
+            X-SIGRA-Version:
+              schema:
+                type: string
+            X-API-Version:
+              schema:
+                type: string
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/LegacyError'
+        '415':
+          description: Respuesta JSON
+          headers:
+            X-Request-ID:
+              schema:
+                type: string
+            X-SIGRA-Version:
+              schema:
+                type: string
+            X-API-Version:
+              schema:
+                type: string
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/LegacyError'
+        '422':
+          description: Respuesta JSON
+          headers:
+            X-Request-ID:
+              schema:
+                type: string
+            X-SIGRA-Version:
+              schema:
+                type: string
+            X-API-Version:
+              schema:
+                type: string
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/LegacyError'
+        '429':
+          description: Respuesta JSON
+          headers:
+            X-Request-ID:
+              schema:
+                type: string
+            X-SIGRA-Version:
+              schema:
+                type: string
+            X-API-Version:
+              schema:
+                type: string
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/LegacyError'
+        '500':
+          description: Respuesta JSON
+          headers:
+            X-Request-ID:
+              schema:
+                type: string
+            X-SIGRA-Version:
+              schema:
+                type: string
+            X-API-Version:
+              schema:
+                type: string
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/LegacyError'
+        '503':
+          description: Respuesta JSON
+          headers:
+            X-Request-ID:
+              schema:
+                type: string
+            X-SIGRA-Version:
+              schema:
+                type: string
+            X-API-Version:
+              schema:
+                type: string
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/LegacyError'
+      parameters:
+      - name: lat
+        in: query
+        required: true
+        schema:
+          type: number
+          minimum: -90
+          maximum: 90
+      - name: lng
+        in: query
+        required: true
+        schema:
+          type: number
+          minimum: -180
+          maximum: 180
+      - name: X-Device-Token
+        in: header
+        required: false
+        description: Si se envía, debe ser válido.
+        schema:
+          type: string
+  /api/red/desactivar:
+    post:
+      operationId: desactivarNetworkLegacy
+      tags:
+      - SensorNetwork
+      security:
+      - AppKey: []
+        DeviceToken: []
+      - BearerToken: []
+        DeviceToken: []
+      responses:
+        '200':
+          description: Respuesta JSON
+          headers:
+            X-Request-ID:
+              schema:
+                type: string
+            X-SIGRA-Version:
+              schema:
+                type: string
+            X-API-Version:
+              schema:
+                type: string
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NetworkResult'
+        '400':
+          description: Respuesta JSON
+          headers:
+            X-Request-ID:
+              schema:
+                type: string
+            X-SIGRA-Version:
+              schema:
+                type: string
+            X-API-Version:
+              schema:
+                type: string
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/LegacyError'
+        '401':
+          description: Respuesta JSON
+          headers:
+            X-Request-ID:
+              schema:
+                type: string
+            X-SIGRA-Version:
+              schema:
+                type: string
+            X-API-Version:
+              schema:
+                type: string
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/LegacyError'
+        '404':
+          description: Respuesta JSON
+          headers:
+            X-Request-ID:
+              schema:
+                type: string
+            X-SIGRA-Version:
+              schema:
+                type: string
+            X-API-Version:
+              schema:
+                type: string
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/LegacyError'
+        '413':
+          description: Respuesta JSON
+          headers:
+            X-Request-ID:
+              schema:
+                type: string
+            X-SIGRA-Version:
+              schema:
+                type: string
+            X-API-Version:
+              schema:
+                type: string
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/LegacyError'
+        '415':
+          description: Respuesta JSON
+          headers:
+            X-Request-ID:
+              schema:
+                type: string
+            X-SIGRA-Version:
+              schema:
+                type: string
+            X-API-Version:
+              schema:
+                type: string
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/LegacyError'
+        '422':
+          description: Respuesta JSON
+          headers:
+            X-Request-ID:
+              schema:
+                type: string
+            X-SIGRA-Version:
+              schema:
+                type: string
+            X-API-Version:
+              schema:
+                type: string
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/LegacyError'
+        '429':
+          description: Respuesta JSON
+          headers:
+            X-Request-ID:
+              schema:
+                type: string
+            X-SIGRA-Version:
+              schema:
+                type: string
+            X-API-Version:
+              schema:
+                type: string
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/LegacyError'
+        '500':
+          description: Respuesta JSON
+          headers:
+            X-Request-ID:
+              schema:
+                type: string
+            X-SIGRA-Version:
+              schema:
+                type: string
+            X-API-Version:
+              schema:
+                type: string
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/LegacyError'
+        '503':
+          description: Respuesta JSON
+          headers:
+            X-Request-ID:
+              schema:
+                type: string
+            X-SIGRA-Version:
+              schema:
+                type: string
+            X-API-Version:
+              schema:
+                type: string
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/LegacyError'
+  /api/v1/sismos/recent:
+    get:
+      operationId: listEventsV1
+      tags:
+      - SeismicCatalog
+      security:
+      - BearerToken: []
+      parameters:
+      - name: hours
+        in: query
+        required: false
+        schema:
+          type: integer
+          minimum: 1
+          maximum: 336
+          default: 120
+      - name: limit
+        in: query
+        required: false
+        schema:
+          type: integer
+          minimum: 1
+          maximum: 1000
+          default: 300
+      - name: min_magnitude
+        in: query
+        required: false
+        schema:
+          type: number
+          minimum: -2
+          maximum: 10
+      - name: fuente
+        in: query
+        required: false
+        schema:
+          type: string
+      - name: lat
+        in: query
+        required: false
+        schema:
+          type: number
+          minimum: -90
+          maximum: 90
+      - name: lng
+        in: query
+        required: false
+        schema:
+          type: number
+          minimum: -180
+          maximum: 180
+      - name: radius_km
+        in: query
+        required: false
+        schema:
+          type: number
+          minimum: 0
+          maximum: 20000
+      - name: order
+        in: query
+        required: false
+        schema:
+          type: string
+          enum:
+          - fecha
+          - magnitud
+          - distancia
+          default: fecha
+      responses:
+        '200':
+          description: Respuesta JSON
+          headers:
+            X-Request-ID:
+              schema:
+                type: string
+            X-SIGRA-Version:
+              schema:
+                type: string
+            X-API-Version:
+              schema:
+                type: string
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RecentEvents'
+        '400':
+          description: Respuesta JSON
+          headers:
+            X-Request-ID:
+              schema:
+                type: string
+            X-SIGRA-Version:
+              schema:
+                type: string
+            X-API-Version:
+              schema:
+                type: string
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '401':
+          description: Respuesta JSON
+          headers:
+            X-Request-ID:
+              schema:
+                type: string
+            X-SIGRA-Version:
+              schema:
+                type: string
+            X-API-Version:
+              schema:
+                type: string
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '404':
+          description: Respuesta JSON
+          headers:
+            X-Request-ID:
+              schema:
+                type: string
+            X-SIGRA-Version:
+              schema:
+                type: string
+            X-API-Version:
+              schema:
+                type: string
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '413':
+          description: Respuesta JSON
+          headers:
+            X-Request-ID:
+              schema:
+                type: string
+            X-SIGRA-Version:
+              schema:
+                type: string
+            X-API-Version:
+              schema:
+                type: string
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '415':
+          description: Respuesta JSON
+          headers:
+            X-Request-ID:
+              schema:
+                type: string
+            X-SIGRA-Version:
+              schema:
+                type: string
+            X-API-Version:
+              schema:
+                type: string
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '422':
+          description: Respuesta JSON
+          headers:
+            X-Request-ID:
+              schema:
+                type: string
+            X-SIGRA-Version:
+              schema:
+                type: string
+            X-API-Version:
+              schema:
+                type: string
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '429':
+          description: Respuesta JSON
+          headers:
+            X-Request-ID:
+              schema:
+                type: string
+            X-SIGRA-Version:
+              schema:
+                type: string
+            X-API-Version:
+              schema:
+                type: string
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '500':
+          description: Respuesta JSON
+          headers:
+            X-Request-ID:
+              schema:
+                type: string
+            X-SIGRA-Version:
+              schema:
+                type: string
+            X-API-Version:
+              schema:
+                type: string
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '503':
+          description: Respuesta JSON
+          headers:
+            X-Request-ID:
+              schema:
+                type: string
+            X-SIGRA-Version:
+              schema:
+                type: string
+            X-API-Version:
+              schema:
+                type: string
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+  /api/v1/sismos/ultimo:
+    get:
+      operationId: latestEventV1
+      tags:
+      - SeismicCatalog
+      security:
+      - BearerToken: []
+      parameters:
+      - name: lat
+        in: query
+        required: false
+        schema:
+          type: number
+          minimum: -90
+          maximum: 90
+      - name: lng
+        in: query
+        required: false
+        schema:
+          type: number
+          minimum: -180
+          maximum: 180
+      responses:
+        '200':
+          description: Respuesta JSON
+          headers:
+            X-Request-ID:
+              schema:
+                type: string
+            X-SIGRA-Version:
+              schema:
+                type: string
+            X-API-Version:
+              schema:
+                type: string
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/EventDetail'
+        '400':
+          description: Respuesta JSON
+          headers:
+            X-Request-ID:
+              schema:
+                type: string
+            X-SIGRA-Version:
+              schema:
+                type: string
+            X-API-Version:
+              schema:
+                type: string
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '401':
+          description: Respuesta JSON
+          headers:
+            X-Request-ID:
+              schema:
+                type: string
+            X-SIGRA-Version:
+              schema:
+                type: string
+            X-API-Version:
+              schema:
+                type: string
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '404':
+          description: Respuesta JSON
+          headers:
+            X-Request-ID:
+              schema:
+                type: string
+            X-SIGRA-Version:
+              schema:
+                type: string
+            X-API-Version:
+              schema:
+                type: string
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '413':
+          description: Respuesta JSON
+          headers:
+            X-Request-ID:
+              schema:
+                type: string
+            X-SIGRA-Version:
+              schema:
+                type: string
+            X-API-Version:
+              schema:
+                type: string
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '415':
+          description: Respuesta JSON
+          headers:
+            X-Request-ID:
+              schema:
+                type: string
+            X-SIGRA-Version:
+              schema:
+                type: string
+            X-API-Version:
+              schema:
+                type: string
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '422':
+          description: Respuesta JSON
+          headers:
+            X-Request-ID:
+              schema:
+                type: string
+            X-SIGRA-Version:
+              schema:
+                type: string
+            X-API-Version:
+              schema:
+                type: string
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '429':
+          description: Respuesta JSON
+          headers:
+            X-Request-ID:
+              schema:
+                type: string
+            X-SIGRA-Version:
+              schema:
+                type: string
+            X-API-Version:
+              schema:
+                type: string
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '500':
+          description: Respuesta JSON
+          headers:
+            X-Request-ID:
+              schema:
+                type: string
+            X-SIGRA-Version:
+              schema:
+                type: string
+            X-API-Version:
+              schema:
+                type: string
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '503':
+          description: Respuesta JSON
+          headers:
+            X-Request-ID:
+              schema:
+                type: string
+            X-SIGRA-Version:
+              schema:
+                type: string
+            X-API-Version:
+              schema:
+                type: string
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+  /api/v1/sismos/alertas:
+    get:
+      operationId: eventDisplayLevelV1
+      tags:
+      - SeismicCatalog
+      security:
+      - BearerToken: []
+      parameters:
+      - name: lat
+        in: query
+        required: false
+        schema:
+          type: number
+          minimum: -90
+          maximum: 90
+      - name: lng
+        in: query
+        required: false
+        schema:
+          type: number
+          minimum: -180
+          maximum: 180
+      responses:
+        '200':
+          description: Respuesta JSON
+          headers:
+            X-Request-ID:
+              schema:
+                type: string
+            X-SIGRA-Version:
+              schema:
+                type: string
+            X-API-Version:
+              schema:
+                type: string
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/EventDisplayLevel'
+        '400':
+          description: Respuesta JSON
+          headers:
+            X-Request-ID:
+              schema:
+                type: string
+            X-SIGRA-Version:
+              schema:
+                type: string
+            X-API-Version:
+              schema:
+                type: string
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '401':
+          description: Respuesta JSON
+          headers:
+            X-Request-ID:
+              schema:
+                type: string
+            X-SIGRA-Version:
+              schema:
+                type: string
+            X-API-Version:
+              schema:
+                type: string
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '404':
+          description: Respuesta JSON
+          headers:
+            X-Request-ID:
+              schema:
+                type: string
+            X-SIGRA-Version:
+              schema:
+                type: string
+            X-API-Version:
+              schema:
+                type: string
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '413':
+          description: Respuesta JSON
+          headers:
+            X-Request-ID:
+              schema:
+                type: string
+            X-SIGRA-Version:
+              schema:
+                type: string
+            X-API-Version:
+              schema:
+                type: string
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '415':
+          description: Respuesta JSON
+          headers:
+            X-Request-ID:
+              schema:
+                type: string
+            X-SIGRA-Version:
+              schema:
+                type: string
+            X-API-Version:
+              schema:
+                type: string
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '422':
+          description: Respuesta JSON
+          headers:
+            X-Request-ID:
+              schema:
+                type: string
+            X-SIGRA-Version:
+              schema:
+                type: string
+            X-API-Version:
+              schema:
+                type: string
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '429':
+          description: Respuesta JSON
+          headers:
+            X-Request-ID:
+              schema:
+                type: string
+            X-SIGRA-Version:
+              schema:
+                type: string
+            X-API-Version:
+              schema:
+                type: string
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '500':
+          description: Respuesta JSON
+          headers:
+            X-Request-ID:
+              schema:
+                type: string
+            X-SIGRA-Version:
+              schema:
+                type: string
+            X-API-Version:
+              schema:
+                type: string
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '503':
+          description: Respuesta JSON
+          headers:
+            X-Request-ID:
+              schema:
+                type: string
+            X-SIGRA-Version:
+              schema:
+                type: string
+            X-API-Version:
+              schema:
+                type: string
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+  /api/v1/sismos/detalle/{id}:
+    get:
+      operationId: getEventV1
+      tags:
+      - SeismicCatalog
+      security:
+      - BearerToken: []
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: string
+      - name: lat
+        in: query
+        required: false
+        schema:
+          type: number
+          minimum: -90
+          maximum: 90
+      - name: lng
+        in: query
+        required: false
+        schema:
+          type: number
+          minimum: -180
+          maximum: 180
+      responses:
+        '200':
+          description: Respuesta JSON
+          headers:
+            X-Request-ID:
+              schema:
+                type: string
+            X-SIGRA-Version:
+              schema:
+                type: string
+            X-API-Version:
+              schema:
+                type: string
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/EventDetail'
+        '400':
+          description: Respuesta JSON
+          headers:
+            X-Request-ID:
+              schema:
+                type: string
+            X-SIGRA-Version:
+              schema:
+                type: string
+            X-API-Version:
+              schema:
+                type: string
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '401':
+          description: Respuesta JSON
+          headers:
+            X-Request-ID:
+              schema:
+                type: string
+            X-SIGRA-Version:
+              schema:
+                type: string
+            X-API-Version:
+              schema:
+                type: string
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '404':
+          description: Respuesta JSON
+          headers:
+            X-Request-ID:
+              schema:
+                type: string
+            X-SIGRA-Version:
+              schema:
+                type: string
+            X-API-Version:
+              schema:
+                type: string
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '413':
+          description: Respuesta JSON
+          headers:
+            X-Request-ID:
+              schema:
+                type: string
+            X-SIGRA-Version:
+              schema:
+                type: string
+            X-API-Version:
+              schema:
+                type: string
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '415':
+          description: Respuesta JSON
+          headers:
+            X-Request-ID:
+              schema:
+                type: string
+            X-SIGRA-Version:
+              schema:
+                type: string
+            X-API-Version:
+              schema:
+                type: string
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '422':
+          description: Respuesta JSON
+          headers:
+            X-Request-ID:
+              schema:
+                type: string
+            X-SIGRA-Version:
+              schema:
+                type: string
+            X-API-Version:
+              schema:
+                type: string
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '429':
+          description: Respuesta JSON
+          headers:
+            X-Request-ID:
+              schema:
+                type: string
+            X-SIGRA-Version:
+              schema:
+                type: string
+            X-API-Version:
+              schema:
+                type: string
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '500':
+          description: Respuesta JSON
+          headers:
+            X-Request-ID:
+              schema:
+                type: string
+            X-SIGRA-Version:
+              schema:
+                type: string
+            X-API-Version:
+              schema:
+                type: string
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '503':
+          description: Respuesta JSON
+          headers:
+            X-Request-ID:
+              schema:
+                type: string
+            X-SIGRA-Version:
+              schema:
+                type: string
+            X-API-Version:
+              schema:
+                type: string
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+  /api/v1/health:
+    get:
+      operationId: healthV1
+      tags:
+      - System
+      security: []
+      responses:
+        '200':
+          description: Respuesta JSON
+          headers:
+            X-Request-ID:
+              schema:
+                type: string
+            X-SIGRA-Version:
+              schema:
+                type: string
+            X-API-Version:
+              schema:
+                type: string
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Health'
+        '503':
+          description: Respuesta JSON
+          headers:
+            X-Request-ID:
+              schema:
+                type: string
+            X-SIGRA-Version:
+              schema:
+                type: string
+            X-API-Version:
+              schema:
+                type: string
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Health'
+  /api/v1/red/config:
+    get:
+      operationId: configNetworkV1
+      tags:
+      - SensorNetwork
+      security: []
+      responses:
+        '200':
+          description: Respuesta JSON
+          headers:
+            X-Request-ID:
+              schema:
+                type: string
+            X-SIGRA-Version:
+              schema:
+                type: string
+            X-API-Version:
+              schema:
+                type: string
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NetworkResult'
+        '400':
+          description: Respuesta JSON
+          headers:
+            X-Request-ID:
+              schema:
+                type: string
+            X-SIGRA-Version:
+              schema:
+                type: string
+            X-API-Version:
+              schema:
+                type: string
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '401':
+          description: Respuesta JSON
+          headers:
+            X-Request-ID:
+              schema:
+                type: string
+            X-SIGRA-Version:
+              schema:
+                type: string
+            X-API-Version:
+              schema:
+                type: string
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '404':
+          description: Respuesta JSON
+          headers:
+            X-Request-ID:
+              schema:
+                type: string
+            X-SIGRA-Version:
+              schema:
+                type: string
+            X-API-Version:
+              schema:
+                type: string
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '413':
+          description: Respuesta JSON
+          headers:
+            X-Request-ID:
+              schema:
+                type: string
+            X-SIGRA-Version:
+              schema:
+                type: string
+            X-API-Version:
+              schema:
+                type: string
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '415':
+          description: Respuesta JSON
+          headers:
+            X-Request-ID:
+              schema:
+                type: string
+            X-SIGRA-Version:
+              schema:
+                type: string
+            X-API-Version:
+              schema:
+                type: string
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '422':
+          description: Respuesta JSON
+          headers:
+            X-Request-ID:
+              schema:
+                type: string
+            X-SIGRA-Version:
+              schema:
+                type: string
+            X-API-Version:
+              schema:
+                type: string
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '429':
+          description: Respuesta JSON
+          headers:
+            X-Request-ID:
+              schema:
+                type: string
+            X-SIGRA-Version:
+              schema:
+                type: string
+            X-API-Version:
+              schema:
+                type: string
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '500':
+          description: Respuesta JSON
+          headers:
+            X-Request-ID:
+              schema:
+                type: string
+            X-SIGRA-Version:
+              schema:
+                type: string
+            X-API-Version:
+              schema:
+                type: string
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '503':
+          description: Respuesta JSON
+          headers:
+            X-Request-ID:
+              schema:
+                type: string
+            X-SIGRA-Version:
+              schema:
+                type: string
+            X-API-Version:
+              schema:
+                type: string
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+  /api/v1/red/red:
+    get:
+      operationId: redNetworkV1
+      tags:
+      - SensorNetwork
+      security: []
+      responses:
+        '200':
+          description: Respuesta JSON
+          headers:
+            X-Request-ID:
+              schema:
+                type: string
+            X-SIGRA-Version:
+              schema:
+                type: string
+            X-API-Version:
+              schema:
+                type: string
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NetworkResult'
+        '400':
+          description: Respuesta JSON
+          headers:
+            X-Request-ID:
+              schema:
+                type: string
+            X-SIGRA-Version:
+              schema:
+                type: string
+            X-API-Version:
+              schema:
+                type: string
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '401':
+          description: Respuesta JSON
+          headers:
+            X-Request-ID:
+              schema:
+                type: string
+            X-SIGRA-Version:
+              schema:
+                type: string
+            X-API-Version:
+              schema:
+                type: string
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '404':
+          description: Respuesta JSON
+          headers:
+            X-Request-ID:
+              schema:
+                type: string
+            X-SIGRA-Version:
+              schema:
+                type: string
+            X-API-Version:
+              schema:
+                type: string
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '413':
+          description: Respuesta JSON
+          headers:
+            X-Request-ID:
+              schema:
+                type: string
+            X-SIGRA-Version:
+              schema:
+                type: string
+            X-API-Version:
+              schema:
+                type: string
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '415':
+          description: Respuesta JSON
+          headers:
+            X-Request-ID:
+              schema:
+                type: string
+            X-SIGRA-Version:
+              schema:
+                type: string
+            X-API-Version:
+              schema:
+                type: string
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '422':
+          description: Respuesta JSON
+          headers:
+            X-Request-ID:
+              schema:
+                type: string
+            X-SIGRA-Version:
+              schema:
+                type: string
+            X-API-Version:
+              schema:
+                type: string
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '429':
+          description: Respuesta JSON
+          headers:
+            X-Request-ID:
+              schema:
+                type: string
+            X-SIGRA-Version:
+              schema:
+                type: string
+            X-API-Version:
+              schema:
+                type: string
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '500':
+          description: Respuesta JSON
+          headers:
+            X-Request-ID:
+              schema:
+                type: string
+            X-SIGRA-Version:
+              schema:
+                type: string
+            X-API-Version:
+              schema:
+                type: string
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '503':
+          description: Respuesta JSON
+          headers:
+            X-Request-ID:
+              schema:
+                type: string
+            X-SIGRA-Version:
+              schema:
+                type: string
+            X-API-Version:
+              schema:
+                type: string
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+      parameters:
+      - name: lat
+        in: query
+        required: false
+        schema:
+          type: number
+          minimum: -90
+          maximum: 90
+      - name: lng
+        in: query
+        required: false
+        schema:
+          type: number
+          minimum: -180
+          maximum: 180
+  /api/v1/red/health:
+    get:
+      operationId: healthNetworkV1
+      tags:
+      - SensorNetwork
+      security: []
+      responses:
+        '200':
+          description: Respuesta JSON
+          headers:
+            X-Request-ID:
+              schema:
+                type: string
+            X-SIGRA-Version:
+              schema:
+                type: string
+            X-API-Version:
+              schema:
+                type: string
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NetworkResult'
+        '400':
+          description: Respuesta JSON
+          headers:
+            X-Request-ID:
+              schema:
+                type: string
+            X-SIGRA-Version:
+              schema:
+                type: string
+            X-API-Version:
+              schema:
+                type: string
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '401':
+          description: Respuesta JSON
+          headers:
+            X-Request-ID:
+              schema:
+                type: string
+            X-SIGRA-Version:
+              schema:
+                type: string
+            X-API-Version:
+              schema:
+                type: string
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '404':
+          description: Respuesta JSON
+          headers:
+            X-Request-ID:
+              schema:
+                type: string
+            X-SIGRA-Version:
+              schema:
+                type: string
+            X-API-Version:
+              schema:
+                type: string
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '413':
+          description: Respuesta JSON
+          headers:
+            X-Request-ID:
+              schema:
+                type: string
+            X-SIGRA-Version:
+              schema:
+                type: string
+            X-API-Version:
+              schema:
+                type: string
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '415':
+          description: Respuesta JSON
+          headers:
+            X-Request-ID:
+              schema:
+                type: string
+            X-SIGRA-Version:
+              schema:
+                type: string
+            X-API-Version:
+              schema:
+                type: string
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '422':
+          description: Respuesta JSON
+          headers:
+            X-Request-ID:
+              schema:
+                type: string
+            X-SIGRA-Version:
+              schema:
+                type: string
+            X-API-Version:
+              schema:
+                type: string
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '429':
+          description: Respuesta JSON
+          headers:
+            X-Request-ID:
+              schema:
+                type: string
+            X-SIGRA-Version:
+              schema:
+                type: string
+            X-API-Version:
+              schema:
+                type: string
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '500':
+          description: Respuesta JSON
+          headers:
+            X-Request-ID:
+              schema:
+                type: string
+            X-SIGRA-Version:
+              schema:
+                type: string
+            X-API-Version:
+              schema:
+                type: string
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '503':
+          description: Respuesta JSON
+          headers:
+            X-Request-ID:
+              schema:
+                type: string
+            X-SIGRA-Version:
+              schema:
+                type: string
+            X-API-Version:
+              schema:
+                type: string
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+  /api/v1/red/registro:
+    post:
+      operationId: registroNetworkV1
+      description: >-
+        Registra un UUID nuevo. Si el UUID ya existe, exige su token vigente
+        en X-Device-Token; sin él responde 401. Un registro autorizado rota
+        el token y el anterior deja de ser válido. La clave de aplicación
+        también es obligatoria y no sustituye al token del dispositivo.
+      parameters:
+      - name: X-Device-Token
+        in: header
+        required: false
+        description: Obligatorio para volver a registrar un UUID existente.
+        schema:
+          type: string
+      tags:
+      - SensorNetwork
+      security:
+      - AppKey: []
+      - BearerToken: []
+      responses:
+        '200':
+          description: Respuesta JSON
+          headers:
+            X-Request-ID:
+              schema:
+                type: string
+            X-SIGRA-Version:
+              schema:
+                type: string
+            X-API-Version:
+              schema:
+                type: string
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NetworkResult'
+        '400':
+          description: Respuesta JSON
+          headers:
+            X-Request-ID:
+              schema:
+                type: string
+            X-SIGRA-Version:
+              schema:
+                type: string
+            X-API-Version:
+              schema:
+                type: string
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '401':
+          description: Respuesta JSON
+          headers:
+            X-Request-ID:
+              schema:
+                type: string
+            X-SIGRA-Version:
+              schema:
+                type: string
+            X-API-Version:
+              schema:
+                type: string
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '404':
+          description: Respuesta JSON
+          headers:
+            X-Request-ID:
+              schema:
+                type: string
+            X-SIGRA-Version:
+              schema:
+                type: string
+            X-API-Version:
+              schema:
+                type: string
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '413':
+          description: Respuesta JSON
+          headers:
+            X-Request-ID:
+              schema:
+                type: string
+            X-SIGRA-Version:
+              schema:
+                type: string
+            X-API-Version:
+              schema:
+                type: string
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '415':
+          description: Respuesta JSON
+          headers:
+            X-Request-ID:
+              schema:
+                type: string
+            X-SIGRA-Version:
+              schema:
+                type: string
+            X-API-Version:
+              schema:
+                type: string
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '422':
+          description: Respuesta JSON
+          headers:
+            X-Request-ID:
+              schema:
+                type: string
+            X-SIGRA-Version:
+              schema:
+                type: string
+            X-API-Version:
+              schema:
+                type: string
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '429':
+          description: Respuesta JSON
+          headers:
+            X-Request-ID:
+              schema:
+                type: string
+            X-SIGRA-Version:
+              schema:
+                type: string
+            X-API-Version:
+              schema:
+                type: string
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '500':
+          description: Respuesta JSON
+          headers:
+            X-Request-ID:
+              schema:
+                type: string
+            X-SIGRA-Version:
+              schema:
+                type: string
+            X-API-Version:
+              schema:
+                type: string
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '503':
+          description: Respuesta JSON
+          headers:
+            X-Request-ID:
+              schema:
+                type: string
+            X-SIGRA-Version:
+              schema:
+                type: string
+            X-API-Version:
+              schema:
+                type: string
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/DeviceRegistration'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/DeviceRegistration'
+  /api/v1/red/estado:
+    post:
+      operationId: estadoNetworkV1
+      tags:
+      - SensorNetwork
+      security:
+      - AppKey: []
+        DeviceToken: []
+      - BearerToken: []
+        DeviceToken: []
+      responses:
+        '200':
+          description: Respuesta JSON
+          headers:
+            X-Request-ID:
+              schema:
+                type: string
+            X-SIGRA-Version:
+              schema:
+                type: string
+            X-API-Version:
+              schema:
+                type: string
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NetworkResult'
+        '400':
+          description: Respuesta JSON
+          headers:
+            X-Request-ID:
+              schema:
+                type: string
+            X-SIGRA-Version:
+              schema:
+                type: string
+            X-API-Version:
+              schema:
+                type: string
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '401':
+          description: Respuesta JSON
+          headers:
+            X-Request-ID:
+              schema:
+                type: string
+            X-SIGRA-Version:
+              schema:
+                type: string
+            X-API-Version:
+              schema:
+                type: string
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '404':
+          description: Respuesta JSON
+          headers:
+            X-Request-ID:
+              schema:
+                type: string
+            X-SIGRA-Version:
+              schema:
+                type: string
+            X-API-Version:
+              schema:
+                type: string
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '413':
+          description: Respuesta JSON
+          headers:
+            X-Request-ID:
+              schema:
+                type: string
+            X-SIGRA-Version:
+              schema:
+                type: string
+            X-API-Version:
+              schema:
+                type: string
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '415':
+          description: Respuesta JSON
+          headers:
+            X-Request-ID:
+              schema:
+                type: string
+            X-SIGRA-Version:
+              schema:
+                type: string
+            X-API-Version:
+              schema:
+                type: string
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '422':
+          description: Respuesta JSON
+          headers:
+            X-Request-ID:
+              schema:
+                type: string
+            X-SIGRA-Version:
+              schema:
+                type: string
+            X-API-Version:
+              schema:
+                type: string
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '429':
+          description: Respuesta JSON
+          headers:
+            X-Request-ID:
+              schema:
+                type: string
+            X-SIGRA-Version:
+              schema:
+                type: string
+            X-API-Version:
+              schema:
+                type: string
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '500':
+          description: Respuesta JSON
+          headers:
+            X-Request-ID:
+              schema:
+                type: string
+            X-SIGRA-Version:
+              schema:
+                type: string
+            X-API-Version:
+              schema:
+                type: string
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '503':
+          description: Respuesta JSON
+          headers:
+            X-Request-ID:
+              schema:
+                type: string
+            X-SIGRA-Version:
+              schema:
+                type: string
+            X-API-Version:
+              schema:
+                type: string
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/DeviceHeartbeat'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/DeviceHeartbeat'
+  /api/v1/red/deteccion:
+    post:
+      operationId: deteccionNetworkV1
+      tags:
+      - SensorNetwork
+      security:
+      - AppKey: []
+        DeviceToken: []
+      - BearerToken: []
+        DeviceToken: []
+      responses:
+        '200':
+          description: Respuesta JSON
+          headers:
+            X-Request-ID:
+              schema:
+                type: string
+            X-SIGRA-Version:
+              schema:
+                type: string
+            X-API-Version:
+              schema:
+                type: string
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NetworkResult'
+        '400':
+          description: Respuesta JSON
+          headers:
+            X-Request-ID:
+              schema:
+                type: string
+            X-SIGRA-Version:
+              schema:
+                type: string
+            X-API-Version:
+              schema:
+                type: string
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '401':
+          description: Respuesta JSON
+          headers:
+            X-Request-ID:
+              schema:
+                type: string
+            X-SIGRA-Version:
+              schema:
+                type: string
+            X-API-Version:
+              schema:
+                type: string
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '404':
+          description: Respuesta JSON
+          headers:
+            X-Request-ID:
+              schema:
+                type: string
+            X-SIGRA-Version:
+              schema:
+                type: string
+            X-API-Version:
+              schema:
+                type: string
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '413':
+          description: Respuesta JSON
+          headers:
+            X-Request-ID:
+              schema:
+                type: string
+            X-SIGRA-Version:
+              schema:
+                type: string
+            X-API-Version:
+              schema:
+                type: string
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '415':
+          description: Respuesta JSON
+          headers:
+            X-Request-ID:
+              schema:
+                type: string
+            X-SIGRA-Version:
+              schema:
+                type: string
+            X-API-Version:
+              schema:
+                type: string
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '422':
+          description: Respuesta JSON
+          headers:
+            X-Request-ID:
+              schema:
+                type: string
+            X-SIGRA-Version:
+              schema:
+                type: string
+            X-API-Version:
+              schema:
+                type: string
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '429':
+          description: Respuesta JSON
+          headers:
+            X-Request-ID:
+              schema:
+                type: string
+            X-SIGRA-Version:
+              schema:
+                type: string
+            X-API-Version:
+              schema:
+                type: string
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '500':
+          description: Respuesta JSON
+          headers:
+            X-Request-ID:
+              schema:
+                type: string
+            X-SIGRA-Version:
+              schema:
+                type: string
+            X-API-Version:
+              schema:
+                type: string
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '503':
+          description: Respuesta JSON
+          headers:
+            X-Request-ID:
+              schema:
+                type: string
+            X-SIGRA-Version:
+              schema:
+                type: string
+            X-API-Version:
+              schema:
+                type: string
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Detection'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/Detection'
+  /api/v1/red/alertas:
+    get:
+      operationId: alertasNetworkV1
+      tags:
+      - SensorNetwork
+      security:
+      - AppKey: []
+      - BearerToken: []
+      responses:
+        '200':
+          description: Respuesta JSON
+          headers:
+            X-Request-ID:
+              schema:
+                type: string
+            X-SIGRA-Version:
+              schema:
+                type: string
+            X-API-Version:
+              schema:
+                type: string
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NetworkResult'
+        '400':
+          description: Respuesta JSON
+          headers:
+            X-Request-ID:
+              schema:
+                type: string
+            X-SIGRA-Version:
+              schema:
+                type: string
+            X-API-Version:
+              schema:
+                type: string
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '401':
+          description: Respuesta JSON
+          headers:
+            X-Request-ID:
+              schema:
+                type: string
+            X-SIGRA-Version:
+              schema:
+                type: string
+            X-API-Version:
+              schema:
+                type: string
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '404':
+          description: Respuesta JSON
+          headers:
+            X-Request-ID:
+              schema:
+                type: string
+            X-SIGRA-Version:
+              schema:
+                type: string
+            X-API-Version:
+              schema:
+                type: string
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '413':
+          description: Respuesta JSON
+          headers:
+            X-Request-ID:
+              schema:
+                type: string
+            X-SIGRA-Version:
+              schema:
+                type: string
+            X-API-Version:
+              schema:
+                type: string
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '415':
+          description: Respuesta JSON
+          headers:
+            X-Request-ID:
+              schema:
+                type: string
+            X-SIGRA-Version:
+              schema:
+                type: string
+            X-API-Version:
+              schema:
+                type: string
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '422':
+          description: Respuesta JSON
+          headers:
+            X-Request-ID:
+              schema:
+                type: string
+            X-SIGRA-Version:
+              schema:
+                type: string
+            X-API-Version:
+              schema:
+                type: string
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '429':
+          description: Respuesta JSON
+          headers:
+            X-Request-ID:
+              schema:
+                type: string
+            X-SIGRA-Version:
+              schema:
+                type: string
+            X-API-Version:
+              schema:
+                type: string
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '500':
+          description: Respuesta JSON
+          headers:
+            X-Request-ID:
+              schema:
+                type: string
+            X-SIGRA-Version:
+              schema:
+                type: string
+            X-API-Version:
+              schema:
+                type: string
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '503':
+          description: Respuesta JSON
+          headers:
+            X-Request-ID:
+              schema:
+                type: string
+            X-SIGRA-Version:
+              schema:
+                type: string
+            X-API-Version:
+              schema:
+                type: string
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+      parameters:
+      - name: lat
+        in: query
+        required: true
+        schema:
+          type: number
+          minimum: -90
+          maximum: 90
+      - name: lng
+        in: query
+        required: true
+        schema:
+          type: number
+          minimum: -180
+          maximum: 180
+      - name: X-Device-Token
+        in: header
+        required: false
+        description: Si se envía, debe ser válido.
+        schema:
+          type: string
+  /api/v1/red/desactivar:
+    post:
+      operationId: desactivarNetworkV1
+      tags:
+      - SensorNetwork
+      security:
+      - AppKey: []
+        DeviceToken: []
+      - BearerToken: []
+        DeviceToken: []
+      responses:
+        '200':
+          description: Respuesta JSON
+          headers:
+            X-Request-ID:
+              schema:
+                type: string
+            X-SIGRA-Version:
+              schema:
+                type: string
+            X-API-Version:
+              schema:
+                type: string
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NetworkResult'
+        '400':
+          description: Respuesta JSON
+          headers:
+            X-Request-ID:
+              schema:
+                type: string
+            X-SIGRA-Version:
+              schema:
+                type: string
+            X-API-Version:
+              schema:
+                type: string
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '401':
+          description: Respuesta JSON
+          headers:
+            X-Request-ID:
+              schema:
+                type: string
+            X-SIGRA-Version:
+              schema:
+                type: string
+            X-API-Version:
+              schema:
+                type: string
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '404':
+          description: Respuesta JSON
+          headers:
+            X-Request-ID:
+              schema:
+                type: string
+            X-SIGRA-Version:
+              schema:
+                type: string
+            X-API-Version:
+              schema:
+                type: string
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '413':
+          description: Respuesta JSON
+          headers:
+            X-Request-ID:
+              schema:
+                type: string
+            X-SIGRA-Version:
+              schema:
+                type: string
+            X-API-Version:
+              schema:
+                type: string
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '415':
+          description: Respuesta JSON
+          headers:
+            X-Request-ID:
+              schema:
+                type: string
+            X-SIGRA-Version:
+              schema:
+                type: string
+            X-API-Version:
+              schema:
+                type: string
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '422':
+          description: Respuesta JSON
+          headers:
+            X-Request-ID:
+              schema:
+                type: string
+            X-SIGRA-Version:
+              schema:
+                type: string
+            X-API-Version:
+              schema:
+                type: string
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '429':
+          description: Respuesta JSON
+          headers:
+            X-Request-ID:
+              schema:
+                type: string
+            X-SIGRA-Version:
+              schema:
+                type: string
+            X-API-Version:
+              schema:
+                type: string
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '500':
+          description: Respuesta JSON
+          headers:
+            X-Request-ID:
+              schema:
+                type: string
+            X-SIGRA-Version:
+              schema:
+                type: string
+            X-API-Version:
+              schema:
+                type: string
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '503':
+          description: Respuesta JSON
+          headers:
+            X-Request-ID:
+              schema:
+                type: string
+            X-SIGRA-Version:
+              schema:
+                type: string
+            X-API-Version:
+              schema:
+                type: string
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+components:
+  securitySchemes:
+    BearerToken:
+      type: http
+      scheme: bearer
+    AppKey:
+      type: apiKey
+      in: header
+      name: X-SIGRA-KEY
+    DeviceToken:
+      type: apiKey
+      in: header
+      name: X-Device-Token
+  schemas:
+    LegacyError:
+      type: object
+      properties:
+        status:
+          type: string
+          enum:
+          - error
+        message:
+          type: string
+      required:
+      - status
+      - message
+    Error:
+      type: object
+      properties:
+        status:
+          type: string
+          enum:
+          - error
+        error:
+          type: object
+          properties:
+            code:
+              type: string
+            message:
+              type: string
+          required:
+          - code
+          - message
+        request_id:
+          type: string
+      required:
+      - status
+      - error
+      - request_id
+    NetworkResult:
+      type: object
+      description: Campos de éxito heredados, detallados en docs/API_RED.md. No contiene credenciales de servidor.
+      additionalProperties: true
+    Health:
+      type: object
+      properties:
+        status:
+          type: string
+          enum:
+          - ok
+          - degraded
+        service:
+          type: string
+        version:
+          type: string
+        build:
+          type: string
+        api_version:
+          type: string
+        database:
+          type: string
+          enum:
+          - ok
+          - error
+        time:
+          type: string
+          format: date-time
+      required:
+      - status
+      - service
+      - version
+    SeismicEvent:
+      type: object
+      properties:
+        id:
+          type: string
+        citizen_reports_count:
+          type: integer
+        source_id:
+          type: string
+        ubicacion:
+          type: string
+        latitud:
+          type: number
+        longitud:
+          type: number
+        magnitud:
+          type: number
+        profundidad:
+          type: number
+        fecha:
+          type: string
+        fecha_iso:
+          type: string
+          nullable: true
+        distancia_km:
+          type: number
+          nullable: true
+        alerta:
+          type: string
+        nivel:
+          type: integer
+        estado:
+          type: string
+        fuente:
+          type: string
+        cdi:
+          type: number
+          nullable: true
+        mmi:
+          type: number
+          nullable: true
+        pga:
+          type: number
+          nullable: true
+        mag_type:
+          type: string
+          nullable: true
+        agency:
+          type: string
+          nullable: true
+        felt:
+          type: integer
+          nullable: true
+        tsunami:
+          type: integer
+          nullable: true
+        significance:
+          type: integer
+          nullable: true
+        closer_towns:
+          type: string
+          nullable: true
+        official_url:
+          type: string
+          nullable: true
+        detalle_url:
+          type: string
+        mapa_sgc_url:
+          type: string
+          nullable: true
+      required:
+      - id
+      - citizen_reports_count
+      - source_id
+      - ubicacion
+      - latitud
+      - longitud
+      - magnitud
+      - profundidad
+      - fecha
+      - fecha_iso
+      - distancia_km
+      - alerta
+      - nivel
+      - estado
+      - fuente
+      - cdi
+      - mmi
+      - pga
+      - mag_type
+      - agency
+      - felt
+      - tsunami
+      - significance
+      - closer_towns
+      - official_url
+      - detalle_url
+      - mapa_sgc_url
+    RecentEvents:
+      type: object
+      properties:
+        status:
+          type: string
+          enum:
+          - ok
+        count:
+          type: integer
+        hours:
+          type: integer
+        origin:
+          type: object
+          nullable: true
+        generated_at:
+          type: string
+          format: date-time
+        events:
+          type: array
+          items:
+            $ref: '#/components/schemas/SeismicEvent'
+      required:
+      - status
+      - count
+      - hours
+      - events
+    EventDetail:
+      type: object
+      properties:
+        status:
+          type: string
+        event:
+          allOf:
+          - $ref: '#/components/schemas/SeismicEvent'
+          nullable: true
+        generated_at:
+          type: string
+          format: date-time
+      required:
+      - status
+      - event
+    EventDisplayLevel:
+      type: object
+      properties:
+        status:
+          type: string
+        alerta:
+          type: string
+          description: Nivel visual por magnitud; no es una decisión operativa.
+        ultimo:
+          allOf:
+          - $ref: '#/components/schemas/SeismicEvent'
+          nullable: true
+        generated_at:
+          type: string
+          format: date-time
+      required:
+      - status
+      - alerta
+      - ultimo
+    DeviceRegistration:
+      type: object
+      properties: &id001
+        device_uuid:
+          type: string
+        platform:
+          type: string
+        manufacturer:
+          type: string
+        model:
+          type: string
+        os_version:
+          type: string
+        app_version:
+          type: string
+        fcm_token:
+          type: string
+        latitude:
+          type: number
+        longitude:
+          type: number
+        accuracy_m:
+          type: number
+        monitoring_enabled:
+          type: boolean
+        notifications_enabled:
+          type: boolean
+        alert_radius_km:
+          type: number
+        min_magnitude:
+          type: number
+        battery_level:
+          type: number
+      required:
+      - device_uuid
+    DeviceHeartbeat:
+      type: object
+      properties: *id001
+    Detection:
+      type: object
+      properties:
+        latitude:
+          type: number
+        longitude:
+          type: number
+        accuracy_m:
+          type: number
+        confidence:
+          type: number
+        sta_lta_ratio:
+          type: number
+        peak_accel_mps2:
+          type: number
+        dominant_freq_hz:
+          type: number
+        duration_ms:
+          type: number
+        detected_at_ms:
+          type: number
+        simulated:
+          type: boolean
+          default: false
+          description: Si true, no se guarda ni se publica en canales reales.
+      required:
+      - latitude
+      - longitude

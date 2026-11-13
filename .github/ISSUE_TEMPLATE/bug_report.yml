@@ -13,7 +13,7 @@ body:
     attributes:
       label: SIGRA version
       description: Output of `/api/health` or the badge in the navbar.
-      placeholder: "1.0.3"
+      placeholder: "1.2.1"
     validations:
       required: true
   - type: input

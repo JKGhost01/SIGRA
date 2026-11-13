@@ -1,28 +1,14 @@
-# Separación y primera actualización de Android
+# Estado del cliente Android
 
-Destino previsto: `/home/azyron/Proyectos/sigra-mobile`.
-La app sigue temporalmente en `mobile/`: el ejecutor solo permite escribir
-dentro de SIGRA y `/tmp`, y el intento de traslado devolvió sistema de archivos
-de solo lectura en el directorio padre. No se borró la carpeta original.
+Android está en construcción y se mantendrá en un repositorio independiente. No se
+incluye ni se compila código móvil en SIGRA web/backend y no se publica un enlace a un
+repositorio inexistente.
 
-Desde una terminal normal en la carpeta de SIGRA:
+El backend ofrece [OpenAPI](api/openapi.yaml) y [la API de red](API_RED.md). El cliente
+futuro debe conservar su token de dispositivo, enviarlo para un nuevo registro del
+mismo identificador y reemplazarlo al recibir una rotación válida. Perder el token no
+autoriza a tomar un identificador registrado por otro dispositivo.
 
-```bash
-bash tools/separate-mobile.sh
-```
-
-El script mueve la carpeta completa, sin sobrescribir un destino existente,
-y después actualiza las referencias en README/guía/documentación activa y los
-patrones de `.gitignore`. Se puede inspeccionar con `--dry-run`. Tras moverla,
-abre `sigra-mobile` como proyecto independiente para desarrollar allí.
-
-La primera actualización está documentada en `mobile/README.md`: contrato
-API 1.1.1, filtros globales, distancias nulas, conteos ciudadanos, permisos y
-corrección del registro automático después de abandonar la red. No se cambia
-la versión del backend ni se crea un endpoint para publicar reportes sin
-validación.
-
-Se comprobó la sintaxis del script de separación y su destino con dry-run.
-El wrapper de Gradle se dejó ejecutable para Linux. La comprobación
-`bash mobile/gradlew --version` confirma que falta Java en este entorno; no
-se pudo compilar, ejecutar las pruebas Kotlin ni validar el APK.
+Las estimaciones y notificaciones son experimentales, sin garantía de anticipación,
+precisión ni sustitución de autoridades. Las pruebas de simulación no publican alertas
+reales y no equivalen a validación en campo.

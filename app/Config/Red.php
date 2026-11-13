@@ -24,6 +24,9 @@ class Red extends BaseConfig
     /** Teléfonos distintos mínimos para aceptar un evento ciudadano. */
     public int $minDevices = 3;
 
+    /** Stops new experimental and official informational notifications. */
+    public bool $alertingEnabled = true;
+
     /** Ventana temporal para agrupar detecciones de un mismo evento. */
     public int $clusterWindowSeconds = 25;
 
@@ -110,6 +113,7 @@ class Red extends BaseConfig
     public function __construct()
     {
         parent::__construct();
+        $this->alertingEnabled = filter_var(env('red.alertingEnabled', true), FILTER_VALIDATE_BOOL);
 
         $appKey = (string) env('red.appKey', '');
         $this->appKey = $appKey !== '' ? $appKey : (string) env('APP_API_TOKEN', '');

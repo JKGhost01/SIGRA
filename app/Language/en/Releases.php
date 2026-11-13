@@ -2,7 +2,33 @@
 
 return [
     'history' => [
-        '1.1.1' => [
+        '1.2.1' => [
+            'name' => 'Reproducible installation and backend robustness',
+            'summary' => 'Reproducible Composer installation, secure device registration, validated providers and visible catalog freshness.',
+            'changes' => [
+                'Corrected Composer metadata and autoload, PHP 8.2-compatible lock and documented clean installation.',
+                'Local secret initialization without exposing values or replacing existing keys; HTTP database reset retired.',
+                'Existing UUID registration requires its current device token; authenticated rotation invalidates the previous token.',
+                'Validated fields and external links, verified TLS, bounded retries and magnitude-aware source correlation.',
+                'Visible catalog freshness, assets for both document roots and API requests excluded from PWA caching.',
+                'Consistent ES/EN documentation, separate Android development and explicit experimental scope; PHPStan and isolated MySQL checks in CI.',
+            ],
+        ],
+            '1.2.0' => [
+            'name' => 'Modular architecture and automatic synchronization',
+            'summary' => 'A modular monolith with use cases, presentation-only views, audit trails and automatic source updates from the map without mandatory cron.',
+            'changes' => [
+                'Capability modules for catalog, ingestion, citizen reports, sensors, alerting and system, with explicit contracts and dependencies.',
+                'Thin controllers and presentation-only views; queries and processing outside Views, with catalog JavaScript in public assets.',
+                'Automatic map updates with a shared 60-second cache, concurrency locking and stored-data fallback; cron is optional.',
+                'Preserved legacy routes, /api/v1 endpoints, versioned errors, correlation IDs and an OpenAPI contract.',
+                'Ingestion and alert-decision audits in two new tables, committing each alert and its decision together before delivery.',
+                'Isolated simulations, a publication kill switch and server-console alert cancellation.',
+                'SGC/USGS correlation retains both source references and preserves ambiguous candidates.',
+                'Architecture, HTTP contract, automatic refresh and isolated MySQL persistence tests, with deployment documentation.',
+            ],
+        ],
+    '1.1.1' => [
             'name' => 'Reports checked against SGC',
             'summary' => 'Citizen reports remain private and only contribute a count to an official SGC earthquake after the participant threshold is reached.',
             'changes' => [

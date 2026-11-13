@@ -45,8 +45,9 @@ flowchart LR
 
 | Componente | Función |
 |---|---|
-| `ApiRed` | Contrato HTTP, autenticación y validación de forma. |
-| `RedNetworkService` | Reglas de negocio, fusión, entrega y estadísticas. |
+| `SensorNetwork/Http` | Contrato HTTP, filtros de autenticación y parsing. |
+| `SensorNetwork/Application` | Registro, latido y comando de detección. |
+| `Alerting/Application` | Evaluación, auditoría de decisiones y entrega separada. |
 | `PwaveFusion` | Agrupación, localización TDOA, magnitud y confianza. |
 | `FcmService` | Push opcional con Firebase HTTP v1. |
 | `RedDeviceModel` y compañía | Acceso a las cuatro tablas de la red. |
@@ -59,7 +60,8 @@ flowchart LR
 - `red_alerts`: eventos fusionados (ciudadanos o SGC).
 - `red_alert_deliveries`: a qué teléfono se entregó cada alerta y con qué ETA.
 
-La migración es `20261103000001_CreateRedNetworkTables.php`.
+El esquema base es `20261104000001_CreateSigraSchema.php`; la auditoría se añade con
+`20261112000002_CreateArchitectureAudit.php`.
 
 ## Algoritmo de fusión
 
@@ -104,52 +106,13 @@ dinámicas siempre van a la red para no mostrar datos sísmicos obsoletos.
 
 ## App Android
 
-Carpeta `mobile/`. Kotlin + Jetpack Compose.
+El cliente Android está en desarrollo en un repositorio separado. SIGRA backend
+expone [OpenAPI](api/openapi.yaml) como contrato de registro, latido, detección,
+revocación y consulta de alertas; no incluye código Kotlin ni genera APK.
 
-### Funciones
-
-- Servicio en primer plano con sensor de aceleración (`TYPE_LINEAR_ACCELERATION` o acelerómetro).
-- Filtro pasa-banda 0.5–10 Hz y detector STA/LTA con confirmación de 3 muestras.
-- Ubicación con FusedLocationProvider.
-- Registro y token de dispositivo.
-- Latido cada 30 s y polling de alertas cada 5 s.
-- Notificación de alta prioridad, pantalla completa, sonido y vibración.
-- Mapa OpenStreetMap con epicentros, radio de alerta y eventos SGC.
-- Ajustes de radio, magnitud mínima, notificaciones y baja de la red.
-- Push FCM opcional y reintento por polling.
-
-### Compilar
-
-Requisitos: Android Studio (Ladybug o superior) o JDK 17 + SDK 35.
-
-```bash
-cd mobile
-cp local.properties.example local.properties
-# edita sdk.dir, sigra.baseUrl y sigra.apiKey
-./gradlew :app:assembleDebug
-```
-
-En Windows:
-
-```powershell
-cd mobile
-copy local.properties.example local.properties
-.\gradlew.bat :app:assembleDebug
-```
-
-El APK queda en `mobile/app/build/outputs/apk/debug/app-debug.apk`.
-
-Para producción, `sigra.baseUrl` debe ser `https://tu-dominio/` y `sigra.apiKey` debe
-coincidir con `APP_API_TOKEN` o `red.appKey` del servidor.
-
-### Probar con el emulador
-
-1. Arranca el servidor local: `php spark serve --host 0.0.0.0 --port 8080`.
-2. En `local.properties` usa `sigra.baseUrl=http://10.0.2.2:8080/`.
-3. Compila e instala el APK en el emulador.
-4. Acepta ubicación y notificaciones; activa el monitoreo.
-5. En el emulador, usa **Extended controls > Virtual sensors > Accelerometer** para mover el sensor.
-   La alerta se emite cuando tres o más teléfonos reportan la misma onda P.
+Las simulaciones del backend deben usar `simulated: true`, que evita persistencia y
+publicación en canales reales. Un resultado simulado no valida científicamente una
+red de alerta temprana.
 
 ## Operación
 

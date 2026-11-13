@@ -17,7 +17,7 @@ def request(route="/sismos/create", data=None):
     global checks
     body = urlencode(data or {}).encode()
     env = dict(os.environ, REQUEST_METHOD="POST" if data is not None else "GET",
-               SCRIPT_FILENAME=str(ROOT / "index.php"), SCRIPT_NAME="/index.php", REQUEST_URI=route,
+               SCRIPT_FILENAME=str(ROOT / "tests/Support/cgi.php"), SCRIPT_NAME="/index.php", REQUEST_URI=route,
                QUERY_STRING="", SERVER_NAME="localhost", SERVER_PORT="8080", HTTP_HOST="localhost:8080",
                REDIRECT_STATUS="200", CONTENT_TYPE="application/x-www-form-urlencoded",
                CONTENT_LENGTH=str(len(body)), REMOTE_ADDR="192.0.2.1",

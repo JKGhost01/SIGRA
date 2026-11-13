@@ -2,12 +2,8 @@
 
 declare(strict_types=1);
 
-// MySQL integration on the existing SIGRA database. Fixture writes are rolled back.
-define('FCPATH', dirname(__DIR__) . DIRECTORY_SEPARATOR);
-define('ENVIRONMENT', 'development');
-require FCPATH . 'app/Config/Paths.php';
-require FCPATH . 'system/Boot.php';
-CodeIgniter\Boot::bootConsole(new Config\Paths());
+// Fixtures are restricted to an explicitly selected, disposable database.
+require __DIR__ . '/Integration/bootstrap.php';
 
 use App\Libraries\CitizenReportService;
 use App\Libraries\RedApiException;

@@ -13,6 +13,7 @@
 (function () {
     'use strict';
 
+    const ICON_URL = (window.SIGRA_ASSETS && window.SIGRA_ASSETS.icon) || '/public/assets/images/icon-192.png';
     const API = window.SIGRA_RED_API || '/api/red/red';
     const RED_URL = window.SIGRA_RED_URL || '/red';
     const LS_ALERTS = 'sigra_web_alerts_v1';
@@ -281,8 +282,8 @@
         const cuerpo = (distanciaTexto ? trRed('distanceFromYou', distanciaTexto) + '. ' : '') + trRed('alertSpeech');
         const opciones = {
             body: cuerpo,
-            icon: '/public/assets/images/icon-192.png',
-            badge: '/public/assets/images/icon-192.png',
+            icon: ICON_URL,
+            badge: ICON_URL,
             tag: 'sigra-' + alerta.uuid,
             renotify: true,
             requireInteraction: true,

@@ -21,8 +21,8 @@ $langUrl = static fn (string $code): string => site_url('language/' . $code) . '
 <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet">
 <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
 <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
-<link rel="manifest" href="/public/manifest.webmanifest">
-<link rel="apple-touch-icon" href="/public/assets/images/apple-touch-icon.png">
+<link rel="manifest" href="<?= sigra_public_url('manifest.webmanifest') ?>">
+<link rel="apple-touch-icon" href="<?= sigra_public_url('assets/images/apple-touch-icon.png') ?>">
 
 <script>
 window.SIGRA_ICONS = <?= json_encode(array_combine(['pin', 'home', 'sun', 'moon'], array_map('sigra_icon', ['pin', 'home', 'sun', 'moon'])), JSON_HEX_TAG | JSON_HEX_AMP | JSON_HEX_APOS | JSON_HEX_QUOT) ?>;
@@ -331,7 +331,7 @@ window.SIGRA_ICONS = <?= json_encode(array_combine(['pin', 'home', 'sun', 'moon'
 <nav class="navbar navbar-expand-lg sticky-top">
     <div class="container-fluid px-3 px-lg-4">
         <a class="navbar-brand" href="<?= site_url('sismos') ?>" aria-label="<?= esc(lang('Sigra.ariaVersion', [$sigraConfig->version])) ?>">
-            <img class="sigra-logo" src="<?= base_url('public/assets/images/sigra-logo.png') ?>" alt="SIGRA">
+            <img class="sigra-logo" src="<?= sigra_public_url('assets/images/sigra-logo.png') ?>" alt="SIGRA">
             <span class="sigra-version" title="SIGRA <?= esc($sigraConfig->label()) ?> · <?= esc(lang('Sigra.releaseName')) ?> · build <?= esc($sigraConfig->build) ?>">v<?= esc($sigraConfig->version) ?></span>
         </a>
 
@@ -427,6 +427,7 @@ window.SIGRA_ICONS = <?= json_encode(array_combine(['pin', 'home', 'sun', 'moon'
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 <script>
+    window.SIGRA_ASSETS = <?= json_encode(['icon' => sigra_public_url('assets/images/icon-192.png')], JSON_HEX_TAG | JSON_HEX_AMP | JSON_HEX_APOS | JSON_HEX_QUOT) ?>;
     window.SIGRA_I18N = <?= json_encode([
         'locale'     => $locale,
         'themeDark'  => lang('Sigra.navThemeDark'),
@@ -505,7 +506,7 @@ window.SIGRA_ICONS = <?= json_encode(array_combine(['pin', 'home', 'sun', 'moon'
     window.SIGRA_RED_API = <?= json_encode(parse_url(site_url('api/red/red'), PHP_URL_PATH), JSON_UNESCAPED_SLASHES) ?>;
     window.SIGRA_RED_URL = <?= json_encode(site_url('red')) ?>;
 </script>
-<script src="/public/assets/js/sigra-red.js"></script>
+<script src="<?= sigra_public_url('assets/js/sigra-red.js') ?>"></script>
 <script>
     (function () {
         const root = document.documentElement;

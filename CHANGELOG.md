@@ -3,6 +3,29 @@
 All notable changes to SIGRA are documented here. The project follows
 [Semantic Versioning](https://semver.org/).
 
+## [1.2.1] — 2026-11-12 · “Instalación reproducible y robustez del backend”
+
+- Reproducible Composer installation, project metadata, minimal PHP 8.2-compatible lock and progressive PHPStan analysis.
+- Safe local secret initialization, additive deployment instructions and retirement of the HTTP database-reset helper.
+- Require the current device token before re-registration; rotate it and reject the previous token.
+- Validate provider fields and external links, verify TLS, bound HTTP retries and expose the last successful map refresh.
+- Support assets and offline pages with traditional and public document roots; never cache API/refresh requests in the service worker.
+- Clarify experimental limitations and the separate Android development repository in both READMEs.
+- Application build: `20261112.5`. API contract remains `v1`; existing device re-registration now requires its current token.
+
+## [1.2.0] — 2026-11-12 · “Arquitectura modular y sincronización automática”
+
+- Capability modules for catalog, ingestion, citizen reports, sensors, alerting and system, with explicit contracts and dependencies.
+- Thin controllers and presentation-only views; queries and processing outside Views, with catalog JavaScript in public assets.
+- Automatic map updates with a shared 60-second cache, concurrency locking and stored-data fallback; cron is optional.
+- Preserved legacy routes, /api/v1 endpoints, versioned errors, correlation IDs and an OpenAPI contract.
+- Ingestion and alert-decision audits in two new tables, committing each alert and its decision together before delivery.
+- Isolated simulations, a publication kill switch and server-console alert cancellation.
+- SGC/USGS correlation retains both source references and preserves ambiguous candidates.
+- Architecture, HTTP contract, automatic refresh and isolated MySQL persistence tests, with deployment documentation.
+- Requires additive migration `20261112000002_CreateArchitectureAudit`, or the equivalent generated deployment SQL; no database reset.
+- Application build: `20261112.4`. Existing API contract remains `v1`.
+
 ## [1.1.1] — 2026-11-12 · “Reportes contrastados con SGC”
 
 - Store citizen submissions privately in one new `citizen_reports` table in the existing MySQL database.
