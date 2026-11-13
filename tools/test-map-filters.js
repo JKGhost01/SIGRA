@@ -13,14 +13,19 @@ const text = { ...dictionary, locale: 'en-US', months: [] };
 const pageScript = fs.readFileSync(path.join(root, 'public/assets/js/modules/seismic-map/catalog.js'), 'utf8');
 const mapScript = fs.readFileSync(path.join(root, 'public/assets/js/mapa-sismos.js'), 'utf8');
 
-function page({ saved = null, storageBlocked = false, permission = 'prompt', locate } = {}) {
+function page({ saved = null, storageBlocked = false, permission = 'prompt', locate, syncResult = null } = {}) {
     const elements = new Map();
     const required = ['radio-filtro', 'btn-mi-ubicacion', 'estado-ubicacion', 'orden-eventos',
         'filtro-municipio', 'eventos-lista', 'contador-eventos', 'filtro-fuente', 'filtro-magnitud',
-        'btn-limpiar-filtros', 'filtros-resumen'];
+        'btn-limpiar-filtros', 'filtros-resumen', 'catalog-sync-status', 'catalog-source-indicator'];
     for (const id of required) elements.set(id, {
         value: id === 'radio-filtro' ? '0' : '', textContent: '', disabled: false,
         innerHTML: '', listeners: {},
+        classList: {
+            values: new Set(),
+            toggle(name, enabled) { if (enabled) this.values.add(name); else this.values.delete(name); },
+            contains(name) { return this.values.has(name); },
+        },
         addEventListener(type, callback) { this.listeners[type] = callback; },
         querySelectorAll() { return []; },
         querySelector() { return this.label ||= { textContent: '' }; },
@@ -46,7 +51,7 @@ function page({ saved = null, storageBlocked = false, permission = 'prompt', loc
         },
         setTimeout: () => 1, clearTimeout() {}, setInterval: () => 1, clearInterval() {},
         matchMedia: () => ({ matches: false }),
-        fetch: async () => ({ json: async () => ({ ok: false }) }),
+        fetch: async () => ({ json: async () => syncResult || ({ ok: false }) }),
         inicializarMapaListado() {}, fijarUbicacionListado() {}, dibujarRadioListado() {},
         ajustarVistaListado() {}, actualizarDistanciaListado() {},
         pintarMarcadoresListado(events) { visible = events; },
@@ -71,6 +76,37 @@ function page({ saved = null, storageBlocked = false, permission = 'prompt', loc
 const flush = () => new Promise(resolve => setImmediate(resolve));
 
 async function main() {
+    const partial = page({ syncResult: {
+        ok: true, eventos: [{ id: 'near', lat: 4.6, lng: -74.1, ubicacion: 'Stored SGC', magnitud: 3 }],
+        errors: { SGC: 'Source unavailable' }, last_success_at: 1800000000,
+    } });
+    await flush();
+    assert.match(partial.elements.get('catalog-sync-status').textContent, /^SGC: update unavailable/);
+    assert.equal(partial.elements.get('catalog-source-indicator').classList.contains('bg-warning'), true);
+    assert.deepEqual(Array.from(partial.visible, event => event.id), ['near'], 'Partial failure hides stored data');
+    for (const source of ['EMSC', 'GEONET', 'GEOFON', 'INGV']) {
+        const degraded = page({ syncResult: { ok: true, eventos: [], errors: { [source]: 'Unavailable' } } });
+        await flush();
+        assert.ok(degraded.elements.get('catalog-sync-status').textContent.startsWith(source + ':'));
+        assert.equal(degraded.elements.get('catalog-source-indicator').classList.contains('bg-warning'), true);
+    }
+    const healthy = page({ syncResult: { ok: true, eventos: [], errors: {}, last_success_at: 1800000000 } });
+    await flush();
+    assert.match(healthy.elements.get('catalog-sync-status').textContent, /^Last source update:/);
+    assert.equal(healthy.elements.get('catalog-source-indicator').classList.contains('bg-success'), true);
+    const multiple = page({ syncResult: { ok: true, errors: {}, eventos: [
+        { id: 'emsc', fuente: 'EMSC', lat: 4, lng: -74, magnitud: 4 },
+        { id: 'geonet', fuente: 'GEONET', lat: -40, lng: 174, magnitud: 4 },
+        { id: 'geofon', fuente: 'GEOFON', lat: -36, lng: -97, magnitud: 5 },
+        { id: 'ingv', fuente: 'INGV', lat: 40, lng: 14, magnitud: 3 },
+    ] } });
+    await flush();
+    for (const source of ['EMSC', 'GEONET', 'GEOFON', 'INGV']) {
+        const selector = multiple.elements.get('filtro-fuente');
+        selector.value = source;
+        selector.listeners.change();
+        assert.deepEqual(Array.from(multiple.visible, event => event.fuente), [source]);
+    }
     const p = page();
     await flush();
     assert.equal(p.elements.get('radio-filtro').disabled, false);
@@ -147,7 +183,7 @@ async function main() {
     assert.equal((await vm.runInContext('obtenerUbicacionUsuario()', geo)).coords.longitude, -74.1);
     geo.fetch = async () => ({ ok: true, json: async () => ({ latitude: 200, longitude: 0 }) });
     await assert.rejects(vm.runInContext('obtenerUbicacionUsuario()', geo));
-    console.log('OK: initial load, radius filtering, saved preferences, denied location, retry, blocked storage, pending clear and IP timeout.');
+    console.log('OK: source-specific partial refresh, stored-data fallback, healthy refresh, initial load, radius filtering, saved preferences, denied location, retry, blocked storage, pending clear and IP timeout.');
 }
 
 main().catch(error => { console.error(error); process.exitCode = 1; });

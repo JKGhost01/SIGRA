@@ -3,6 +3,17 @@
 All notable changes to SIGRA are documented here. The project follows
 [Semantic Versioning](https://semver.org/).
 
+## [1.3.0] — 2026-11-13 · “Global sources, responsible polling and corrected map”
+
+- EMSC, GeoNet, GEOFON/GFZ and INGV join SGC and USGS in the catalog, API and filters; source references survive correlation.
+- Map and cron share polling, with a five-minute minimum per provider, conditional caching and persistent 403/429 cooldowns.
+- Honor Retry-After and Cache-Control, back off after failures and identify SIGRA publicly; use the static USGS feed for compatible queries.
+- Correct USGS latitude/longitude mapping; provide an idempotent migration and SQL alternative to repair stored data with an audit trail.
+- Validate coordinates before rendering and bound vertical map panning; update per-source degraded status and ES/EN translations.
+- Regression checks cover normalization, six sources, HTTP cooldowns, MySQL repair and Leaflet browser projection.
+- Upgrade: run `php spark migrate --all` or import `deploy/corregir-coordenadas-usgs.sql` after installing the code. Preserve `writable/cache/providers` across deployments.
+- Application build: `20261113.1`; API contract `v1` and Android version `1.0.0` remain unchanged. Local small-event coverage still depends on regional providers; the SGC 403 is unresolved.
+
 ## [1.2.1] — 2026-11-12 · “Instalación reproducible y robustez del backend”
 
 - Reproducible Composer installation, project metadata, minimal PHP 8.2-compatible lock and progressive PHPStan analysis.

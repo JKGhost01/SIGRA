@@ -30,6 +30,7 @@ with zipfile.ZipFile(output, 'w', zipfile.ZIP_DEFLATED) as archive:
     for path in files:
         archive.write(root / path, path)
     archive.write(root / 'deploy/LEEME-SUBIDA.md', 'docs/deployment/LEEME-SUBIDA.md')
+    archive.write(root / 'deploy/corregir-coordenadas-usgs.sql', 'docs/deployment/corregir-coordenadas-usgs.sql')
     archive.write(root / 'deploy/auditoria-modular.sql', 'docs/deployment/auditoria-modular.sql')
     archive.writestr('docs/deployment/archivos-retirados.txt', '\n'.join(removed) + '\n')
     archive.writestr('docs/deployment/archivos-incluidos.txt', '\n'.join(files) + '\n')

@@ -18,10 +18,10 @@ class Sigra extends BaseConfig
 
     public string $project = 'SIGRA';
     public string $tagline = 'Monitor sísmico global y red ciudadana';
-    public string $version = '1.2.1';
-    public string $releaseName = 'Instalación reproducible y robustez del backend';
-    public string $releaseDate = '2026-11-12';
-    public string $build = '20261112.5';
+    public string $version = '1.3.0';
+    public string $releaseName = 'Fuentes globales, consultas responsables y mapa corregido';
+    public string $releaseDate = '2026-11-13';
+    public string $build = '20261113.1';
     public string $channel = 'stable';
     public string $apiVersion = 'v1';
     public string $mobileVersion = '1.0.0';
@@ -44,6 +44,19 @@ class Sigra extends BaseConfig
      * @var array<string, array{date: string, name: string, summary: string, changes: list<string>}>
      */
     public array $changelog = [
+        '1.3.0' => [
+            'date' => '2026-11-13',
+            'name' => 'Fuentes globales, consultas responsables y mapa corregido',
+            'summary' => 'Seis fuentes oficiales, protección persistente de proveedores y reparación de las coordenadas USGS del mapa y el histórico.',
+            'changes' => [
+                'EMSC, GeoNet, GEOFON/GFZ e INGV integrados con SGC y USGS en catálogo, API y filtros; referencias conservadas al correlacionar.',
+                'Consultas compartidas entre mapa y cron, mínimo de cinco minutos por proveedor, caché condicional y pausas persistentes ante 403/429.',
+                'Respeto de Retry-After y Cache-Control, espera progresiva ante fallos e identificación pública de SIGRA; USGS usa su feed estático cuando es compatible.',
+                'Latitud y longitud USGS corregidas; migración idempotente y SQL alternativo para reparar datos antiguos conservando auditoría.',
+                'Validación de coordenadas al dibujar y límites verticales del mapa; estado degradado por fuente y traducciones ES/EN actualizados.',
+                'Regresiones de normalización, seis fuentes, pausas HTTP, reparación MySQL y proyección Leaflet en navegador.',
+            ],
+        ],
         '1.2.1' => [
             'date' => '2026-11-12',
             'name' => 'Instalación reproducible y robustez del backend',

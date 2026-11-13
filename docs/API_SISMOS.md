@@ -1,12 +1,12 @@
-# API de sismos · SIGRA 1.2.1 · contrato v1
+# API de sismos · SIGRA 1.3.0 · contrato v1
 
-Las rutas y los campos usados por Android se conservan. `1.2.1` identifica la
+Las rutas y los campos usados por Android se conservan. `1.3.0` identifica la
 aplicación; `v1` identifica el contrato. Todas las respuestas de los endpoints
 listados son JSON y llevan:
 
 ```http
 Cache-Control: no-store, max-age=0
-X-SIGRA-Version: 1.2.1
+X-SIGRA-Version: 1.3.0
 X-API-Version: v1
 ```
 
@@ -28,7 +28,7 @@ Sin token configurado, producción devuelve 401; desarrollo permite el acceso.
 | GET | `/api/sismos/detalle/{id}` | `status`, `event`, `generated_at`; 404 si no existe |
 | GET | `/api/health` | Estado de la aplicación y de MySQL; 200 o 503 |
 
-Los eventos públicos incluyen únicamente fuentes oficiales SGC y USGS.
+Los eventos públicos incluyen únicamente fuentes oficiales SGC, USGS, EMSC, GEONET, GEOFON e INGV.
 Los reportes ciudadanos permanecen privados; nunca se devuelven como eventos.
 `fuente` permite seleccionar la fuente en `/recent`.
 
@@ -39,7 +39,7 @@ Los reportes ciudadanos permanecen privados; nunca se devuelven como eventos.
 | `hours` | 120 | Entero entre 1 y 336 |
 | `limit` | 300 | Entero entre 1 y 1000 |
 | `min_magnitude` | Sin mínimo | Número finito entre -2 y 10 |
-| `fuente` | Todas | Texto, por ejemplo `SGC` o `USGS` |
+| `fuente` | Todas | Texto, `SGC`, `USGS`, `EMSC`, `GEONET`, `GEOFON` o `INGV` |
 | `lat`, `lng` | Sin origen | Se envían juntos; latitud -90…90 y longitud -180…180 |
 | `radius_km` | Sin filtro | Número finito entre 0 y 20000; requiere origen. 0 conserva todos |
 | `order` | `fecha` | `fecha`, `distancia` o `magnitud`; distancia requiere origen |

@@ -110,3 +110,6 @@ captures/
 # Esta excepción es esquema versionado, sin datos ni credenciales.
 # Los demás volcados SQL siguen ignorados por las reglas anteriores.
 !/deploy/auditoria-modular.sql
+
+# Reparación de coordenadas sin datos privados; necesaria para el despliegue.
+!/deploy/corregir-coordenadas-usgs.sql

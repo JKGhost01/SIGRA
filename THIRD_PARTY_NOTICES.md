@@ -13,6 +13,10 @@ This file records them so deployments remain legally compliant.
 |---|---|---|
 | **SGC — Servicio Geológico Colombiano** | Earthquake feed, event metadata, official event maps | Public information from the official agency. SIGRA shows the source and links to the original event. Subject to SGC terms and Colombian public-information rules. <https://www.sgc.gov.co/> |
 | **USGS — U.S. Geological Survey** | FDSN/GeoJSON earthquake feed | U.S. Government work, generally public domain. Attribution shown as a courtesy. <https://earthquake.usgs.gov/> |
+| **EMSC — Euro-Mediterranean Seismological Centre** | Normalized FDSN JSON events, with original IDs and event links | CC BY 4.0. <https://www.seismicportal.eu/fdsn-wsevent.html> · <https://creativecommons.org/licenses/by/4.0/> |
+| **GeoNet — Earth Sciences NZ** | Normalized recent earthquake observations | CC BY 3.0 NZ. Acknowledgement to GeoNet and programme sponsors NHC, Earth Sciences NZ, LINZ, NEMA and MBIE. <https://www.geonet.org.nz/policy> · <https://creativecommons.org/licenses/by/3.0/nz/> |
+| **GEOFON / GFZ Helmholtz Centre for Geosciences / GEVN** | Normalized recent worldwide earthquake observations | CC BY 4.0. <https://geofon.gfz.de/eqinfo/faq/> |
+| **INGV — Istituto Nazionale di Geofisica e Vulcanologia** | Normalized FDSN earthquake observations for Italy and its surroundings | Source attribution and official event links retained. See INGV Data Policy: <https://data.ingv.it/docs/implementation/> |
 | **OpenStreetMap** | Base map data via raster tiles | © OpenStreetMap contributors, **ODbL 1.0**. <https://www.openstreetmap.org/copyright> · <https://opendatacommons.org/licenses/odbl/1-0/> |
 | **OpenStreetMap Foundation tile servers** | `tile.openstreetmap.org` | Subject to the **OSMF Tile Usage Policy** (attribution, no heavy scraping, valid User-Agent). <https://operations.osmfoundation.org/policies/tiles/> |
 | **OpenTopoMap** | Topographic tile layer | Map data © OpenStreetMap contributors, SRTM. Tiles under **CC-BY-SA**. <https://opentopomap.org/about> |

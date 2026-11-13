@@ -79,6 +79,10 @@ ob_start();
                 <h2><?= esc(lang('Sigra.sourcesTitle')) ?></h2>
                 <p><?= esc(lang('Sigra.sourcesText1')) ?></p>
                 <p><?= esc(lang('Sigra.sourcesText2')) ?></p>
+                <p class="small"><a href="https://www.seismicportal.eu/fdsn-wsevent.html" target="_blank" rel="noopener">EMSC</a> · <a href="https://creativecommons.org/licenses/by/4.0/" target="_blank" rel="noopener">CC BY 4.0</a>.
+                    <a href="https://www.geonet.org.nz/policy" target="_blank" rel="noopener">GeoNet · Earth Sciences NZ · NHC · LINZ · NEMA · MBIE</a> · <a href="https://creativecommons.org/licenses/by/3.0/nz/" target="_blank" rel="noopener">CC BY 3.0 NZ</a>.
+                    <a href="https://geofon.gfz.de/eqinfo/faq/" target="_blank" rel="noopener">GEOFON · GFZ · GEVN</a> · CC BY 4.0.
+                    <a href="https://data.ingv.it/docs/implementation/" target="_blank" rel="noopener">INGV</a>.</p>
             </div>
             <dl class="about-facts">
                 <div><dt><?= esc(lang('Sigra.factsSources')) ?></dt><dd><?= esc(lang('Sigra.factsSourcesValue')) ?></dd></div>

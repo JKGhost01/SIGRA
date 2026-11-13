@@ -58,7 +58,7 @@ class SismoModel extends Model
      */
     private function eventosPublicos(\CodeIgniter\Database\BaseBuilder $query): \CodeIgniter\Database\BaseBuilder
     {
-        return $query->whereIn('fuente', ['SGC', 'USGS'])->notLike('id', 'SGI', 'after');
+        return $query->whereIn('fuente', ['SGC', 'USGS', 'EMSC', 'GEONET', 'GEOFON', 'INGV'])->notLike('id', 'SGI', 'after');
     }
 
     public function obtenerTodos(): array

@@ -13,7 +13,7 @@ use App\Modules\SeismicIngestion\Domain\Services\ProviderEventValidator;
 /**
  * Cliente de la red global USGS.
  *
- * Descarga el feed FDSN en GeoJSON y lo normaliza al mismo contrato que
+ * Descarga el feed estático semanal o una consulta FDSN en GeoJSON y lo normaliza al mismo contrato que
  * usa SgcClient, de modo que el modelo, la API y el frontend no necesitan
  * saber de qué red viene cada evento.
  */
@@ -59,18 +59,32 @@ class UsgsClient
         }
 
         $eventos = [];
+        $summary = $this->useSummaryFeed();
+        $now = time();
+        $start = $now - $this->config->windowDays * 86400;
         foreach ($contenido['features'] as $feature) {
             $evento = $this->normalizarEvento($feature);
+            $time = is_array($feature) ? ($feature['properties']['time'] ?? null) : null;
+            if ($summary && (!is_numeric($time) || (float) $time / 1000 < $start
+                || (float) $time / 1000 > $now || (float) ($feature['properties']['mag'] ?? -INF) < $this->config->usgsMinMagnitude)) continue;
             if ($evento !== null) {
                 $eventos[] = $evento;
             }
         }
 
-        return $eventos;
+        return $summary ? array_slice($eventos, 0, max(1, $this->config->usgsLimit)) : $eventos;
+    }
+
+    private function useSummaryFeed(): bool
+    {
+        return $this->config->usgsUseSummaryFeed && $this->config->windowDays <= 7
+            && $this->config->usgsMinMagnitude >= 2.5
+            && $this->config->usgsEndpoint === 'https://earthquake.usgs.gov/fdsnws/event/1/query';
     }
 
     private function construirUrl(): string
     {
+        if ($this->useSummaryFeed()) return 'https://earthquake.usgs.gov/earthquakes/feed/v1.0/summary/2.5_week.geojson';
         $zonaUtc = new DateTimeZone('UTC');
         $ahora   = new DateTimeImmutable('now', $zonaUtc);
 
@@ -119,6 +133,7 @@ class UsgsClient
 
         $metadata = [
             'agency'    => 'USGS',
+            'coordinate_order' => 'lat-lon-v2',
             'depth_known' => isset($coordenadas[2]),
             'source_id' => $sourceId,
         ];
@@ -131,8 +146,8 @@ class UsgsClient
         return [
             'id'           => $id,
             'fecha_hora'   => $fecha->format('Y-m-d H:i:s'),
-            'latitud'      => round((float) $coordenadas[0], 6),
-            'longitud'     => round((float) $coordenadas[1], 6),
+            'latitud'      => round((float) $coordenadas[1], 6),
+            'longitud'     => round((float) $coordenadas[0], 6),
             'magnitud'     => round((float) $magnitud, 1),
             'profundidad'  => isset($coordenadas[2]) && is_numeric($coordenadas[2]) ? round((float) $coordenadas[2], 2) : 0.0,
             'ubicacion'    => (string) ($propiedades['place'] ?? 'Ubicación no informada'),

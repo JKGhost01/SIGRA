@@ -11,20 +11,28 @@ No extraerlo dentro de `public/` ni dentro de otra carpeta llamada `sigra`.
      antes de abrir el mapa. Es la alternativa al SQL, no es necesario hacer ambas.
 2. Sube y extrae el ZIP en la raíz de SIGRA, permitiendo sobrescribir los archivos
    incluidos. Por FTP, descomprímelo en tu equipo y sube su contenido conservando rutas.
+   **Corrección de coordenadas USGS:** después de subir el código y antes de abrir
+   el mapa, ejecuta `php spark migrate --all`. Si utilizas phpMyAdmin, importa
+   `docs/deployment/corregir-coordenadas-usgs.sql` como alternativa. Repara también
+   el histórico, conserva los valores anteriores y se puede repetir. No basta con
+   cambiar el JavaScript: los datos antiguos tenían latitud y longitud invertidas.
 3. Los archivos obsoletos están enumerados en `docs/deployment/archivos-retirados.txt`.
    Elimínalos para completar la limpieza de la arquitectura; las rutas nuevas ya no
    ejecutan esas vistas antiguas.
 4. Abre `/sismos`. El navegador consulta `/sismos/sync` inmediatamente y después cada
-   15 segundos. Cuando vence la caché compartida (60 segundos por defecto), se ejecuta
+   15 segundos. Cuando vence la caché compartida (mínimo 300 segundos), se ejecuta
    la ingesta. No hace falta crear un cron. Sin visitantes no hay consultas periódicas;
    el comando `php spark sigra:sync` permanece disponible opcionalmente.
 5. Comprueba `/api/health` y `/sismos/sync`. Si falla una fuente, el mapa conserva lo
-   almacenado y vuelve a intentar al terminar el intervalo. `synced: false` dentro del
+   almacenado. Los rechazos 401/403 pausan la fuente al menos 24 horas; 429 y otros
+   fallos aplican espera progresiva y respetan `Retry-After`. `synced: false` dentro del
    intervalo es normal: indica que esa petición no volvió a descargar las fuentes.
 
 El ZIP no contiene `.env`, `writable/`, `vendor/`, datos, credenciales ni dependencias
 nuevas. Conserva esos directorios y archivos del servidor. `writable/cache` debe seguir
-siendo escribible por PHP, igual que antes.
+siendo escribible por PHP, igual que antes. Conserva `writable/cache/providers` entre
+despliegues: contiene las pausas y validadores de los proveedores. No borres ese
+estado para forzar consultas tras un bloqueo.
 
 El SQL se generó desde la migración `20261112000002_CreateArchitectureAudit`. Solo usa
 `CREATE TABLE IF NOT EXISTS` para las dos tablas de auditoría; no elimina ni vacía

@@ -1,8 +1,8 @@
 # Publicación de la reestructuración en Git
 
-La versión 1.2.1 incluye archivos nuevos, cambios de ubicación, adaptadores antiguos y
-eliminaciones de vistas ejecutables. Estos cambios forman una actualización conjunta:
-el commit debe incluir las rutas nuevas y las eliminaciones al mismo tiempo.
+La versión 1.3.0 añade proveedores, protección persistente de consultas y la reparación
+de coordenadas USGS. El commit debe incluir el código, la migración, su SQL alternativo,
+pruebas, traducciones y documentación de despliegue.
 
 ## Archivos que se versionan
 
@@ -10,8 +10,8 @@ el commit debe incluir las rutas nuevas y las eliminaciones al mismo tiempo.
 - Assets públicos, `sw.js`, traducciones e historial de versión.
 - Pruebas, fixtures sintéticos, scripts de desarrollo y workflow de CI.
 - Documentación de arquitectura, OpenAPI y los documentos de propuesta.
-- `deploy/LEEME-SUBIDA.md` y `deploy/auditoria-modular.sql`: son instrucciones y
-  esquema sin datos; no son una copia de la base de datos.
+- `deploy/LEEME-SUBIDA.md`, `deploy/auditoria-modular.sql` y `deploy/corregir-coordenadas-usgs.sql`: son instrucciones y
+  SQL sin datos privados; no son una copia de la base de datos.
 - `.env.example`, `env` y lockfiles de dependencias, que permiten reproducir la instalación.
 
 ## Archivos que se quedan locales
@@ -35,17 +35,17 @@ Desde la raíz del proyecto, con `main` actualizado:
 
 ```bash
 git status --short
-git switch -c release/1.2.1
+git switch -c release/1.3.0
 python3 tools/check-git.py
 bash tools/test-architecture.sh
 git add -A
 git diff --cached --stat
 git diff --cached --name-status
-git commit -m "release: prepara SIGRA v1.2.1 con arquitectura modular y mejoras del backend"
-git push -u origin release/1.2.1
+git commit -m "release: prepara SIGRA v1.3.0 con fuentes globales y reparación del mapa"
+git push -u origin release/1.3.0
 ```
 
-Después abre un Pull Request de `release/1.2.1` hacia `main`. Revisa los
+Después abre un Pull Request de `release/1.3.0` hacia `main`. Revisa los
 cambios y el resultado de CI antes de integrarlo. No se necesita `push --force`,
 borrar el repositorio ni volver a mover archivos con `git mv`: `git add -A` registra
 también las eliminaciones y Git puede reconocer las vistas trasladadas.

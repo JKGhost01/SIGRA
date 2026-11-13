@@ -44,11 +44,11 @@ class SgcClient
      */
     public function obtenerEventos(): array
     {
+        // A refusal must not trigger another request to the same agency.
         $contenido = ($this->transport ?? new CiFeedTransport())->json($this->config->feedUrl, 10, [
             'Accept' => 'application/json', 'User-Agent' => 'SIGRA/' . config(\Config\Sigra::class)->version,
-            'Referer' => base_url(),
         ]);
-        if (!is_array($contenido) || !isset($contenido['features']) || !is_array($contenido['features'])) {
+        if (!isset($contenido['features']) || !is_array($contenido['features'])) {
             throw new RuntimeException('El SGC devolvió un formato de datos no esperado.');
         }
 

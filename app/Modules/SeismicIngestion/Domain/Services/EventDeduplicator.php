@@ -40,7 +40,7 @@ final class EventDeduplicator
                 $refs[$ref['source'] . ':' . $ref['source_event_id']] = $ref;
             }
             $metadata['source_references'] = array_values($refs);
-            $metadata['correlation'] = $matches[$index] + ['algorithm' => 'space-time-magnitude-v2', 'preferred_source' => 'SGC'];
+            $metadata['correlation'] = $matches[$index] + ['algorithm' => 'space-time-magnitude-v2', 'preferred_source' => (string) ($event['fuente'] ?? 'unknown')];
             $reference[$index]['sgc_metadata'] = json_encode($metadata, JSON_THROW_ON_ERROR | JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES);
             $decisions[] = ['preferred_id' => $event['id'] ?? null, 'correlated_id' => $candidate['id'] ?? null] + $matches[$index];
         }
