@@ -46,6 +46,12 @@ function estiloEpicentro(sismo) {
     };
 }
 
+function coordenadasSismoValidas(sismo) {
+    return Boolean(sismo) && typeof sismo.lat === 'number' && typeof sismo.lng === 'number'
+        && Number.isFinite(sismo.lat) && Number.isFinite(sismo.lng)
+        && Math.abs(sismo.lat) <= 90 && Math.abs(sismo.lng) <= 180;
+}
+
 function marcadorEpicentro(sismo) {
     return L.circleMarker([sismo.lat, sismo.lng], estiloEpicentro(sismo));
 }
@@ -190,6 +196,7 @@ function pintarMarcadoresListado(sismos, ajustarVista) {
         return;
     }
 
+    sismos = (sismos || []).filter(coordenadasSismoValidas);
     estadoMapaListado.sismos = sismos;
     estadoMapaListado.capaSismos.clearLayers();
 
@@ -341,7 +348,8 @@ function actualizarMapaListado(sismos) {
 
 function inicializarMapaListado(elementId, sismos, elementoDistanciaId) {
     const centroDefault = [20, 0]; // vista mundial
-    const mapa = L.map(elementId, { worldCopyJump: true, minZoom: 2 }).setView(centroDefault, 2);
+    const mapa = L.map(elementId, { worldCopyJump: true, minZoom: 2,
+        maxBounds: [[-85.05112878, -180], [85.05112878, 180]], maxBoundsViscosity: 1 }).setView(centroDefault, 2);
     const capaSismos = L.layerGroup().addTo(mapa);
     const contenedorDistancia = document.getElementById(elementoDistanciaId);
 
@@ -402,6 +410,7 @@ function ajustarVistaListado(sismos) {
 
     const mapa = estadoMapaListado.mapa;
     const puntos = (sismos || [])
+        .filter(coordenadasSismoValidas)
         .map(function (sismo) { return [Number(sismo.lat), Number(sismo.lng)]; })
         .filter(function (punto) { return Number.isFinite(punto[0]) && Number.isFinite(punto[1]); });
 
@@ -456,6 +465,7 @@ function dibujarRadioListado(centro, radioKm, ajustarVista) {
  * desde la ubicación actual del usuario.
  */
 function inicializarMapaDetalle(elementId, sismo, elementoDistanciaId) {
+    if (!coordenadasSismoValidas(sismo)) return;
     const mapa = L.map(elementId).setView([sismo.lat, sismo.lng], 9);
 
     L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {

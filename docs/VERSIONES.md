@@ -21,29 +21,41 @@ La versión se define en `app/Config/Sigra.php` y se muestra en:
 Se puede sobrescribir sin tocar código con:
 
 ```ini
-sigra.version = '1.2.1'
-sigra.build = '20261112.5'
+sigra.version = '1.3.0'
+sigra.build = '20261113.1'
 sigra.channel = 'stable'
 ```
 
 ## Versión actual
 
-**v1.2.1 · Instalación reproducible y robustez del backend**
+**v1.3.0 · Fuentes globales, consultas responsables y mapa corregido**
 
-- Fecha: 2026-11-12
-- Build: `20261112.5`
+- Fecha: 2026-11-13
+- Build: `20261113.1`
 - Canal: `stable`
 - API: `v1`
 - App Android: `v1.0.0`
 - Licencia: MIT
 
-La versión de la aplicación (`1.2.1`) es independiente del contrato de la API
+La versión de la aplicación (`1.3.0`) es independiente del contrato de la API
 (`v1`). Se conservan las rutas y los campos de las respuestas válidas para Android.
 Se añaden rutas /api/v1 con errores estructurados; las rutas antiguas conservan su formato.
 La sincronización del mapa funciona automáticamente: no requiere configurar cron.
 La auditoría requiere la migración aditiva o el SQL de despliegue, sin reiniciar la base.
 
 ## Historial
+
+### v1.3.0 · Fuentes globales, consultas responsables y mapa corregido · 2026-11-13
+
+- EMSC, GeoNet, GEOFON/GFZ e INGV integrados con SGC y USGS en catálogo, API y filtros; referencias conservadas al correlacionar.
+- Consultas compartidas entre mapa y cron, mínimo de cinco minutos por proveedor, caché condicional y pausas persistentes ante 403/429.
+- Respeto de Retry-After y Cache-Control, espera progresiva ante fallos e identificación pública de SIGRA; USGS usa su feed estático cuando es compatible.
+- Latitud y longitud USGS corregidas; migración idempotente y SQL alternativo para reparar datos antiguos conservando auditoría.
+- Validación de coordenadas al dibujar y límites verticales del mapa; estado degradado por fuente y traducciones ES/EN actualizados.
+- Regresiones de normalización, seis fuentes, pausas HTTP, reparación MySQL y proyección Leaflet en navegador.
+- Build `20261113.1`; contrato API `v1`, versión Android `1.0.0`. La cobertura local detallada sigue dependiendo de SGC, cuyo 403 no se ha resuelto.
+- Tras subir el código: `php spark migrate --all` o importar `deploy/corregir-coordenadas-usgs.sql`. Conservar `writable/cache/providers`.
+
 
 ### v1.2.1 · Instalación reproducible y robustez del backend · 2026-11-12
 

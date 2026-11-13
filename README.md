@@ -1,8 +1,8 @@
 # SIGRA · Global Seismic Monitor & Citizen Network
 
-> **v1.2.1 · Reproducible installation and backend robustness** — Published SGC/USGS earthquakes in one map, with experimental citizen monitoring.
+> **v1.3.0 · Global sources, responsible polling and corrected map** — Published earthquakes from six official sources in one map, with experimental citizen monitoring.
 
-[![Version](https://img.shields.io/badge/version-1.2.1-087f78.svg)](#versioning)
+[![Version](https://img.shields.io/badge/version-1.3.0-087f78.svg)](#versioning)
 [![PHP](https://img.shields.io/badge/PHP-%3E%3D8.2-777bb4.svg)](https://www.php.net/)
 [![CodeIgniter](https://img.shields.io/badge/CodeIgniter-4.7-ee4323.svg)](https://codeigniter.com/)
 [![License](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
@@ -10,8 +10,7 @@
 *Read this in [Spanish](README.es.md).*
 
 SIGRA is an open-source PHP application that unifies earthquake feeds from the
-**Colombian Geological Survey (SGC)** and the **United States Geological Survey
-(USGS)** into a single searchable map, with a “near me” radius filter, a
+**SGC, USGS, EMSC, GeoNet, GEOFON/GFZ and INGV** into a single searchable map, with a “near me” radius filter, a
 historical archive, a JSON API and an experimental server-side sensor network.
 The Android client is still under development in a separate repository.
 
@@ -42,7 +41,7 @@ limited. SIGRA combines both:
 
 ## Status and scope
 
-- **Available:** published SGC/USGS catalog, map/list/history, filters, API and private citizen reports.
+- **Available:** published multi-source catalog, map/list/history, filters, API and private citizen reports.
 - **Experimental:** sensor fusion, inferred magnitude/location, estimated arrival times and browser/FCM delivery. No field validation or warning-time guarantee is claimed.
 - **In development:** Android in a separate repository; this backend does not ship a mobile app.
 - **Future work:** field evaluation, load benchmarks and further sources; see the [tracked recommendations](docs/RECOMMENDATIONS_STATUS.md).
@@ -54,11 +53,11 @@ SIGRA is for exploration, education and technical experimentation. It does not p
 | Area | What it does |
 |---|---|
 | Global map | Leaflet map with worldwide events, magnitude/depth styling and four base layers. |
-| Unified ingestion | SGC + USGS normalized to one schema, with disk cache and per-source fault tolerance. |
+| Unified ingestion | Six official providers normalized to one schema, with disk cache and per-source fault tolerance. |
 | Radius filter | Geolocation is opt-in; the radius circle, distances and “nearest first” order are computed in the browser. |
-| Filters | Free-text place search, source filter (all / SGC / USGS), magnitude range (M2.5+ ? M6+) and intensity ordering. |
+| Filters | Free-text place search, source filter (all / SGC / USGS / EMSC / GEONET / GEOFON / INGV), magnitude range (M2.5+ ? M6+) and intensity ordering. |
 | Replay | Animated playback of the last five days of activity. |
-| Detail page | Technical sheet for SGC and USGS, official report link and distance from the user. |
+| Detail page | Source-specific technical sheet, official report link and distance from the user. |
 | API | JSON endpoints for web and mobile clients, with Bearer authentication. |
 | Citizen network | Device registry, P-wave detections, TDOA fusion, alert delivery and public dashboard. |
 | PWA | Installable app, offline page, browser notifications and emergency overlay. |
@@ -68,9 +67,13 @@ SIGRA is for exploration, education and technical experimentation. It does not p
 | Source | Coverage | Notes |
 |---|---|---|
 | **SGC** — Servicio Geológico Colombiano | Colombia | Richer local records: CDI, MMI, PGA, felt reports, nearby towns and station metadata. |
-| **USGS** — U.S. Geological Survey | Worldwide | FDSN GeoJSON feed, magnitude 2.5+ over the last five days by default. |
+| **USGS** — U.S. Geological Survey | Worldwide | Static weekly GeoJSON feed, filtered locally to five days and magnitude 2.5+ by default; FDSN for custom queries. |
+| **EMSC** | Worldwide | FDSN JSON, with source references retained. |
+| **GeoNet** | New Zealand | Up to 100 recent provider observations, filtered locally. |
+| **GEOFON / GFZ** | Worldwide | Limited recent-event feed, complemented by the other catalogues. |
+| **INGV** | Italy and surroundings | FDSN GeoJSON regional catalogue. |
 
-Both feeds are public. SIGRA stores a normalized copy for history and never
+The feeds are public. SIGRA stores a normalized copy for history and never
 claims ownership over the original data. Always check the official source in an
 emergency:
 
@@ -124,7 +127,7 @@ php -S 127.0.0.1:8080 -t public
 
 Open <http://127.0.0.1:8080/index.php/sismos>. Use `app.baseURL = 'http://127.0.0.1:8080/'` locally. New deployments should expose only `public/`; existing Hostinger root deployments remain compatible with their protection rules.
 
-The map requests updates automatically, sharing a 60-second cache and ingestion lock. Provider failure keeps stored events visible and displays a degraded status. Cron remains optional.
+The map requests updates automatically, sharing a minimum 300-second cache and ingestion lock with cron. Persistent host budgets, conditional caching, Retry-After and 403/429 cooldowns limit provider traffic. Provider failure keeps stored events visible and displays a degraded status. Cron remains optional.
 
 ### Keep the archive up to date (recommended)
 
@@ -262,9 +265,17 @@ a voluntary donation. Thank you for supporting the project!
 | **Nequi** | `315 9287929` |
 | **Bancolombia** | Account `912-982627-76` |
 
+## Upgrade to 1.3.0
+
+After uploading the code, run `php spark migrate --all` or import
+[deploy/corregir-coordenadas-usgs.sql](deploy/corregir-coordenadas-usgs.sql) to repair
+legacy USGS latitude/longitude values. Preserve `writable/cache/providers` between
+deployments. Small-event coverage still depends on local networks; SGC availability
+is not restored by this release. See [provider details](docs/FUENTES_SISMICAS.md).
+
 ## Versioning
 
-SIGRA follows semantic versioning. The current release is **1.2.1 · Reproducible installation and backend robustness** (2026-11-12, build `20261112.5`). See [docs/VERSIONES.md](docs/VERSIONES.md).
+SIGRA follows semantic versioning. The current release is **1.3.0 · Global sources, responsible polling and corrected map** (2026-11-13, build `20261113.1`). See [docs/VERSIONES.md](docs/VERSIONES.md).
 
 API contracts: [Earthquakes](docs/API_SISMOS.md) · [Citizen network](docs/API_RED.md).
 

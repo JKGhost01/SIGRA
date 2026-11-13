@@ -20,35 +20,27 @@ class SigraSync extends BaseCommand
 {
     protected $group       = 'SIGRA';
     protected $name        = 'sigra:sync';
-    protected $description = 'Descarga y guarda los sismos de SGC y USGS.';
+    protected $description = 'Descarga y guarda los sismos de SGC, USGS, EMSC, GeoNet, GEOFON e INGV.';
     protected $usage       = 'sigra:sync';
 
     public function run(array $params): void
     {
         $inicio = microtime(true);
-        $lock = fopen(WRITEPATH . 'cache/ingestion.lock', 'c');
-        if ($lock === false || !flock($lock, LOCK_EX | LOCK_NB)) {
-            if (is_resource($lock)) fclose($lock);
-            CLI::error('Ya hay una sincronización en curso.');
-            return;
-        }
-        try {
-            $resultado = service('syncEvents')->handle();
-        } finally {
-            flock($lock, LOCK_UN);
-            fclose($lock);
+        $refresh = service('catalogRefresh')->handle();
+        $resultado = ['fuentes' => $refresh->sources, 'guardados' => $refresh->synced ? $refresh->saved : 0, 'errores' => $refresh->errors];
+        if (!$refresh->synced) {
+            CLI::write('Se conserva el catálogo: intervalo, bloqueo o pausa del proveedor.', 'yellow');
         }
 
         CLI::write('SIGRA · sincronización sísmica', 'yellow');
-        CLI::write('SGC:  ' . ($resultado['fuentes']['SGC'] ?? 0) . ' eventos', 'white');
-        CLI::write('USGS: ' . ($resultado['fuentes']['USGS'] ?? 0) . ' eventos', 'white');
+        foreach ($resultado['fuentes'] as $fuente => $count) CLI::write($fuente . ': ' . $count . ' eventos', 'white');
         CLI::write('Filas nuevas o modificadas: ' . $resultado['guardados'], 'green');
 
         foreach ($resultado['errores'] as $fuente => $mensaje) {
             CLI::error($fuente . ': ' . $mensaje);
         }
 
-        if ($resultado['eventos'] === [] && $resultado['errores'] !== []) {
+        if (!$refresh->synced && $resultado['errores'] !== []) {
             CLI::error('No se pudo sincronizar ninguna fuente.');
             CLI::write('Tiempo: ' . number_format(microtime(true) - $inicio, 2) . ' s', 'white');
 

@@ -352,6 +352,12 @@
             status.textContent = message;
             status.classList.toggle('text-warning', warning);
             status.classList.toggle('text-secondary', !warning);
+            const indicator = document.getElementById('catalog-source-indicator');
+            if (indicator) {
+                indicator.classList.toggle('bg-success', !warning);
+                indicator.classList.toggle('bg-warning', warning);
+                indicator.title = message;
+            }
         };
         const sincronizar = function () {
             fetch(urlSincronizacion, { headers: { Accept: 'application/json' }, cache: 'no-store' })
@@ -361,7 +367,9 @@
                         eventosActuales = resultado.eventos;
                         const errors = Object.keys(resultado.errors || {});
                         const lastSuccess = Number(resultado.last_success_at) || 0;
-                        const statusMessage = errors.length ? tr('catalogDegraded')
+                        const failedSources = errors.filter(source => ['SGC', 'USGS', 'EMSC', 'GEONET', 'GEOFON', 'INGV'].includes(source));
+                        const statusMessage = errors.length ? (failedSources.length === errors.length
+                            ? tr('catalogSourceUnavailable', failedSources.join(', ')) : tr('catalogDegraded'))
                             : lastSuccess > 0 ? tr('catalogUpdated', new Date(lastSuccess * 1000).toLocaleString(T.locale))
                             : tr('catalogUnknown');
                         setSyncStatus(statusMessage, errors.length > 0 || lastSuccess === 0);

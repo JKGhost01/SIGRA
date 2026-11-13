@@ -1,0 +1,35 @@
+{
+  "type": "FeatureCollection",
+  "fixture_provenance": {
+    "source": "INGV",
+    "synthetic": false,
+    "fetched_at_utc": "2026-11-13",
+    "note": "Captured public provider observation. Tests move its timestamp into the current ingestion window."
+  },
+  "features": [
+    {
+      "type": "Feature",
+      "properties": {
+        "eventId": 47928252,
+        "originId": 148488311,
+        "time": "2026-11-13T07:22:11.599000",
+        "author": "SURVEY-INGV-OV#WESSEL",
+        "magType": "Md",
+        "mag": 2.6,
+        "magAuthor": "--",
+        "type": "earthquake",
+        "place": "Campi Flegrei",
+        "version": 100,
+        "geojson_creationTime": "2026-11-13T14:49:39"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          14.148,
+          40.835,
+          3
+        ]
+      }
+    }
+  ]
+}

@@ -4,6 +4,7 @@ cd "$(dirname "$0")/.."
 php tests/Unit/ArchitectureTest.php
 php tests/Unit/IngestionTest.php
 php tests/Unit/ProviderNormalizationTest.php
+php tests/Unit/FeedTransportTest.php
 php tests/Unit/AutomaticRefreshTest.php
 php tests/Unit/SensorAlertingTest.php
 php tests/CitizenReportLogicTest.php

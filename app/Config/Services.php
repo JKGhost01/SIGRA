@@ -79,6 +79,10 @@ class Services extends BaseService
         $q = $quakes ?? config(Quakes::class); $sources = [];
         if ($q->sgcEnabled) $sources[] = new SgcSourceAdapter(new \App\Libraries\SgcClient($sgc ?? config(Sgc::class)));
         if ($q->globalEnabled) $sources[] = new UsgsSourceAdapter(new \App\Libraries\UsgsClient($q));
+        if ($q->emscEnabled) $sources[] = new \App\Modules\SeismicIngestion\Infrastructure\Sources\AdditionalGeoJsonSource('EMSC', $q);
+        if ($q->geonetEnabled) $sources[] = new \App\Modules\SeismicIngestion\Infrastructure\Sources\AdditionalGeoJsonSource('GEONET', $q);
+        if ($q->geofonEnabled) $sources[] = new \App\Modules\SeismicIngestion\Infrastructure\Sources\AdditionalGeoJsonSource('GEOFON', $q);
+        if ($q->ingvEnabled) $sources[] = new \App\Modules\SeismicIngestion\Infrastructure\Sources\AdditionalGeoJsonSource('INGV', $q);
         return new SyncEventsHandler($sources, new CiEventWriter(new \App\Models\SismoModel()),
             new EventDeduplicator($q->dedupeSeconds, $q->dedupeDistanceKm, $q->dedupeMagnitudeDelta), $q->dedupeCrossSource,
             static::reconcileCitizenReports(), service('logger'),
@@ -90,7 +94,7 @@ class Services extends BaseService
         if ($getShared) return static::getSharedInstance('catalogRefresh');
         return new \App\Modules\SeismicIngestion\Application\Commands\RefreshCatalog\RefreshCatalogHandler(
             new \App\Modules\SeismicIngestion\Infrastructure\Scheduling\FileRefreshCoordinator(
-                WRITEPATH . 'cache', config(Quakes::class)->cacheSeconds, static::sigraClock(), service('logger')),
+                WRITEPATH . 'cache', max(300, config(Quakes::class)->cacheSeconds), static::sigraClock(), service('logger')),
             static::syncEvents());
     }
     public static function healthCheck(bool $getShared = true): \App\Modules\System\Application\Queries\HealthHandler

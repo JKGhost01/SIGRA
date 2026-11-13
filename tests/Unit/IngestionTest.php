@@ -55,4 +55,20 @@ expectArchitecture(isset($handler->handle()['errores']['reportes']) && count($wr
 $writer->calls = 0;
 $failed = new SyncEventsHandler([$source('SGC', [], true), $source('USGS', [], true)], $writer, $dedupe, true, $reports, new NullLogger());
 expectArchitecture($failed->handle()['guardados'] === 0 && $writer->calls === 0, 'Total provider failure wrote to catalog');
+$reports->fail = false;
+$multi = new SyncEventsHandler([
+    $source('SGC', [array_replace($event, ['fuente' => 'SGC'])]),
+    $source('USGS', [array_replace($other, ['fuente' => 'USGS'])]),
+    $source('EMSC', [array_replace($other, ['id' => 'EMSC-one', 'fuente' => 'EMSC'])]),
+    $source('GEONET', [array_replace($other, ['id' => 'GEONET-one', 'fuente' => 'GEONET'])]),
+], $writer, $dedupe, true, $reports, new NullLogger());
+$result = $multi->handle();
+expectArchitecture(count($result['eventos']) === 1 && $result['eventos'][0]['fuente'] === 'SGC', 'Four-source correlation lost SGC preference');
+$refs = json_decode($result['eventos'][0]['sgc_metadata'], true)['source_references'];
+expectArchitecture(count($refs) === 4 && count($result['fuentes']) === 4, 'Four-source provenance/counts lost');
+$noSgc = new SyncEventsHandler([$source('SGC', [], true), $source('USGS', [array_replace($other, ['fuente' => 'USGS'])]),
+    $source('EMSC', [array_replace($other, ['id' => 'EMSC-one', 'fuente' => 'EMSC'])])], $writer, $dedupe, true, $reports, new NullLogger());
+$result = $noSgc->handle();
+$meta = json_decode($result['eventos'][0]['sgc_metadata'], true);
+expectArchitecture(count($result['eventos']) === 1 && $meta['correlation']['preferred_source'] === 'USGS', 'SGC outage broke global correlation');
 echo "Ingestion: partial failure, deduplication, replay and reconciliation checks passed.\n";

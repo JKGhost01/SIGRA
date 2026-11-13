@@ -41,6 +41,16 @@ expectArchitecture(str_contains($html, 'id="mapa"') && str_contains($html, 'SGC-
 expectArchitecture(str_contains($html, 'modules/seismic-map/catalog.js') && str_contains($html, 'const SIGRA_MAP_TEXT'), 'Map configuration or asset missing');
 expectArchitecture(str_contains($controller->detail('SGC-golden'), 'SGC-golden'), 'Detail template did not render');
 expectArchitecture(str_contains($controller->history(), 'SGC-golden') === false && str_contains($controller->history(), 'Fixture'), 'History did not render prepared records');
+expectArchitecture(str_contains($html, 'value="EMSC"') && str_contains($html, 'value="GEONET"'), 'New provider filters missing');
+foreach (['EMSC', 'GEONET', 'GEOFON', 'INGV'] as $source) {
+    $reader->event = array_replace($fixture['input'], ['id' => $source . '-fixture', 'fuente' => $source,
+        'sgc_metadata' => json_encode(['agency' => $source, 'source_id' => 'fixture', 'url' => 'https://example.org/event'])]);
+    $detail = $controller->detail($source . '-fixture');
+    expectArchitecture(str_contains($detail, 'Información ' . $source) && !str_contains($detail, 'Información USGS'), 'New source detail mislabeled');
+    $json = (new SeismicEventResource())->serialize(new SeismicEventDTO($reader->event));
+    expectArchitecture($json['fuente'] === $source && $json['source_id'] === 'fixture' && $json['mapa_sgc_url'] === null, 'New source API mapping invalid');
+}
+$reader->event = $fixture['input'];
 try { $controller->detail('missing'); throw new RuntimeException('Missing event rendered'); }
 catch (CodeIgniter\Exceptions\PageNotFoundException) {}
 $reader->event['ubicacion'] = '</script><script>alert(1)</script>';
@@ -60,6 +70,8 @@ Config\Services::injectMock('catalogRefresh', new class {
 $poll = json_decode($sync->index()->getBody(), true);
 expectArchitecture($poll['ok'] && !$poll['synced'] && count($poll['eventos']) === 1 && isset($poll['errors']['sync']), 'Refresh failure removed stored map events');
 expectArchitecture(!str_contains(json_encode($poll), 'private provider detail'), 'Refresh failure leaked internals');
+expectArchitecture($poll['message'] !== lang('Sigra.apiUpToDate'), 'Failed refresh falsely reports up-to-date data');
+expectArchitecture(lang('Sigra.releaseName') === config(Config\Sigra::class)->releaseName, 'Spanish release name is stale');
 foreach (['about', 'privacy', 'cookies', 'terms'] as $method) {
     $pages = new App\Modules\System\Http\Controllers\PagesController();
     $pages->initController($request, new Response(config(Config\App::class)), service('logger'));

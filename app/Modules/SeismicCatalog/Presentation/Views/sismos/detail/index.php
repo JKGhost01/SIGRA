@@ -71,7 +71,7 @@ ob_start();
         <?php if (! $esSgc && $sgc !== []): ?>
             <div class="card mb-3">
                 <div class="card-body">
-                    <p class="text-uppercase small fw-bold text-secondary mb-1"><?= esc(lang('Sigra.detailInfoUsgs')) ?></p>
+                    <p class="text-uppercase small fw-bold text-secondary mb-1"><?= esc(lang('Sigra.detailInfoSource', [$fuente])) ?></p>
                     <h5 class="mb-3"><?= esc(lang('Sigra.detailTechnical')) ?></h5>
                     <dl class="row small mb-0">
                         <?php if (isset($sgc['agency'])): ?><dt class="col-6 text-secondary"><?= esc(lang('Sigra.detailAgency')) ?></dt><dd class="col-6"><?= esc($sgc['agency']) ?></dd><?php endif; ?>

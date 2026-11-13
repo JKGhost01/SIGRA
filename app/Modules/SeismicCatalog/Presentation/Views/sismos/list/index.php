@@ -8,7 +8,6 @@ ob_start();
     <div class="alert alert-success mb-3"><?= esc($message) ?></div>
 <?php endif; ?>
 
-<p id="catalog-sync-status" class="small text-secondary mb-2" role="status" aria-live="polite"><?= esc(lang('Sigra.catalogLoading')) ?></p>
 <div class="dashboard-shell">
     <aside class="event-sidebar">
         <div class="p-4 border-bottom">
@@ -17,8 +16,9 @@ ob_start();
                     <h1 class="h4 mb-1"><?= esc(lang('Sigra.listTitle')) ?></h1>
                     <p class="small text-secondary mb-0"><span id="contador-eventos"><?= count($sismos) ?></span> <?= esc(lang('Sigra.eventsLast5Days')) ?></p>
                 </div>
-                <span class="rounded-circle bg-success p-2" title="<?= esc(lang('Sigra.dataActive')) ?>"></span>
+                <span id="catalog-source-indicator" class="rounded-circle bg-success p-2" title="<?= esc(lang('Sigra.dataActive')) ?>"></span>
             </div>
+            <p id="catalog-sync-status" class="small text-secondary mt-3 mb-0" role="status" aria-live="polite"><?= esc(lang('Sigra.catalogLoading')) ?></p>
             <button id="mobile-events-toggle" class="mobile-events-toggle" type="button" aria-controls="eventos-detalle" aria-expanded="false"><span class="list-icon"><?= sigra_icon('list') ?></span><span><?= esc(lang('Sigra.mobileEvents')) ?></span></button>
         </div>
 
@@ -54,6 +54,10 @@ ob_start();
                                 <option value=""><?= esc(lang('Sigra.allSources')) ?></option>
                                 <option value="SGC">SGC</option>
                                 <option value="USGS">USGS</option>
+                                <option value="EMSC">EMSC</option>
+                                <option value="GEONET">GeoNet</option>
+                                <option value="GEOFON">GEOFON · GFZ</option>
+                                <option value="INGV">INGV</option>
                             </select>
                         </div>
                         <div class="col-4">
@@ -169,6 +173,7 @@ ob_start();
         'catalogLoading' => lang('Sigra.catalogLoading'),
         'catalogUpdated' => lang('Sigra.catalogUpdated'),
         'catalogDegraded' => lang('Sigra.catalogDegraded'),
+        'catalogSourceUnavailable' => lang('Sigra.catalogSourceUnavailable'),
         'catalogUnknown' => lang('Sigra.catalogUnknown'),
         'catalogUnavailable' => lang('Sigra.catalogUnavailable'),
         'locale' => $locale === 'en' ? 'en-US' : 'es-CO',

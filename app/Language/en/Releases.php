@@ -2,6 +2,18 @@
 
 return [
     'history' => [
+        '1.3.0' => [
+            'name' => 'Global sources, responsible polling and corrected map',
+            'summary' => 'Six official sources, persistent provider protection and repaired USGS coordinates in the map and history.',
+            'changes' => [
+                'EMSC, GeoNet, GEOFON/GFZ and INGV join SGC and USGS in the catalog, API and filters; source references survive correlation.',
+                'Map and cron share polling, with a five-minute minimum per provider, conditional caching and persistent 403/429 cooldowns.',
+                'Honor Retry-After and Cache-Control, back off after failures and identify SIGRA publicly; use the static USGS feed for compatible queries.',
+                'Correct USGS latitude/longitude mapping; provide an idempotent migration and SQL alternative to repair stored data with an audit trail.',
+                'Validate coordinates before rendering and bound vertical map panning; update per-source degraded status and ES/EN translations.',
+                'Regression checks cover normalization, six sources, HTTP cooldowns, MySQL repair and Leaflet browser projection.',
+            ],
+        ],
         '1.2.1' => [
             'name' => 'Reproducible installation and backend robustness',
             'summary' => 'Reproducible Composer installation, secure device registration, validated providers and visible catalog freshness.',

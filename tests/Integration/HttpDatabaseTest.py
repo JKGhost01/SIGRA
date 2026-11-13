@@ -24,6 +24,8 @@ def request(route, expected=200, *, payload=None, form=None, device=''):
     env.update({'CI_ENVIRONMENT': 'development', 'app.baseURL': 'http://localhost:8080/',
                 'APP_API_TOKEN': 'isolated-http-test-key', 'red.appKey': 'isolated-http-test-key',
                 'quakes.sgcEnabled': 'false', 'quakes.globalEnabled': 'false',
+                'quakes.emscEnabled': 'false', 'quakes.geonetEnabled': 'false',
+                'quakes.geofonEnabled': 'false', 'quakes.ingvEnabled': 'false',
                 'red.fcmEnabled': 'false', 'red.alertingEnabled': 'false',
                 'cache.prefix': 'sigra_architecture_test_', 'red.statsCacheSeconds': '0',
                 'reports.hashKey': 'isolated-test-key-which-is-at-least-32-bytes',

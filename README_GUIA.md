@@ -1,13 +1,13 @@
 # SIGRA · Guía funcional
 
-Aplicación CodeIgniter 4 para visualizar sismos de todo el mundo (SGC + USGS), conservar
+Aplicación CodeIgniter 4 para visualizar sismos de todo el mundo (SGC, USGS, EMSC, GeoNet, GEOFON e INGV), conservar
 un histórico, recibir reportes ciudadanos y operar una red de detección temprana con teléfonos.
 
-## Estado del proyecto: versión 1.2.1 · Instalación reproducible y robustez del backend
+## Estado del proyecto: versión 1.3.0 · Fuentes globales, consultas responsables y mapa corregido
 
 Desde la versión 1.0.3 se unifica el feed colombiano del SGC con la red mundial USGS en un solo
 mapa, listado, histórico y API. Incluye filtro por radio desde la ubicación del usuario,
-deduplicación entre fuentes, sincronización con cron, mapa activo, ficha técnica, filtros,
+deduplicación entre fuentes, sincronización automática con cron opcional, mapa activo, ficha técnica, filtros,
 temas claro/oscuro, alertas visuales y sonoras, reporte ciudadano, red ciudadana de ondas P,
 notificaciones experimentales y API para el cliente Android en desarrollo.
 
@@ -62,7 +62,7 @@ uso de mapas, reportes y red experimental; no define un procedimiento alternativ
 
 ### Mapa activo
 
-`/sismos` muestra los eventos de SGC (Colombia) y USGS (mundo) de los últimos cinco días. El navegador consulta `/sismos/sync` cada 15 segundos para leer el catálogo. Al vencer la caché compartida de 60 segundos, el endpoint solicita la ingesta al módulo correspondiente con un bloqueo contra ejecuciones simultáneas. Cron es opcional.
+`/sismos` muestra los eventos de SGC (Colombia) y USGS (mundo) de los últimos cinco días. El navegador consulta `/sismos/sync` cada 15 segundos para leer el catálogo. Al vencer la caché compartida de 300 segundos, el endpoint solicita la ingesta al módulo correspondiente con un bloqueo contra ejecuciones simultáneas. Cron es opcional.
 
 La actualización reemplaza únicamente la capa de marcadores y las tarjetas laterales: no recarga la página ni pierde centro, zoom o estado de navegación del mapa.
 
