@@ -39,7 +39,7 @@ class Quakes extends BaseConfig
     /** Ventana temporal compartida por todas las fuentes, en días. */
     public int $windowDays = 5;
 
-    /** Segundos que se reutiliza la respuesta cacheada del sync. */
+    /** Intervalo mínimo entre descargas automáticas al consultar el mapa. */
     public int $cacheSeconds = 60;
 
     /** Evita duplicar el mismo sismo cuando aparece en SGC y en USGS. */
@@ -50,6 +50,9 @@ class Quakes extends BaseConfig
 
     /** Diferencia máxima de tiempo para considerar que dos eventos son el mismo. */
     public int $dedupeSeconds = 120;
+
+    /** Maximum magnitude difference when both providers supply a value. */
+    public float $dedupeMagnitudeDelta = 1.0;
 
     public function __construct()
     {
@@ -64,6 +67,7 @@ class Quakes extends BaseConfig
         $this->cacheSeconds     = max(5, (int) env('quakes.cacheSeconds', $this->cacheSeconds));
         $this->dedupeCrossSource = filter_var(env('quakes.dedupeCrossSource', $this->dedupeCrossSource), FILTER_VALIDATE_BOOLEAN);
         $this->dedupeDistanceKm  = (float) env('quakes.dedupeDistanceKm', $this->dedupeDistanceKm);
+        $this->dedupeMagnitudeDelta = max(0.0, (float) env('quakes.dedupeMagnitudeDelta', $this->dedupeMagnitudeDelta));
         $this->dedupeSeconds     = (int) env('quakes.dedupeSeconds', $this->dedupeSeconds);
     }
 }

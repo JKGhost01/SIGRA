@@ -1,12 +1,12 @@
-# API de sismos · SIGRA 1.1.1 · contrato v1
+# API de sismos · SIGRA 1.2.1 · contrato v1
 
-Las rutas y los campos usados por Android se conservan. `1.1.1` identifica la
+Las rutas y los campos usados por Android se conservan. `1.2.1` identifica la
 aplicación; `v1` identifica el contrato. Todas las respuestas de los endpoints
 listados son JSON y llevan:
 
 ```http
 Cache-Control: no-store, max-age=0
-X-SIGRA-Version: 1.1.1
+X-SIGRA-Version: 1.2.1
 X-API-Version: v1
 ```
 
@@ -102,3 +102,13 @@ de los controladores. La segunda ejecuta rutas, filtros y controladores mediante
 PHP-CGI (`PHP_CGI=/ruta/php-cgi`), sin abrir puertos ni escribir registros de
 negocio; fuerza una conexión de prueba inaccesible para comprobar errores.
 No verifican escrituras reales en MySQL, FCM ni un dispositivo Android.
+
+## Arquitectura y rutas versionadas
+
+La API se compone desde los módulos y comparte autenticación y manejo de errores.
+Las rutas equivalentes `/api/v1/sismos/*`, `/api/v1/red/*` y `/api/v1/health`
+están descritas en [OpenAPI](api/openapi.yaml). Los errores legacy se conservan;
+los versionados contienen `error.code`, `error.message` y `request_id`.
+`X-Request-ID` se genera en el servidor para correlación. Health ya no expone `environment`.
+Las lecturas API no descargan fuentes ni escriben entregas. La ruta de compatibilidad
+`GET /sismos/sync` sí solicita la ingesta al vencer la caché compartida; no necesita cron.

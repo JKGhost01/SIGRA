@@ -3,6 +3,32 @@
 return array (
   'history' => 
   array (
+        '1.2.1' => [
+            'name' => 'Instalación reproducible y robustez del backend',
+            'summary' => 'Instalación Composer reproducible, registro seguro de dispositivos, proveedores validados y estado de actualización visible.',
+            'changes' => [
+                'Identidad y autoload Composer corregidos, lock compatible con PHP 8.2 e instalación documentada desde cero.',
+                'Generación local de secretos sin exponer valores ni reemplazar claves existentes; reinicio remoto por HTTP retirado.',
+                'Registro de UUID existente protegido con el token vigente; rotación autenticada que invalida el anterior.',
+                'Validación de campos y enlaces externos, verificación TLS, reintentos acotados y umbral de magnitud en la correlación.',
+                'Estado de actualización del catálogo visible, assets compatibles con ambas raíces web y APIs fuera de la caché PWA.',
+                'Documentación ES/EN coherente, Android separado y experimentalidad explícita; PHPStan y pruebas MySQL aisladas en CI.',
+            ],
+        ],
+    '1.2.0' => [
+        'name' => 'Arquitectura modular y sincronización automática',
+        'summary' => 'Monolito modular con casos de uso, vistas de presentación, auditoría y actualización automática de fuentes desde el mapa sin cron obligatorio.',
+        'changes' => [
+            'Módulos por capacidad: catálogo, ingesta, reportes ciudadanos, sensores, alertas y sistema, con contratos y dependencias explícitos.',
+            'Controladores ligeros y vistas de presentación; consulta y procesamiento fuera de Views, con JavaScript del catálogo en archivos públicos.',
+            'Actualización automática del mapa con caché compartida de 60 segundos, bloqueo de concurrencia y conservación de datos ante fallos; cron opcional.',
+            'Rutas antiguas conservadas, endpoints /api/v1, errores versionados, IDs de correlación y contrato OpenAPI.',
+            'Auditoría de lotes y decisiones de alerta en dos tablas nuevas, con alerta y decisión en la misma transacción antes de la entrega.',
+            'Simulaciones aisladas, interruptor de publicación y cancelación de alertas desde la consola del servidor.',
+            'Correlación SGC/USGS con referencias de ambas fuentes y conservación de candidatos ambiguos.',
+            'Pruebas de arquitectura, contratos HTTP, actualización automática y persistencia en MySQL aislado, además de documentación de despliegue.',
+        ],
+    ],
     '1.1.1' => [
             'name' => 'Reportes contrastados con SGC',
             'summary' => 'Los reportes ciudadanos permanecen privados y solo aportan un conteo a un sismo oficial del SGC tras alcanzar el umbral de participantes.',

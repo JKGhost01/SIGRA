@@ -1,8 +1,8 @@
 # SIGRA · Global Seismic Monitor & Citizen Network
 
-> **v1.1.1 · Reports checked against SGC** — One map for the world's earthquakes, plus a community network that turns phones into early-warning sensors.
+> **v1.2.1 · Reproducible installation and backend robustness** — Published SGC/USGS earthquakes in one map, with experimental citizen monitoring.
 
-[![Version](https://img.shields.io/badge/version-1.1.1-087f78.svg)](#versioning)
+[![Version](https://img.shields.io/badge/version-1.2.1-087f78.svg)](#versioning)
 [![PHP](https://img.shields.io/badge/PHP-%3E%3D8.2-777bb4.svg)](https://www.php.net/)
 [![CodeIgniter](https://img.shields.io/badge/CodeIgniter-4.7-ee4323.svg)](https://codeigniter.com/)
 [![License](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
@@ -12,8 +12,8 @@
 SIGRA is an open-source PHP application that unifies earthquake feeds from the
 **Colombian Geological Survey (SGC)** and the **United States Geological Survey
 (USGS)** into a single searchable map, with a “near me” radius filter, a
-permanent historical archive, a JSON API, and a citizen P-wave detection network
-built on Android phones.
+historical archive, a JSON API and an experimental server-side sensor network.
+The Android client is still under development in a separate repository.
 
 It is not tied to a single country: the map, the history, the API and the radius
 filter work anywhere on Earth.
@@ -34,11 +34,20 @@ limited. SIGRA combines both:
   USGS, only the richer local record is kept.
 - **Historical archive** — every event is stored in MySQL and can be queried by
   date, magnitude, depth, place and source.
-- **Citizen network** — Android phones detect P waves with their accelerometers;
-  the server triangulates the origin (TDOA), estimates magnitude and alerts
-  nearby phones with the seconds remaining until the S wave arrives.
+- **Experimental citizen backend** — accepts device signals; the Android client is in development;
+  the backend evaluates experimental TDOA candidates and estimated arrival times.
+  These estimates are not validated early warnings and do not replace authorities.
 - **Open and self-hostable** — no proprietary services are required. Map tiles
   use OpenStreetMap/Esri and the data comes from public agencies.
+
+## Status and scope
+
+- **Available:** published SGC/USGS catalog, map/list/history, filters, API and private citizen reports.
+- **Experimental:** sensor fusion, inferred magnitude/location, estimated arrival times and browser/FCM delivery. No field validation or warning-time guarantee is claimed.
+- **In development:** Android in a separate repository; this backend does not ship a mobile app.
+- **Future work:** field evaluation, load benchmarks and further sources; see the [tracked recommendations](docs/RECOMMENDATIONS_STATUS.md).
+
+SIGRA is for exploration, education and technical experimentation. It does not predict earthquakes or replace official emergency systems.
 
 ## Features
 
@@ -75,17 +84,17 @@ environment variables (`quakes.*`).
 
 ```
 app/
-  Commands/SigraSync.php          CLI sync for cron
-  Config/Quakes.php               Global source configuration
-  Controllers/Sismos.php          HTTP router + JSON API
-  Libraries/SgcClient.php         SGC feed normalizer
-  Libraries/UsgsClient.php        USGS FDSN normalizer
-  Libraries/QuakeSyncService.php  Fetch + dedupe + persist
-  Models/SismoModel.php           Data access only
-  Views/sismos/list/              Map, list and radius filter
-  Views/sismos/sync/              Cached JSON sync endpoint
-public/assets/js/mapa-sismos.js   Leaflet rendering and geolocation helpers
-mobile/                           Android app (Kotlin + Jetpack Compose)
+  Modules/SeismicCatalog/        Domain, Application, Infrastructure, Http, Presentation
+  Modules/SeismicIngestion/      Sources, deduplicator, sync handler and audit
+  Modules/CitizenReports/        Report validation, submission and reconciliation
+  Modules/SensorNetwork/         Devices, heartbeats and detection commands
+  Modules/Alerting/              Candidate decisions, audit and delivery
+  Modules/System/                Health and public information
+  Shared/                       Clock, contracts and HTTP boundaries
+  Config/Services.php           Dependency composition
+  Commands/SigraSync.php         Scheduled ingestion with a process lock
+  Views/layouts/                Shared rendering layout
+public/assets/js/modules/       Browser behavior
 ```
 
 - **PHP 8.2+ / CodeIgniter 4.7**
@@ -96,45 +105,31 @@ mobile/                           Android app (Kotlin + Jetpack Compose)
 
 ### Requirements
 
-- PHP 8.2 or newer with `intl`, `mbstring`, `mysqli` and `curl`.
-- MySQL 5.7+ / MariaDB 10.3+.
-- Composer is only needed if you want to install the framework dependencies
-  separately; this repository ships with `system/` and `vendor/`.
+PHP 8.2+ with `curl`, `intl`, `mbstring` and `mysqli`, Composer 2, and a dedicated MySQL/MariaDB database. The bundled framework is CI4 4.7.3 under `system/`; `vendor/` is **not** committed and is installed from `composer.lock`. Node and Python are only required for automated tests.
 
 ### Installation
 
+The supported procedure is in [INSTALLATION.md](docs/INSTALLATION.md), including secrets, database creation and troubleshooting:
+
 ```bash
-# 1. Clone
-git clone https://github.com/TU-USUARIO/sigra.git
-cd sigra
-
-# 2. Create the database
-mysql -u root -e "CREATE DATABASE sigra CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci;"
-
-# 3. Configure
+git clone https://github.com/JKGhost01/SIGRA.git
+cd SIGRA
+composer install
 cp .env.example .env
-# Edit .env: baseURL, database, APP_API_TOKEN and encryption.key
-
-# 4. Schema
+php tools/setup-local.php
+# Create an empty database and configure database.default.* in .env.
 php spark migrate --all
-
-# 5. First sync (SGC + USGS)
-php spark sigra:sync
-
-# 6. Run
-php spark serve
+php -S 127.0.0.1:8080 -t public
 ```
 
-Open <http://localhost:8080/sismos>.
+Open <http://127.0.0.1:8080/index.php/sismos>. Use `app.baseURL = 'http://127.0.0.1:8080/'` locally. New deployments should expose only `public/`; existing Hostinger root deployments remain compatible with their protection rules.
 
-> The first sync downloads the last five days from both sources (~350 events in
-> a typical run). The map also syncs every 15 seconds while it is open, but the
-> server caches responses for `quakes.cacheSeconds` to protect the public APIs.
+The map requests updates automatically, sharing a 60-second cache and ingestion lock. Provider failure keeps stored events visible and displays a degraded status. Cron remains optional.
 
 ### Keep the archive up to date (recommended)
 
-The page only syncs while someone has it open. For a production deployment, run
-the command from cron every 2–5 minutes:
+The map automatically refreshes sources while it is open, at most once every
+`quakes.cacheSeconds` across visitors. Optionally run cron to update without visitors:
 
 ```cron
 */5 * * * * cd /var/www/sigra && php spark sigra:sync >> writable/logs/sync.log 2>&1
@@ -158,6 +153,10 @@ The provider is configured in `.env` (`translator.provider` = `google`,
 `writable/cache/translations/`. To add a new language, create
 `app/Language/<locale>/Sigra.php` and run the command with `--locale <locale>`.
 
+## Automated checks
+
+After `composer install`, install Node 22+, Python 3 and PHP-CGI for your PHP version, then run `composer test`. The tests do not require production credentials. `composer analyse` runs progressive PHPStan checks. MySQL integration uses a separate, explicitly selected test database; see [test instructions](docs/PRUEBAS_WEB.md).
+
 ## Configuration
 
 Copy `.env.example` and adjust:
@@ -175,7 +174,9 @@ Copy `.env.example` and adjust:
 | `quakes.windowDays` | Shared time window (default `5`). |
 | `quakes.cacheSeconds` | Sync cache TTL (default `60`). |
 | `quakes.dedupeCrossSource` | Remove SGC/USGS duplicates. |
-| `red.*` | Citizen-network thresholds. |`n| `translator.provider` | `google`, `mymemory`, `libretranslate` or `deepl` for `sigra:translate`. |`n| `translator.apiKey` | API key for DeepL/LibreTranslate (optional for Google/MyMemory). |
+| `red.*` | Citizen-network thresholds. |
+| `translator.provider` | `google`, `mymemory`, `libretranslate` or `deepl` for `sigra:translate`. |
+| `translator.apiKey` | API key for DeepL/LibreTranslate (optional for Google/MyMemory). |
 
 Generate an encryption key:
 
@@ -194,7 +195,7 @@ All `/api/sismos/*` endpoints accept `Authorization: Bearer <APP_API_TOKEN>`.
 | `GET` | `/api/sismos/detalle/{id}` | One event. |
 | `GET` | `/api/sismos/ultimo` | Latest event. |
 | `GET` | `/api/sismos/alertas` | Alert level for the latest event. |
-| `GET` | `/api/health` | Version, environment and database status. |
+| `GET` | `/api/health` | Public version and database status. |
 | `GET` | `/api/red/config` | Public citizen-network configuration. |
 | `POST` | `/api/red/registro` | Register an Android device. |
 | `POST` | `/api/red/deteccion` | Report a P-wave detection. |
@@ -222,19 +223,15 @@ Geolocation is **opt-in** and stays in the browser:
 
 ## Android app
 
-```bash
-cd mobile
-cp local.properties.example local.properties
-# edit sdk.dir, sigra.baseUrl and sigra.apiKey
-./gradlew :app:assembleDebug
-```
-
-APK output: `mobile/app/build/outputs/apk/debug/app-debug.apk`.
+The Android client is under development in a separate repository. This backend does
+not include mobile sources or an APK build. Its integration contract is documented
+in [OpenAPI](docs/api/openapi.yaml).
 
 ## Documentation
 
 - [Functional guide (Spanish)](README_GUIA.md)
-- [Versioning and changelog](docs/VERSIONES.md)`n- [Third-party notices](THIRD_PARTY_NOTICES.md)
+- [Versioning and changelog](docs/VERSIONES.md)
+- [Third-party notices](THIRD_PARTY_NOTICES.md)
 - [Citizen network and TDOA algorithm](docs/RED_TELEFONOS.md)
 - [Citizen network API](docs/API_RED.md)
 - [Database and maintenance](docs/BASE_DATOS.md)
@@ -245,8 +242,7 @@ APK output: `mobile/app/build/outputs/apk/debug/app-debug.apk`.
 ## Contributing
 
 Contributions are welcome. Please read [CONTRIBUTING.md](CONTRIBUTING.md) and
-[CODE_OF_CONDUCT.md](CODE_OF_CONDUCT.md). For security reports, follow
-[SECURITY.md](SECURITY.md).
+[CODE_OF_CONDUCT.md](CODE_OF_CONDUCT.md). Do not publish credentials or private user data in public issues.
 
 Good first issues:
 
@@ -268,7 +264,7 @@ a voluntary donation. Thank you for supporting the project!
 
 ## Versioning
 
-SIGRA follows semantic versioning. The current release is **1.1.1 · Reports checked against SGC** (2026-11-12, build `20261112.3`). See [docs/VERSIONES.md](docs/VERSIONES.md).
+SIGRA follows semantic versioning. The current release is **1.2.1 · Reproducible installation and backend robustness** (2026-11-12, build `20261112.5`). See [docs/VERSIONES.md](docs/VERSIONES.md).
 
 API contracts: [Earthquakes](docs/API_SISMOS.md) · [Citizen network](docs/API_RED.md).
 
@@ -283,3 +279,5 @@ systems. In an emergency, follow the instructions of local authorities.
 MIT. See [LICENSE](LICENSE) and [THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md) for OpenStreetMap, SGC, USGS, Esri, Leaflet, Bootstrap, Google Fonts and Android attributions. CodeIgniter 4 is distributed under its own MIT license and its copyright notices are preserved in `LICENSE`.
 
 Citizen report verification: [flow and setup](docs/REPORTES_CIUDADANOS.md).
+
+Consulta la [arquitectura modular](docs/architecture/README.md), los [pasos de migración](docs/architecture/migration.md) y el [contrato OpenAPI](docs/api/openapi.yaml).

@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace App\Commands;
 
-use App\Libraries\QuakeSyncService;
 use CodeIgniter\CLI\BaseCommand;
 use CodeIgniter\CLI\CLI;
 
@@ -27,7 +26,18 @@ class SigraSync extends BaseCommand
     public function run(array $params): void
     {
         $inicio = microtime(true);
-        $resultado = (new QuakeSyncService())->sync();
+        $lock = fopen(WRITEPATH . 'cache/ingestion.lock', 'c');
+        if ($lock === false || !flock($lock, LOCK_EX | LOCK_NB)) {
+            if (is_resource($lock)) fclose($lock);
+            CLI::error('Ya hay una sincronización en curso.');
+            return;
+        }
+        try {
+            $resultado = service('syncEvents')->handle();
+        } finally {
+            flock($lock, LOCK_UN);
+            fclose($lock);
+        }
 
         CLI::write('SIGRA · sincronización sísmica', 'yellow');
         CLI::write('SGC:  ' . ($resultado['fuentes']['SGC'] ?? 0) . ' eventos', 'white');

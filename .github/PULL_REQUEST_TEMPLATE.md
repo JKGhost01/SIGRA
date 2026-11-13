@@ -14,6 +14,8 @@
 - [ ] `/api/health` returns the expected version
 - [ ] Radius filter works with and without geolocation permission
 - [ ] No secrets, personal data or production domains were added
+- [ ] `python3 tools/check-git.py` passes; generated packages and runtime files stay ignored
+- [ ] New modules and retired paths are included together; views only render prepared data
 
 ## Screenshots / API output
 

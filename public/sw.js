@@ -1,15 +1,16 @@
-﻿/*
+/*
  * Service worker de SIGRA.
- * Cachea solo estÃ¡ticos y sirve una pantalla offline. Las APIs y pÃ¡ginas
- * dinÃ¡micas siempre van a la red para no mostrar datos sÃ­smicos obsoletos.
+ * Cachea solo estáticos y sirve una pantalla offline. Las APIs y páginas
+ * dinámicas siempre van a la red para no mostrar datos sísmicos obsoletos.
  */
-const CACHE = 'sigra-static-v2';
+const CACHE = 'sigra-static-1.2.1';
 const CORE = [
-  '/public/assets/images/sigra-logo.png',
-  '/public/assets/images/icon-192.png',
-  '/public/assets/images/icon-512.png',
-  '/public/assets/js/mapa-sismos.js',
-  '/public/assets/js/sigra-red.js',
+  '/assets/images/sigra-logo.png',
+  '/assets/images/icon-192.png',
+  '/assets/images/icon-512.png',
+  '/assets/js/mapa-sismos.js',
+  '/assets/js/modules/seismic-map/catalog.js',
+  '/assets/js/sigra-red.js',
   '/offline.html'
 ];
 
@@ -22,7 +23,7 @@ self.addEventListener('install', (event) => {
 self.addEventListener('activate', (event) => {
   event.waitUntil(
     caches.keys().then((keys) =>
-      Promise.all(keys.filter((key) => key !== CACHE).map((key) => caches.delete(key)))
+      Promise.all(keys.filter((key) => key.startsWith('sigra-static-') && key !== CACHE).map((key) => caches.delete(key)))
     ).then(() => self.clients.claim())
   );
 });
@@ -33,7 +34,8 @@ self.addEventListener('fetch', (event) => {
 
   const url = new URL(request.url);
   if (url.origin !== self.location.origin) return;
-  if (url.pathname.startsWith('/api/')) return;
+  if (/^\/(?:index\.php\/)?api(?:\/|$)/.test(url.pathname)) return;
+  if (/^\/(?:index\.php\/)?sismos\/sync(?:\/|$)/.test(url.pathname)) return;
 
   if (request.mode === 'navigate') {
     event.respondWith(
@@ -42,14 +44,20 @@ self.addEventListener('fetch', (event) => {
     return;
   }
 
-  if (url.pathname.startsWith('/public/assets/')) {
-    event.respondWith(
-      caches.match(request).then((cached) => cached || fetch(request).then((response) => {
+  if (url.pathname.startsWith('/assets/')) {
+    // Scripts y estilos deben recibir las correcciones sin conservar versiones antiguas.
+    const refresh = () => fetch(request).then((response) => {
+      if (response.ok) {
         const copy = response.clone();
-        caches.open(CACHE).then((cache) => cache.put(request, copy));
-        return response;
-      }))
-    );
+        event.waitUntil(caches.open(CACHE).then((cache) => cache.put(request, copy)));
+      }
+      return response;
+    });
+    if (/\.(js|css)$/.test(url.pathname)) {
+      event.respondWith(refresh().catch(() => caches.match(request)));
+    } else {
+      event.respondWith(caches.match(request).then((cached) => cached || refresh()));
+    }
   }
 });
 

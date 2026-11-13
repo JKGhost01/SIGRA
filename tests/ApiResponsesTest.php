@@ -14,7 +14,9 @@ foreach (['APP_API_TOKEN' => 'sigra-test-process-only', 'red.appKey' => 'sigra-t
 }
 require FCPATH . 'app/Config/Paths.php';
 require FCPATH . 'system/Boot.php';
-CodeIgniter\Boot::bootConsole(new Config\Paths());
+$paths = new Config\Paths();
+$paths->envDirectory = sys_get_temp_dir() . '/sigra-tests-no-dotenv-' . bin2hex(random_bytes(8));
+CodeIgniter\Boot::bootConsole($paths);
 
 use App\Controllers\ApiRed;
 use App\Controllers\Sismos;
@@ -53,12 +55,12 @@ final class ApiFixtureSismos extends SismoModel
     }
 }
 
-final class ApiFixtureRed extends RedNetworkService
+final class ApiFixtureRed extends \App\Modules\SensorNetwork\Application\SensorNetworkService
 {
     public array $received = [];
     public function __construct() {}
     public function autenticar(string $token): ?array { return $token === 'valid-test-device' ? ['id' => 1] : null; }
-    public function registrarDispositivo(array $payload): array
+    public function registrarDispositivo(array $payload, ?string $existingToken = null): array
     {
         $this->received = $payload;
         return ['status' => 'ok', 'device_token' => 'fixture-token', 'device' => $payload];
@@ -70,14 +72,14 @@ final class ApiFixtureRed extends RedNetworkService
 }
 
 $fixture = new ApiFixtureSismos();
-$sismos = new class($fixture) extends Sismos {
-    public function __construct(private SismoModel $fixture) {}
-    protected function modeloSismos(): SismoModel { return $this->fixture; }
-};
+$repository = new \App\Modules\SeismicCatalog\Infrastructure\Persistence\CiSeismicEventRepository($fixture);
+Config\Services::injectMock('listEvents', new \App\Modules\SeismicCatalog\Application\Queries\ListEvents\ListEventsHandler($repository));
+Config\Services::injectMock('getEvent', new \App\Modules\SeismicCatalog\Application\Queries\GetEvent\GetEventHandler($repository));
+$sismos = new Sismos();
 $redFixture = new ApiFixtureRed();
 $red = new class($redFixture) extends ApiRed {
-    public function __construct(private RedNetworkService $fixture) {}
-    protected function servicioRed(): RedNetworkService { return $this->fixture; }
+    public function __construct(private \App\Modules\SensorNetwork\Application\SensorNetworkService $fixture) {}
+    protected function servicioRed(): \App\Modules\SensorNetwork\Application\SensorNetworkService { return $this->fixture; }
 };
 
 $checks = 0;

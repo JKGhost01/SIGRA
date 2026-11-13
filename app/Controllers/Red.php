@@ -4,16 +4,5 @@ declare(strict_types=1);
 
 namespace App\Controllers;
 
-/**
- * Panel público de la Red SIGRA de teléfonos.
- */
-class Red extends BaseController
-{
-    /**
-     * GET /red
-     */
-    public function index()
-    {
-        return require APPPATH . 'Views/red/index.php';
-    }
-}
+/** Compatibility name; panel presentation belongs to SensorNetwork. */
+class Red extends \App\Modules\SensorNetwork\Http\Controllers\Web\SensorNetworkController {}

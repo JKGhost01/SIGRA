@@ -3,13 +3,13 @@
 Aplicación CodeIgniter 4 para visualizar sismos de todo el mundo (SGC + USGS), conservar
 un histórico, recibir reportes ciudadanos y operar una red de detección temprana con teléfonos.
 
-## Estado del proyecto: versión 1.1.1 · Reportes contrastados con SGC
+## Estado del proyecto: versión 1.2.1 · Instalación reproducible y robustez del backend
 
 Desde la versión 1.0.3 se unifica el feed colombiano del SGC con la red mundial USGS en un solo
 mapa, listado, histórico y API. Incluye filtro por radio desde la ubicación del usuario,
 deduplicación entre fuentes, sincronización con cron, mapa activo, ficha técnica, filtros,
 temas claro/oscuro, alertas visuales y sonoras, reporte ciudadano, red ciudadana de ondas P,
-alertas del navegador y app Android.
+notificaciones experimentales y API para el cliente Android en desarrollo.
 
 La funcionalidad de SMS fue eliminada. Las alertas ahora se entregan por notificaciones del
 navegador, overlay a pantalla completa y la app Android.
@@ -39,75 +39,30 @@ conserva el registro del SGC por tener más detalle.
 
 ## Arquitectura
 
-- **Controller**: solo enruta en `app/Controllers/Sismos.php`.
-- **Model**: acceso a datos en `app/Models/SismoModel.php`.
-- **Views**: flujo, validación y presentación por operación.
-- **Cliente SGC**: `app/Libraries/SgcClient.php` normaliza el feed GeoJSON oficial.
-- **Cliente USGS**: `app/Libraries/UsgsClient.php` normaliza el feed FDSN global.
-- **Sync unificado**: `app/Libraries/QuakeSyncService.php` descarga, deduplica y guarda.
-- **Frontend**: Leaflet en `public/assets/js/mapa-sismos.js`.
-- **Red ciudadana**: `app/Libraries/PwaveFusion.php` y `app/Libraries/RedNetworkService.php`.
-- **App Android**: `mobile/` (Kotlin + Jetpack Compose).
+- **Módulos por capacidad**: catálogo, ingesta, reportes, sensores, alertas y sistema.
+- **Http**: controladores ligeros, filtros, parsing y recursos de salida.
+- **Application**: consultas y comandos con dependencias inyectadas.
+- **Domain**: reglas y algoritmos sin dependencias de CI4.
+- **Infrastructure**: modelos CI4, fuentes, auditoría y entrega.
+- **Presentation**: ViewModels y plantillas que solo presentan datos.
+- **Frontend del catálogo**: `public/assets/js/modules/seismic-map/catalog.js` y utilidades Leaflet.
+- **Composición**: `app/Config/Services.php`; las rutas se componen desde cada módulo.
+- **Android**: en desarrollo en un repositorio separado, con contrato OpenAPI.
 
-El controlador usa `require` para que los `return redirect()` de los procesadores se propaguen correctamente.
+Los controladores usan el renderizador de vistas de CI4. Las vistas no ejecutan
+validación, persistencia ni permisos. Consulta [architecture](docs/architecture/README.md).
 
-## Requisitos
+## Instalación y requisitos
 
-- PHP 8.2 o superior.
-- Extensiones `intl`, `mbstring`, `mysqli` y `curl`.
-- MySQL o MariaDB.
-
-## Instalación
-
-1. Crea la base de datos:
-
-```sql
-CREATE DATABASE sigra CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci;
-```
-
-2. Configura `.env`:
-
-```ini
-CI_ENVIRONMENT = production
-app.baseURL = 'https://tu-dominio/'
-database.default.hostname = localhost
-database.default.database = sigra
-database.default.username = usuario
-database.default.password = contraseña
-database.default.DBDriver = MySQLi
-database.default.port = 3306
-APP_API_TOKEN = 'clave-de-api'
-red.appKey = 'clave-de-api'
-encryption.key = 'hex2bin:...'
-
-# Fuentes sísmicas (opcional; estos son los valores por defecto)
-quakes.sgcEnabled = true
-quakes.globalEnabled = true
-quakes.usgsMinMagnitude = 2.5
-quakes.windowDays = 5
-quakes.cacheSeconds = 60
-```
-
-3. Ejecuta migraciones y la primera sincronización:
-
-```bash
-php spark migrate --all
-php spark sigra:sync
-```
-
-4. Configura tu servidor web (Apache/Nginx) apuntando al proyecto. Para desarrollo local puedes usar:
-
-```bash
-php spark serve
-```
-
-Abre `http://localhost:8080/sismos`.
+La secuencia soportada, Composer, claves y base de datos se mantienen únicamente en
+[docs/INSTALLATION.md](docs/INSTALLATION.md). Esta guía complementa los README con el
+uso de mapas, reportes y red experimental; no define un procedimiento alternativo.
 
 ## Funcionalidad actual
 
 ### Mapa activo
 
-`/sismos` muestra los eventos de SGC (Colombia) y USGS (mundo) de los últimos cinco días. El navegador consulta `/sismos/sync` cada 15 segundos, pero el backend aplica una caché de 60 segundos y descarga ambas fuentes en una sola pasada para no saturar las APIs públicas.
+`/sismos` muestra los eventos de SGC (Colombia) y USGS (mundo) de los últimos cinco días. El navegador consulta `/sismos/sync` cada 15 segundos para leer el catálogo. Al vencer la caché compartida de 60 segundos, el endpoint solicita la ingesta al módulo correspondiente con un bloqueo contra ejecuciones simultáneas. Cron es opcional.
 
 La actualización reemplaza únicamente la capa de marcadores y las tarjetas laterales: no recarga la página ni pierde centro, zoom o estado de navegación del mapa.
 
@@ -202,7 +157,7 @@ La sincronización se puede ejecutar sin abrir el mapa:
 php spark sigra:sync
 ```
 
-En producción conviene programarla cada 2–5 minutos desde cron.
+Programarla cada 2–5 minutos desde cron es opcional: permite actualizar sin visitantes. El mapa ya solicita la ingesta automáticamente.
 
 En desarrollo se permite el certificado local de la red. En producción se exige verificación TLS.
 
@@ -211,7 +166,7 @@ En desarrollo se permite el certificado local de la red. En producción se exige
 | Ruta | Uso |
 |---|---|
 | `/sismos` | Mapa activo y listado reciente |
-| `/sismos/sync` | Sincronización JSON interna |
+| `/sismos/sync` | Lectura JSON del catálogo |
 | `/sismos/historico` | Histórico con filtros |
 | `/sismos/create` | Reporte ciudadano |
 | `/sismos/detalle/{id}` | Ficha de lectura |
@@ -221,7 +176,7 @@ Las rutas antiguas de edición y eliminación se conservan por compatibilidad in
 ## Red de teléfonos y app Android
 
 `/red` muestra el estado de la red ciudadana: teléfonos en línea, detecciones, alertas y un mapa
-con posiciones aproximadas. La app Android está en `mobile/`.
+con posiciones aproximadas. La app Android está en desarrollo en un repositorio separado.
 
 Flujo:
 
@@ -249,7 +204,7 @@ php spark red:estado
 php spark red:limpiar --dias 7
 ```
 
-La red se activa cuando tres o más teléfonos reales reportan la misma onda P.
+La evaluación experimental exige varios dispositivos y umbrales de confianza; esto no equivale a confirmar científicamente un sismo ni a garantizar una alerta útil.
 
 ## Alertas sin SMS
 
@@ -257,7 +212,7 @@ Las alertas por SMS se eliminaron de la web. Ahora hay tres canales:
 
 1. **Alertas del navegador** con Web Notifications y service worker.
 2. **Overlay a pantalla completa** con magnitud, distancia y cuenta atrás hasta la onda S.
-3. **App Android** con notificaciones de alta prioridad y polling de respaldo.
+3. **Contrato para el cliente Android en desarrollo**, con push y polling de respaldo.
 
 El botón de campana en el navbar y los botones de `/red` activan las alertas del navegador. No hay
 registro, teléfono ni OTP. La preferencia se guarda en `localStorage` y la ubicación se usa solo en
@@ -289,3 +244,4 @@ donación voluntaria. ¡Gracias por aportar al proyecto!
 - [Pruebas web y API](docs/PRUEBAS_WEB.md).
 - [Arquitectura general](docs/ARQUITECTURA_SISMOS.md).
 - [Documentación general del proyecto](README.md).
+La distribución del código y los cambios operativos están en [docs/architecture](docs/architecture/README.md).

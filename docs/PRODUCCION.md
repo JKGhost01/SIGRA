@@ -1,85 +1,63 @@
-# Checklist de producción
+# Producción y recuperación
 
-## 1. Configuración
+Instalación canónica: [INSTALLATION.md](INSTALLATION.md). Android está en desarrollo
+en otro repositorio. La red sensorial es experimental; estas comprobaciones operativas
+no acreditan utilidad para emergencias.
 
-- `CI_ENVIRONMENT = production`
-- `app.baseURL = 'https://tu-dominio/'` (con barra final)
-- `APP_API_TOKEN` y `red.appKey` con una clave propia.
-- `encryption.key` configurada.
-- Base de datos de producción en `database.default.*`.
-- FCM solo si vas a usar push; de lo contrario `red.fcmEnabled = false`.
-- No dejes `CI_ENVIRONMENT = development`, `debugbar` activo ni credenciales de prueba.
+## Antes de actualizar
 
-## 2. Base de datos
+1. Exporta la base completa y conserva una copia de los archivos desplegados, `.env`
+   y datos necesarios de `writable/` en almacenamiento privado, fuera de la raíz web.
+2. Ensaya la restauración del export en una base separada antes de usarlo como respaldo.
+   Verifica recuentos y abre catálogo, detalle y reportes en esa copia aislada.
+3. Prepara las dependencias con `composer install --no-dev` desde el lock. En Hostinger
+   puedes subir ese `vendor/` preparado localmente si no tienes Composer en el servidor.
+4. Conserva el `.env` del servidor. Sube el código de una misma versión y aplica
+   `php spark migrate --all`. Sin consola, sigue [la guía de subida](../deploy/LEEME-SUBIDA.md)
+   y el SQL aditivo correspondiente. **No uses reset, seeds ni setup remoto para actualizar.**
+5. Conserva el respaldo de la versión anterior hasta verificar el sitio. Eliminar archivos
+   obsoletos requiere seguir el manifiesto del paquete; extraer encima puede dejarlos presentes.
 
-Instalación limpia (borra las tablas de SIGRA, aplica el esquema optimizado y carga el SGC):
+El antiguo `tools/setup-remoto.php` queda deshabilitado y responde 410 por HTTP.
+Si alguna vez subiste una copia como `__setup.php`, elimínala del hosting: actualizar
+el archivo original no retira copias con otro nombre.
 
-```bash
-php spark sigra:db-reset --force
-```
+## Configuración
 
-Actualizar solo los eventos del SGC sin tocar la red:
+- `CI_ENVIRONMENT = production`; errores detallados y debugbar fuera de las respuestas.
+- HTTPS verificado, `app.baseURL` con barra final y dominio correcto. Activa redirección
+  HTTPS después de validar la terminación TLS/proxy; no anuncies HSTS sin esa verificación.
+- En instalaciones nuevas, document root en `public/`. En instalaciones tradicionales,
+  comprueba las denegaciones `.htaccess` antes de cambiar rutas. Nginx necesita reglas propias.
+- Secretos privados, únicos y sin query strings; usuario de base restringido a SIGRA.
+- Escritura para el proceso PHP únicamente donde corresponda en `writable/`.
+- Publicación experimental y FCM desactivados hasta una decisión operativa explícita.
 
-```bash
-php spark db:seed SismosSeeder
-php spark red:estado
-```
+## Verificar después de subir
 
-Las migraciones nuevas crean las tablas de la red. El esquema y los índices están
-documentados en [BASE_DATOS.md](BASE_DATOS.md).
+Abre mapa, histórico, detalle, formulario de reporte, `/red` y `/acerca-de`.
+`/api/health` comprueba acceso a la base; no certifica frescura del catálogo.
+`/api/red/health` indica actividad del backend; no certifica detección en campo.
+La versión esperada de este cambio es **1.2.1**; un override en `.env` puede prevalecer.
+Comprueba assets, manifest y service worker, y revisa errores del hosting sin exponerlos.
+Las APIs autenticadas deben rechazar claves ausentes o incorrectas.
 
-## 3. Archivos y permisos
+## Fallos y recuperación
 
-- Sube el proyecto completo sin `.env` de desarrollo, `writable/` con datos de prueba ni `tools/node_modules`.
-- Permisos de escritura solo para `writable/`.
-- El `.htaccess` bloquea `app/`, `system/`, `vendor/`, `tests/`, `docs/`, `tools/`, `mobile/`, `writable/`, `.env` y archivos sensibles.
-- Si usas Nginx, replica esos bloqueos.
-- Sirve siempre por HTTPS: las notificaciones del navegador y el service worker lo requieren.
+- **Fuente caída:** conserva el catálogo existente. El mapa muestra última actualización
+  exitosa o consulta degradada; usa el registro de ingestión para diagnosticar. Reintentos
+  y bloqueo están acotados. Sin visitas no hay sincronización automática del mapa;
+  cron con `php spark sigra:sync` sigue siendo opcional para actualizar sin visitantes.
+- **Base caída:** health devuelve indisponibilidad. Corrige conexión/permisos y verifica
+  integridad antes de reanudar escritura; no recrees tablas para tratar un error de conexión.
+- **Código incompatible:** restaura el conjunto completo de archivos anterior. No ejecutes
+  migraciones down en producción sin evaluar datos nuevos. Las tablas de auditoría son
+  aditivas y pueden conservarse al volver al código anterior.
+- **Restauración de datos:** hazla primero sobre otra base. Programa una ventana sin
+  escrituras, conserva también el estado fallido y cambia la conexión solo tras verificar.
+  Restaurar un backup descarta escrituras posteriores: requiere decisión del operador.
 
-## 4. Limpieza
-
-```bash
-php spark sigra:db-optimize
-rm -rf writable/cache/* writable/logs/* writable/session/* writable/debugbar/*
-```
-
-## 5. Verificación
-
-- `GET /api/health` → `status: ok`, `version: 1.1.1`, `database: ok`.
-- `GET /api/red/health` → `status: ok`.
-- `GET /red` → panel sin errores de consola.
-- `GET /acerca-de` → versión y estado del sistema.
-- `GET /sismos` → mapa con eventos SGC.
-- `GET /api/red/simular` → **404** (no existe en producción).
-- `GET /sismos/suscripciones` → **404** (SMS retirado).
-- Service worker y manifest cargan por HTTPS.
-
-## 6. Operación
-
-Cron sugerido:
-
-```cron
-*/5 * * * * cd /ruta/sigra && php spark red:limpiar --dias 7 >/dev/null 2>&1
-```
-
-Monitorea:
-
-- teléfonos en línea y monitoreando,
-- detecciones por minuto,
-- alertas activas,
-- latencia de entrega,
-- errores en `writable/logs`.
-
-## 7. App Android
-
-Compila con la URL y clave de producción:
-
-```powershell
-cd mobile
-# edita local.properties:
-# sigra.baseUrl=https://tu-dominio/
-# sigra.apiKey=TU_APP_API_TOKEN
-.\gradlew.bat :app:assembleRelease
-```
-
-Firma el APK/AAB con la keystore de producción antes de publicarlo.
+Restringe acceso a logs y backups. Define retención según necesidades del despliegue;
+no borres sesiones ni registros indiscriminadamente como parte de subir una versión.
+La retención legal, alertas al operador, pruebas de carga y ensayo de restauración del
+hosting real permanecen pendientes; véase [estado de recomendaciones](RECOMMENDATIONS_STATUS.md).

@@ -7,7 +7,9 @@ define('FCPATH', dirname(__DIR__) . DIRECTORY_SEPARATOR);
 define('ENVIRONMENT', 'development');
 require FCPATH . 'app/Config/Paths.php';
 require FCPATH . 'system/Boot.php';
-CodeIgniter\Boot::bootConsole(new Config\Paths());
+$paths = new Config\Paths();
+$paths->envDirectory = sys_get_temp_dir() . '/sigra-tests-no-dotenv-' . bin2hex(random_bytes(8));
+CodeIgniter\Boot::bootConsole($paths);
 
 use App\Libraries\CitizenReportMatcher;
 use App\Libraries\CitizenReportService;

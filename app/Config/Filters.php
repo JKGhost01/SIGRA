@@ -36,6 +36,8 @@ class Filters extends BaseFilters
         'performance'   => PerformanceMetrics::class,
         'reportguard'   => \App\Filters\CitizenReportGuard::class,
         'denyeventwrites' => \App\Filters\DenyEventWrites::class,
+        'correlationid' => \App\Shared\Http\CorrelationId::class,
+        'apiauth'       => \App\Shared\Http\ApiAuthentication::class,
         'locale'        => \App\Filters\LocaleFilter::class,
     ];
 
@@ -75,6 +77,7 @@ class Filters extends BaseFilters
      */
     public array $globals = [
         'before' => [
+            'correlationid',
             'locale',
             // 'honeypot',
             // 'csrf',

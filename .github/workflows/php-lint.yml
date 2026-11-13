@@ -1,4 +1,4 @@
-name: PHP lint
+name: PHP and architecture checks
 
 on:
   push:
@@ -6,24 +6,61 @@ on:
   pull_request:
 
 jobs:
-  lint:
-    name: Syntax check
-    runs-on: ubuntu-latest
+  checks:
+    runs-on: ubuntu-24.04
+    env:
+      PHP_CGI: /usr/bin/php-cgi8.2
+    services:
+      mariadb:
+        image: mariadb:10.11
+        env:
+          MARIADB_ROOT_PASSWORD: sigra-ci-only
+          MARIADB_DATABASE: sigra_ci_test
+        ports:
+          - 3306/tcp
+        options: >-
+          --health-cmd="healthcheck.sh --connect --innodb_initialized"
+          --health-interval=10s --health-timeout=5s --health-retries=10
     steps:
       - uses: actions/checkout@v4
-
-      - name: Setup PHP
-        uses: shivammathur/setup-php@v2
+      - uses: shivammathur/setup-php@v2
         with:
           php-version: "8.2"
           extensions: intl, mbstring, mysqli, curl
+          tools: composer
           coverage: none
-
-      - name: Lint application files
+      - name: Validate Composer and install locked dependencies
         run: |
-          find app public -name '*.php' -print0 | xargs -0 -n1 php -l
-
-      - name: Lint entry points
+          composer validate --strict
+          composer install --prefer-dist --no-interaction
+          composer check-platform-reqs
+          composer audit
+      - name: Lint PHP sources
         run: |
+          find app public tests tools -name '*.php' -print0 | xargs -0 -n1 php -l
           php -l index.php
           php -l spark
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.x'
+      - name: Verify PHP CGI for HTTP contract tests
+        # setup-php's Ubuntu build already includes this versioned CGI binary.
+        # Do not reinstall via APT: the cached build clears its package indexes.
+        run: |
+          test -x "$PHP_CGI"
+          "$PHP_CGI" --version
+          "$PHP_CGI" -m
+      - name: Check source visibility and ignored artifacts
+        run: python3 tools/check-git.py
+      - name: Architecture, domain, provider, PWA and HTTP checks
+        run: composer test
+      - name: Progressive static analysis of domain and application
+        run: composer analyse
+      - name: Migrations and real HTTP database flows (isolated)
+        env:
+          SIGRA_TEST_PASSWORD: sigra-ci-only
+          SIGRA_TEST_PORT: ${{ job.services.mariadb.ports[3306] }}
+        run: python3 tools/test-mysql-architecture.py --database sigra_ci_test
