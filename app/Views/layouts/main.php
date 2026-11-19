@@ -342,7 +342,7 @@ window.SIGRA_ICONS = <?= json_encode(array_combine(['pin', 'home', 'sun', 'moon'
         <div class="navbar-collapse" id="mainNavbar">
             <?php $rutaActual = trim(uri_string(), '/'); ?>
             <ul class="navbar-nav ms-auto align-items-center gap-2">
-                <li class="nav-item"><a class="nav-link nav-red-live <?= $rutaActual === 'red' ? 'active' : '' ?>" href="<?= site_url('red') ?>" aria-label="<?= esc(lang('Sigra.navLive')) ?>">
+                <li class="nav-item"><a class="nav-link nav-red-live <?= $rutaActual === 'app-movil' ? 'active' : '' ?>" href="<?= site_url('app-movil') ?>" aria-label="<?= esc(lang('Sigra.navLive')) ?>">
                     <span class="red-live-dot" aria-hidden="true"></span>
                     <span><?= esc(lang('Sigra.navLive')) ?></span>
                     <span class="red-live-count" id="nav-red-count">—</span>
@@ -483,6 +483,7 @@ window.SIGRA_ICONS = <?= json_encode(array_combine(['pin', 'home', 'sun', 'moon'
             'secondsUntilS'    => lang('Sigra.redSecondsUntilS'),
             'sArrivingShort'   => lang('Sigra.redSArrivingShort'),
             'distanceFromYou'  => lang('Sigra.redDistanceFromYou'),
+            'registeredDevices' => lang('Sigra.mobileRegisteredCount'),
             'phonesOnline'     => lang('Sigra.redPhonesOnline'),
             'alertsSuffix'     => lang('Sigra.redAlertsSuffix'),
             'officialEvent'    => lang('Sigra.redOfficialEvent'),

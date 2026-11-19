@@ -164,9 +164,10 @@ ob_start();
                 <div><span><?= esc(lang('Sigra.versionBuild')) ?></span><strong><?= esc($sigra->build) ?></strong></div>
                 <div><span><?= esc(lang('Sigra.versionChannel')) ?></span><strong><?= esc($channelLabel) ?></strong></div>
                 <div><span><?= esc(lang('Sigra.versionApi')) ?></span><strong><?= esc($sigra->apiVersion) ?></strong></div>
-                <div><span><?= esc(lang('Sigra.versionAndroid')) ?></span><strong>v<?= esc($sigra->mobileVersion) ?></strong></div>
+                <div><span><?= esc(lang('Sigra.versionAndroid')) ?></span><strong><a href="<?= site_url('app-movil') ?>">v<?= esc($mobile['version']) ?></a></strong></div>
                 <div><span><?= esc(lang('Sigra.versionLicense')) ?></span><strong><?= esc($sigra->license) ?></strong></div>
             </div>
+            <p class="small"><?= esc(lang($mobile['published'] ? 'Sigra.mobilePublishedVersion' : 'Sigra.mobileSourceVersion')) ?> · <a href="<?= esc($mobile['repository'], 'attr') ?>" target="_blank" rel="noopener">SIGRA_MOBILE</a></p>
             <div class="about-status" id="about-status">
                 <span class="about-status-dot" id="about-status-dot"></span>
                 <span id="about-status-text"><?= esc(lang('Sigra.statusChecking')) ?></span>
@@ -212,7 +213,7 @@ ob_start();
                 <div><dt><?= esc(lang('Sigra.factAuthor')) ?></dt><dd><?= esc($sigra->author) ?></dd></div>
                 <div><dt><?= esc(lang('Sigra.factProject')) ?></dt><dd><?= esc($sigra->project) ?> · <?= esc(lang('Sigra.tagline')) ?></dd></div>
                 <div><dt><?= esc(lang('Sigra.factApiCompat')) ?></dt><dd><?= esc($sigra->apiVersion) ?></dd></div>
-                <div><dt><?= esc(lang('Sigra.factMobile')) ?></dt><dd>Android v<?= esc($sigra->mobileVersion) ?></dd></div>
+                <div><dt><?= esc(lang('Sigra.factMobile')) ?></dt><dd>Android <a href="<?= site_url('app-movil') ?>">v<?= esc($mobile['version']) ?></a></dd></div>
             </dl>
         </section>
     </div>

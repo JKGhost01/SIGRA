@@ -222,9 +222,14 @@ La geolocalización es **opcional** y se queda en el navegador:
 
 ## App Android
 
-El cliente Android está en desarrollo en un repositorio separado. Este backend no
-incluye fuentes móviles ni compilación de APK. El contrato de integración está
-documentado en [OpenAPI](docs/api/openapi.yaml).
+El cliente Android está disponible en [SIGRA_MOBILE](https://github.com/JKGhost01/SIGRA_MOBILE).
+La web incorpora `/app-movil` con dispositivos registrados, teléfonos conectados y
+un espacio de descarga del APK. La versión y el enlace se leen de GitHub Releases;
+si todavía no hay una release estable se muestra la versión del código y la
+publicación pendiente. Acerca de utiliza los mismos metadatos.
+
+Publicación y caché: [docs/APP_MOVIL.md](docs/APP_MOVIL.md).
+Contrato de integración: [OpenAPI](docs/api/openapi.yaml).
 
 ## Documentación
 

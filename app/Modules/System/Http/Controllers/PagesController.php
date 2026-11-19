@@ -10,7 +10,15 @@ final class PagesController extends \App\Controllers\BaseController
     {
         $this->response->setHeader('Cache-Control', 'no-store, max-age=0');
         return view('App\\Modules\\System\\Presentation\\Views\\acerca-de\\index', [
+            'mobile' => service('mobileRelease')->snapshot(),
             'sigra' => config(\Config\Sigra::class), 'providerHealth' => service('providerHealth')->snapshot(),
+        ]);
+    }
+    public function mobile(): string
+    {
+        $this->response->setHeader('Cache-Control', 'no-store, max-age=0');
+        return view('App\\Modules\\System\\Presentation\\Views\\app-movil\\index', [
+            'mobile' => service('mobileRelease')->snapshot(),
         ]);
     }
     public function privacy(): string { return view('App\\Modules\\System\\Presentation\\Views\\politica-privacidad\\index', ['sigra' => config(\Config\Sigra::class)]); }

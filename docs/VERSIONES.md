@@ -37,7 +37,7 @@ sigra.channel = 'stable'
 - Build: `20261113.4`
 - Canal: `stable`
 - API: `v1`
-- App Android: `v1.0.0`
+- App Android: consultar [SIGRA_MOBILE](https://github.com/JKGhost01/SIGRA_MOBILE); la web lee su versión y APK desde GitHub.
 - Licencia: MIT
 
 La versión de la aplicación (`1.3.1.2`) es independiente del contrato de la API

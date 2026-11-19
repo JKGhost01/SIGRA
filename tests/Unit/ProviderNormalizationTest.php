@@ -16,8 +16,14 @@ use App\Shared\Domain\ExternalUrl;
 foreach (['SGC' => 'sgc-synthetic-event.json', 'USGS' => 'usgs-public-event.json'] as $source => $file) {
     $fixture = json_decode(file_get_contents(dirname(__DIR__) . '/Contract/fixtures/providers/' . $file), true, 512, JSON_THROW_ON_ERROR);
     $transport = new class($fixture) implements FeedTransport {
+        public array $headers = [];
+        public string $url = '';
         public function __construct(public array $payload) {}
-        public function json(string $url, int $timeoutSeconds, array $headers): array { return $this->payload; }
+        public function json(string $url, int $timeoutSeconds, array $headers): array {
+            $this->url = $url;
+            $this->headers = $headers;
+            return $this->payload;
+        }
     };
     $config = $source === 'SGC' ? new Config\Sgc() : new Config\Quakes();
     if ($source === 'USGS') { $config->globalEnabled = true; $config->usgsUseSummaryFeed = false; }
@@ -48,6 +54,10 @@ foreach (['SGC' => 'sgc-synthetic-event.json', 'USGS' => 'usgs-public-event.json
         expectArchitecture($client->obtenerEventos() === [], "$source accepted malformed observation");
     }
     if ($source === 'SGC') {
+        expectArchitecture(str_starts_with($transport->headers['User-Agent'], 'Mozilla/5.0 ')
+            && str_contains($transport->headers['User-Agent'], 'SIGRA/' . config(Config\Sigra::class)->version),
+            'SGC lost its compatible user agent or explicit SIGRA identity');
+        expectArchitecture($transport->url === $config->feedUrl, 'SGC added a cache-busting URL');
         foreach (['2026-02-31 10:00', '2026-11-12 99:00'] as $date) {
             $transport->payload['features'] = [array_replace_recursive($base, ['properties' => ['localTime' => $date]])];
             expectArchitecture($client->obtenerEventos() === [], 'Impossible SGC local date accepted');

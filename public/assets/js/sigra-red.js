@@ -2,7 +2,7 @@
  * sigra-red.js
  * -------------------------------------------------------------------
  * Capa compartida de la Red SIGRA en todo el sitio:
- *   - badge "Red en vivo" del navbar
+ *   - badge "App móvil" del navbar
  *   - alertas del navegador (sin SMS)
  *   - overlay de alerta a pantalla completa con cuenta atrás
  *   - preferencia de ubicación y notificaciones
@@ -437,13 +437,16 @@
         const online = Number(datos && datos.stats ? datos.stats.devices_online : 0);
         const activas = alertasActivas(datos);
 
-        if (contador) contador.textContent = String(online);
+        const registered = Number(datos && datos.stats ? datos.stats.devices_total : NaN);
+        const registeredText = Number.isFinite(registered) && registered >= 0 ? String(registered) : '—';
+        if (contador) contador.textContent = registeredText;
+        document.querySelectorAll('[data-sigra-registered]').forEach((el) => { el.textContent = registeredText; });
         if (nav) {
             nav.classList.toggle('is-online', Boolean(datos && (datos.operational || online > 0)));
             nav.classList.toggle('has-alert', activas.length > 0);
             nav.setAttribute(
                 'title',
-                trRed('phonesOnline', online) + (activas.length ? ' · ' + trRed('alertsSuffix', activas.length) : '')
+                trRed('registeredDevices', registeredText) + ' · ' + trRed('phonesOnline', online) + (activas.length ? ' · ' + trRed('alertsSuffix', activas.length) : '')
             );
         }
 

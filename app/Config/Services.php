@@ -97,6 +97,11 @@ class Services extends BaseService
                 WRITEPATH . 'cache', max(300, config(Quakes::class)->cacheSeconds), static::sigraClock(), service('logger')),
             static::syncEvents());
     }
+    public static function mobileRelease(bool $getShared = true): \App\Modules\System\Infrastructure\GithubMobileRelease
+    {
+        if ($getShared) return static::getSharedInstance('mobileRelease');
+        return new \App\Modules\System\Infrastructure\GithubMobileRelease(WRITEPATH . 'cache/github', static::sigraClock());
+    }
     public static function providerHealth(bool $getShared = true): \App\Modules\SeismicIngestion\Infrastructure\Sources\FileProviderHealth
     {
         if ($getShared) return static::getSharedInstance('providerHealth');

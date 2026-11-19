@@ -1,9 +1,20 @@
-# Fuentes sísmicas · 13 de noviembre de 2026
+# Fuentes sísmicas · 19 de noviembre de 2026
 
 SGC consulta únicamente el feed configurado, una vez por turno. Un rechazo no
-activa otro endpoint ni un reintento inmediato. La última comprobación real
-recibió HTTP 403; ese código no acredita por sí solo un bloqueo por tráfico.
-No se hicieron nuevas consultas reales durante las pruebas de protección.
+activa otro endpoint ni un reintento inmediato. La comparación con `sigra_old`
+aisló una incompatibilidad del `User-Agent`: el mismo feed devolvió HTTP 403
+con la identidad SIGRA sola y HTTP 200 con las cabeceras de compatibilidad de
+navegador de la versión antigua. No fue necesario cambiar la URL, añadir
+`Referer`, evitar la caché ni desactivar la verificación TLS.
+
+El cliente SGC restaura esos tokens de compatibilidad y conserva `SIGRA/versión`
+y el repositorio en la identidad enviada. La comprobación real con el cliente
+PHP corregido obtuvo HTTP 200 y 100 eventos normalizados el 19 de noviembre;
+una segunda llamada reutilizó la caché. Se utilizó un directorio temporal,
+sin escribir en la base ni alterar las pausas de una instalación existente.
+Esto acredita la conexión desde el entorno local de prueba, no desde el hosting.
+El diagnóstico comparativo, los límites de la evidencia y los pasos de despliegue
+están en [Recuperación de SGC](SGC_CONEXION_2026-11-19.md).
 
 ## Estado de las conexiones
 
@@ -45,8 +56,9 @@ HTTP sin publicar mensajes de excepción ni credenciales de configuración.
   y `If-Modified-Since` cuando hay validadores y se repite la misma URL. Una
   respuesta 304 reutiliza el JSON local. `no-store` no persiste el cuerpo y
   `no-cache` impide reutilizarlo sin validación.
-- SIGRA se identifica con su nombre, versión y repositorio público. No modifica
-  su identidad para superar una denegación del proveedor.
+- SIGRA se identifica con su nombre, versión y repositorio público. SGC recibe
+  además los tokens de compatibilidad de navegador heredados; las demás fuentes
+  conservan su `User-Agent` habitual.
 
 El estado vive en `writable/cache/providers`. Debe persistir entre despliegues:
 **no borrarlo para intentar reconectar**. Un estado corrupto suspende la consulta

@@ -72,12 +72,24 @@ expectArchitecture($poll['ok'] && !$poll['synced'] && count($poll['eventos']) ==
 expectArchitecture(!str_contains(json_encode($poll), 'private provider detail'), 'Refresh failure leaked internals');
 expectArchitecture($poll['message'] !== lang('Sigra.apiUpToDate'), 'Failed refresh falsely reports up-to-date data');
 expectArchitecture(lang('Sigra.releaseName') === config(Config\Sigra::class)->releaseName, 'Spanish release name is stale');
-foreach (['about', 'privacy', 'cookies', 'terms'] as $method) {
+Config\Services::injectMock('mobileRelease', new class {
+    public function snapshot(): array { return ['version' => '1.0.0.0', 'published' => false, 'apk' => null,
+        'repository' => 'https://github.com/JKGhost01/SIGRA_MOBILE',
+        'release' => 'https://github.com/JKGhost01/SIGRA_MOBILE/releases', 'stale' => false]; }
+});
+foreach (['about', 'mobile', 'privacy', 'cookies', 'terms'] as $method) {
     $pages = new App\Modules\System\Http\Controllers\PagesController();
     $pages->initController($request, new Response(config(Config\App::class)), service('logger'));
     $page = $pages->$method();
     expectArchitecture(strlen($page) > 1000, 'Static page did not render');
+    if ($method === 'mobile') {
+        expectArchitecture(str_contains($page, 'APK pendiente de publicación') && str_contains($page, 'v1.0.0.0'),
+            'Mobile page must show source version and pending APK without inventing a download');
+        expectArchitecture(str_contains($page, 'data-sigra-registered') && str_contains($page, '/app-movil'),
+            'Mobile page counter or navigation missing');
+    }
     if ($method === 'about') {
+        expectArchitecture(str_contains($page, '>v1.0.0.0</a>'), 'About mobile version diverged');
         expectArchitecture(str_contains($page, 'id="sources-health"') && substr_count($page, 'class="provider-card"') === 6,
             'About page lacks six provider health cards');
         expectArchitecture(str_contains($page, 'Último intento') && str_contains($page, 'Próxima consulta permitida'),
