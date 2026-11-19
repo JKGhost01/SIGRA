@@ -2,6 +2,17 @@
 
 return [
     'history' => [
+        '1.4.0-beta.1' => [
+            'name' => 'Experimental 3D globe',
+            'summary' => 'First CesiumJS map beta, with 2D fallback and the full SGC catalog.',
+            'changes' => [
+                'CesiumJS 1.146 main globe retaining filters, radius, location and activity replay.',
+                'Collapsible view and layer controls on the right, adapted to mobile and dark mode.',
+                'Leaflet 2D map available, with automatic recovery after loading or WebGL failures.',
+                'Full five-day SGC feed, including events below magnitude 2.',
+                'Historical provider references retained during partial refreshes, with a read-only synchronization audit.',
+            ],
+        ],
         '1.3.1.3' => [
             'name' => 'SGC connection restored',
             'summary' => 'Restored HTTP compatibility for the official SGC catalog feed.',

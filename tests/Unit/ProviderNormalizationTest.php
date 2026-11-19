@@ -54,6 +54,9 @@ foreach (['SGC' => 'sgc-synthetic-event.json', 'USGS' => 'usgs-public-event.json
         expectArchitecture($client->obtenerEventos() === [], "$source accepted malformed observation");
     }
     if ($source === 'SGC') {
+        expectArchitecture(str_ends_with((new Config\Sgc())->feedUrl, '/five_days_all.json'), 'Default SGC feed excludes small events');
+        $transport->payload['features'] = [array_replace_recursive($base, ['properties' => ['mag' => 1.1]])];
+        expectArchitecture($client->obtenerEventos()[0]['magnitud'] === 1.1, 'A small SGC event was filtered by the global magnitude threshold');
         expectArchitecture(str_starts_with($transport->headers['User-Agent'], 'Mozilla/5.0 ')
             && str_contains($transport->headers['User-Agent'], 'SIGRA/' . config(Config\Sigra::class)->version),
             'SGC lost its compatible user agent or explicit SIGRA identity');

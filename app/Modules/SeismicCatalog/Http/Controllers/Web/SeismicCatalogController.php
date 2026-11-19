@@ -12,8 +12,12 @@ final class SeismicCatalogController extends BaseController
     public function index(): string
     {
         $vm = ListEventsViewModel::fromResult(service('listEvents')->recent());
+        $mapEngine = config(\Config\SeismicMap::class)->engine;
+        $requestedEngine = $this->request->getGet('map');
+        if (in_array($requestedEngine, ['cesium', 'leaflet'], true)) $mapEngine = $requestedEngine;
         return view('App\Modules\SeismicCatalog\Presentation\Views\sismos\list\index', [
             'vm' => $vm, 'locale' => $this->request->getLocale(), 'message' => session()->getFlashdata('mensaje'),
+            'mapEngine' => $mapEngine,
         ]);
     }
     public function detail(string $id)

@@ -1,6 +1,8 @@
 # SIGRA · 全球地震信息与公民网络
 
-**v1.3.1.3 · SGC 连接已恢复** · 构建 `20261119.1` · 2026年11月19日
+**v1.4.0-beta.1 · 实验性3D地球 · BETA** · `20261119.beta1` · 2026-11-19
+
+> 测试版包含CesiumJS、备用2D地图和SGC完整数据源。稳定版仍为1.3.1.3。 [1.4.0-beta.1](docs/BETA_1.4.0.md)
 
 [Español](README.md) · [English](README.en.md) · [Português](README.pt.md) · [Français](README.fr.md) · [Deutsch](README.de.md) · [Italiano](README.it.md) · [日本語](README.ja.md) · [简体中文](README.zh-CN.md) · [العربية](README.ar.md)
 

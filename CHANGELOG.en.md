@@ -4,7 +4,14 @@ All notable changes to SIGRA are documented here. The project follows
 [Semantic Versioning](https://semver.org/), with an optional fourth revision component
 for small patch adjustments such as `1.3.1.1`.
 
-## Unreleased
+## [1.4.0-beta.1] · 2026-11-19 · Experimental 3D globe
+
+- CesiumJS main globe with unified view/layer controls, dark theme and mobile layout; Leaflet fallback retains filters, location and radius.
+- Full five-day SGC feed, including events below magnitude 2.
+- Partial refreshes retain historical provider references while applying scientific revisions.
+- Read-only source/catalog audit: `php tools/audit-source-sync.php`.
+
+## Documentation included with 1.3.1.3
 
 - Use Spanish as the primary README, contribution guide, code of conduct and GitHub template language.
 - Keep this English changelog and README.en.md, with seven additional translated getting-started guides linked from the README.

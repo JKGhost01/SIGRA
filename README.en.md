@@ -1,11 +1,13 @@
 # SIGRA · Global Seismic Monitor & Citizen Network
 
-> **v1.3.1.3 · SGC connection restored** — Published earthquakes from six official sources in one map, with experimental citizen monitoring.
+> **v1.4.0-beta.1 · Experimental 3D globe · PRE-RELEASE** — Published earthquakes from six official sources in one map, with experimental citizen monitoring.
 
-[![Version](https://img.shields.io/badge/version-1.3.1.3-087f78.svg)](#versioning)
+[![Version](https://img.shields.io/badge/version-1.4.0--beta.1-d89926.svg)](#versioning)
 [![PHP](https://img.shields.io/badge/PHP-%3E%3D8.2-777bb4.svg)](https://www.php.net/)
 [![CodeIgniter](https://img.shields.io/badge/CodeIgniter-4.7-ee4323.svg)](https://codeigniter.com/)
 [![License](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
+
+**Test beta.** The latest stable release remains 1.3.1.3. [Deployment and rollback](docs/BETA_1.4.0.md).
 
 [Español](README.md) · [English](README.en.md) · [Português](README.pt.md) · [Français](README.fr.md) · [Deutsch](README.de.md) · [Italiano](README.it.md) · [日本語](README.ja.md) · [简体中文](README.zh-CN.md) · [العربية](README.ar.md)
 
@@ -276,7 +278,14 @@ a voluntary donation. Thank you for supporting the project!
 | **Nequi** | `315 9287929` |
 | **Bancolombia** | Account `912-982627-76` |
 
-## Upgrade to 1.3.1.3
+## Upgrade to 1.4.0-beta.1
+
+No new migrations or Composer changes are required when upgrading from 1.3.1.3.
+This beta includes the Cesium globe, Leaflet 2D fallback and the full SGC feed.
+Preserve `.env` and `writable/cache/providers`; review version, channel and feed overrides.
+See [the beta deployment guide](docs/BETA_1.4.0.md).
+
+### SGC recovery in 1.3.1.3 (historical)
 
 The SGC connection was restored with a compatible User-Agent. A live local check
 returned HTTP 200 and 100 normalized events; the user subsequently confirmed
@@ -293,7 +302,7 @@ in 1.3.1.3; complete coverage is not guaranteed. See [provider details](docs/FUE
 
 ## Versioning
 
-SIGRA follows semantic versioning with an optional fourth revision component for small patch adjustments. The current release is **1.3.1.3 · SGC connection restored** (2026-11-19, build `20261119.1`). See [docs/VERSIONES.md](docs/VERSIONES.md).
+SIGRA follows semantic versioning with an optional fourth revision component for small patch adjustments. The current pre-release is **1.4.0-beta.1 · Experimental 3D globe** (2026-11-19, build `20261119.beta1`, channel `beta`). The stable release remains 1.3.1.3. See [docs/VERSIONES.md](docs/VERSIONES.md).
 
 API contracts: [Earthquakes](docs/API_SISMOS.md) · [Citizen network](docs/API_RED.md).
 

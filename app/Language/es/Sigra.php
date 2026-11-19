@@ -6,6 +6,18 @@
  * correspondiente y traduce los valores.
  */
 return [
+    'mapEventDetails' => 'Ver detalle del sismo',
+    'mapEngine' => 'Vista del mapa',
+    'mapGlobe' => 'Globo 3D',
+    'mapClassic' => 'Mapa 2D',
+    'mapBaseLayer' => 'Capas del mapa',
+    'mapClosePopup' => 'Cerrar detalle del epicentro',
+    'mapGlobeLoading' => 'Cargando globo 3D… Puedes usar el mapa 2D mientras tanto.',
+    'mapGlobeReady' => 'Vista 3D experimental · Epicentros en superficie',
+    'mapClassicReady' => 'Mapa 2D activo',
+    'mapGlobeFallback' => 'El globo no está disponible. Se activó el mapa 2D.',
+    'mapImageryUnavailable' => 'No se pudo cargar parte de la capa. Prueba otra capa o el mapa 2D.',
+
     'mobileTitle' => 'SIGRA en tu bolsillo.',
     'mobileLead' => 'Explora la actividad sísmica desde tu Android y participa, si lo deseas, en la red experimental de teléfonos de SIGRA.',
     'mobileExperimental' => 'Experimental',
@@ -78,7 +90,7 @@ return [
 
     // Navegación y layout
     'navLive'          => 'App móvil',
-    'releaseName'      => 'Conexión SGC recuperada',
+    'releaseName'      => 'Globo 3D experimental',
     'tagline'          => 'Monitor sísmico global y red ciudadana',
     'navMap'           => 'Mapa global',
     'navHistory'       => 'Histórico',

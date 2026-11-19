@@ -4,6 +4,12 @@ Instalación canónica: [INSTALLATION.md](INSTALLATION.md). Android está en des
 en otro repositorio. La red sensorial es experimental; estas comprobaciones operativas
 no acreditan utilidad para emergencias.
 
+## Beta 1.4.0-beta.1
+
+Esta rama es una pre-release; la estable sigue en 1.3.1.3. Usa la
+[guía específica de subida, aceptación y reversión](BETA_1.4.0.md).
+Sobre 1.3.1.3 no requiere migraciones nuevas ni cambios de dependencias.
+
 ## Antes de actualizar
 
 Para la recuperación de SGC del 19 de noviembre, consulta el
@@ -42,7 +48,7 @@ el archivo original no retira copias con otro nombre.
 Abre mapa, histórico, detalle, formulario de reporte, `/red` y `/acerca-de`.
 `/api/health` comprueba acceso a la base; no certifica frescura del catálogo.
 `/api/red/health` indica actividad del backend; no certifica detección en campo.
-La versión esperada de este cambio es **1.3.1.3**, build **20261119.1**; un override en `.env` puede prevalecer.
+La versión esperada de este cambio es **1.4.0-beta.1**, build **20261119.beta1**, canal **beta**; un override en `.env` puede prevalecer.
 Comprueba assets, manifest y service worker, y revisa errores del hosting sin exponerlos.
 Las APIs autenticadas deben rechazar claves ausentes o incorrectas.
 

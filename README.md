@@ -1,11 +1,13 @@
 # SIGRA · Monitor sísmico global y red ciudadana
 
-> **v1.3.1.3 · Conexión SGC recuperada** — eventos de seis fuentes oficiales en un mapa, con monitoreo ciudadano experimental.
+> **v1.4.0-beta.1 · Globo 3D experimental · PRE-RELEASE** — eventos de seis fuentes oficiales en un mapa, con monitoreo ciudadano experimental.
 
-[![Versión](https://img.shields.io/badge/versi%C3%B3n-1.3.1.3-087f78.svg)](#versionado)
+[![Versión](https://img.shields.io/badge/versi%C3%B3n-1.4.0--beta.1-d89926.svg)](#versionado)
 [![PHP](https://img.shields.io/badge/PHP-%3E%3D8.2-777bb4.svg)](https://www.php.net/)
 [![CodeIgniter](https://img.shields.io/badge/CodeIgniter-4.7-ee4323.svg)](https://codeigniter.com/)
 [![Licencia](https://img.shields.io/badge/licencia-MIT-blue.svg)](LICENSE)
+
+**Beta de prueba.** La última versión estable es 1.3.1.3. [Guía de despliegue y reversión](docs/BETA_1.4.0.md).
 
 **Documentación principal en español.**
 
@@ -50,7 +52,7 @@ SIGRA sirve para consulta, educación y experimentación técnica. No predice te
 
 | Área | Qué hace |
 |---|---|
-| Mapa global | Leaflet, eventos mundiales, estilo por magnitud/profundidad y cuatro capas base. |
+| Mapa global | Globo CesiumJS y mapa Leaflet 2D, eventos mundiales, estilo por magnitud/profundidad y cuatro capas base. |
 | Ingesta unificada | Seis proveedores oficiales normalizados a un solo esquema, con caché en disco y tolerancia a fallos por fuente. |
 | Filtro por radio | Geolocalización opcional; círculo, distancias y orden “más cercanos” calculados en el navegador. |
 | Filtros | Búsqueda por lugar, fuente (todas / SGC / USGS / EMSC / GEONET / GEOFON / INGV), magnitud e intensidad. |
@@ -274,7 +276,14 @@ donación voluntaria. ¡Gracias por aportar al proyecto!
 | **Nequi** | `315 9287929` |
 | **Bancolombia** | Cuenta `912-982627-76` |
 
-## Actualizar a 1.3.1.3
+## Actualizar a 1.4.0-beta.1
+
+Sobre 1.3.1.3, esta beta no requiere migraciones ni cambios en Composer.
+Incluye globo 3D, mapa 2D de respaldo y feed SGC completo. Conserva `.env` y
+`writable/cache/providers`; revisa overrides de versión, canal y feed.
+Consulta [los archivos y la reversión](docs/BETA_1.4.0.md).
+
+### Recuperación SGC en 1.3.1.3 (histórico)
 
 La conexión SGC se recuperó con un User-Agent compatible. La comprobación local
 recibió HTTP 200 y 100 eventos normalizados; el usuario confirmó después que
@@ -292,8 +301,8 @@ se incorporó después, en 1.3.1.3; la cobertura completa no está garantizada. 
 
 ## Versionado
 
-SIGRA usa versionado semántico con un cuarto componente opcional para revisiones pequeñas de un parche. La versión actual es **1.3.1.3 · Conexión SGC recuperada**
-(2026-11-19, build `20261119.1`). Ver [docs/VERSIONES.md](docs/VERSIONES.md).
+SIGRA usa versionado semántico con un cuarto componente opcional para revisiones pequeñas de un parche. La pre-release actual es **1.4.0-beta.1 · Globo 3D experimental**
+(2026-11-19, build `20261119.beta1`, canal `beta`). La estable sigue en 1.3.1.3. Ver [docs/VERSIONES.md](docs/VERSIONES.md).
 
 Contratos API: [Sismos](docs/API_SISMOS.md) · [Red ciudadana](docs/API_RED.md).
 

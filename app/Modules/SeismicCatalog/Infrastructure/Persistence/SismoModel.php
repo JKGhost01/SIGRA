@@ -210,6 +210,7 @@ class SismoModel extends Model
                 continue;
             }
 
+            $evento = \App\Modules\SeismicCatalog\Domain\Services\SourceProvenance::retain($existentes[$id], $evento);
             if ($this->cambioRespectoA($existentes[$id], $evento)) {
                 $actualizar[] = $evento;
             }

@@ -3,6 +3,17 @@
 return array (
   'history' => 
   array (
+        '1.4.0-beta.1' => [
+            'name' => 'Globo 3D experimental',
+            'summary' => 'Primera beta del mapa CesiumJS, con respaldo 2D y catálogo SGC completo.',
+            'changes' => [
+                'Globo CesiumJS 1.146 en el mapa principal, con filtros, radio, ubicación y reproducción conservados.',
+                'Controles de vistas y cuatro capas agrupados a la derecha, plegables y adaptados a móvil y tema oscuro.',
+                'Mapa Leaflet 2D disponible y recuperación automática ante fallos de carga o WebGL.',
+                'Feed SGC completo de cinco días, incluidos sismos menores de magnitud 2.',
+                'Referencias históricas entre fuentes conservadas ante actualizaciones parciales y auditoría de sincronización de solo lectura.',
+            ],
+        ],
         '1.3.1.3' => [
             'name' => 'Conexión SGC recuperada',
             'summary' => 'Compatibilidad HTTP restaurada para recuperar la consulta del catálogo oficial SGC.',

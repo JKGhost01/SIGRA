@@ -4,7 +4,18 @@ La documentación principal se mantiene en español. SIGRA usa versionado semán
 con un cuarto componente opcional para revisiones pequeñas. El historial inglés
 se conserva en [CHANGELOG.en.md](CHANGELOG.en.md).
 
-## Pendiente de publicación
+## [1.4.0-beta.1] · 2026-11-19 · Globo 3D experimental
+
+- Globo CesiumJS en el mapa principal, con controles compartidos de vistas y capas a la derecha, modo oscuro y diseño móvil.
+- Respaldo Leaflet ante CDN bloqueado o pérdida de WebGL, conservando filtros, ubicación y radio.
+- SGC usa el feed completo de cinco días, incluidos eventos menores de magnitud 2.
+- Las actualizaciones parciales conservan las referencias históricas de otras agencias sin bloquear revisiones científicas.
+- Auditoría de solo lectura con `php tools/audit-source-sync.php`; [diagnóstico](docs/SINCRONIZACION_FUENTES_2026-11-19.md).
+
+- Build `20261119.beta1`; canal `beta`. API v1, sin migraciones nuevas ni cambios de dependencias Composer.
+- [Guía de la beta, despliegue y reversión](docs/BETA_1.4.0.md).
+
+## Documentación incorporada con 1.3.1.3
 
 - README principal, guía de contribución, código de conducta y plantillas de GitHub en español.
 - Traducciones del README en inglés y siete idiomas adicionales, enlazadas desde la portada.

@@ -3,6 +3,7 @@ $sismos = $vm->events;
 $eventosIniciales = $vm->initialEvents;
 ob_start();
 ?>
+<link rel="stylesheet" href="<?= sigra_public_url('assets/css/seismic-globe.css') ?>">
 
 <?php if ($message): ?>
     <div class="alert alert-success mb-3"><?= esc($message) ?></div>
@@ -146,6 +147,42 @@ ob_start();
     </aside>
 
     <section class="map-stage">
+        <div class="map-engine-toolbar">
+            <div class="map-tools-heading">
+                <span class="map-tools-title"><?= esc(lang('Sigra.mapEngine')) ?></span>
+                <button type="button" id="map-tools-toggle" class="map-tools-toggle" aria-expanded="true" aria-controls="map-tools-options" aria-label="<?= esc(lang('Sigra.collapseLayers')) ?>">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path d="m7 14 5-5 5 5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                </button>
+            </div>
+            <div id="map-tools-options">
+            <div class="map-engine-buttons" role="group" aria-label="<?= esc(lang('Sigra.mapEngine')) ?>">
+                <button type="button" data-map-engine="cesium" aria-pressed="false">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><circle cx="12" cy="12" r="9"/><ellipse cx="12" cy="12" rx="4" ry="9"/><path d="M3 12h18"/></svg>
+                    <span><?= esc(lang('Sigra.mapGlobe')) ?></span>
+                </button>
+                <button type="button" data-map-engine="leaflet" aria-pressed="false">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><path d="m3 6 6-3 6 3 6-3v15l-6 3-6-3-6 3V6Z" stroke-linejoin="round"/><path d="M9 3v15M15 6v15"/></svg>
+                    <span><?= esc(lang('Sigra.mapClassic')) ?></span>
+                </button>
+            </div>
+            <div class="map-layer-section">
+                <span class="map-layer-label" id="map-layer-label"><?= esc(lang('Sigra.mapBaseLayer')) ?></span>
+                <div class="map-layer-options" role="group" aria-labelledby="map-layer-label">
+                    <?php foreach (['osm' => 'layerMap', 'satellite' => 'layerSatellite', 'dark' => 'layerDark', 'topo' => 'layerTopo'] as $layer => $label): ?>
+                    <button type="button" data-map-layer="<?= esc($layer) ?>" aria-pressed="false">
+                        <span class="map-layer-preview map-layer-preview--<?= esc($layer) ?>" aria-hidden="true"><span></span></span>
+                        <span class="map-layer-name"><?= esc(lang('Sigra.' . $label)) ?></span>
+                    </button>
+                    <?php endforeach; ?>
+                </div>
+            </div>
+            <div class="map-engine-caption"><span class="map-engine-dot" aria-hidden="true"></span><span id="map-engine-status" role="status" aria-live="polite"></span></div>
+            </div>
+        </div>
+        <div id="map-globe-popup" class="map-globe-popup" hidden>
+            <button type="button" id="map-globe-close" aria-label="<?= esc(lang('Sigra.mapClosePopup')) ?>">×</button>
+            <div data-popup-content></div>
+        </div>
         <div id="map-info" class="map-info">
             <button id="map-info-toggle" class="map-info-toggle" type="button" aria-label="<?= esc(lang('Sigra.mapInfoTitle')) ?>" aria-controls="map-info-content" aria-expanded="false"></button>
             <div id="map-info-content" class="map-info-content" hidden>
@@ -210,7 +247,19 @@ ob_start();
     ], JSON_UNESCAPED_UNICODE | JSON_HEX_TAG | JSON_HEX_AMP | JSON_HEX_APOS | JSON_HEX_QUOT) ?>;
 
     const SIGRA_MAP_URLS = <?= json_encode(['sync' => parse_url(site_url('sismos/sync'), PHP_URL_PATH), 'detail' => parse_url(site_url('sismos/detalle'), PHP_URL_PATH)], JSON_HEX_TAG | JSON_HEX_AMP | JSON_HEX_APOS | JSON_HEX_QUOT) ?>;
+    window.SIGRA_GLOBE_CONFIG = <?= json_encode(['engine' => $mapEngine,
+        'detail' => parse_url(site_url('sismos/detalle'), PHP_URL_PATH), 'text' => [
+        'details' => lang('Sigra.mapEventDetails'),
+        'loading' => lang('Sigra.mapGlobeLoading'),
+        'ready' => lang('Sigra.mapGlobeReady'),
+        'classic' => lang('Sigra.mapClassicReady'),
+        'fallback' => lang('Sigra.mapGlobeFallback'),
+        'imageryUnavailable' => lang('Sigra.mapImageryUnavailable'),
+        'expand' => lang('Sigra.expandLayers'),
+        'collapse' => lang('Sigra.collapseLayers'),
+    ]], JSON_HEX_TAG | JSON_HEX_AMP | JSON_HEX_APOS | JSON_HEX_QUOT) ?>;
 </script>
+<script src="<?= sigra_public_url('assets/js/modules/seismic-map/globe.js') ?>"></script>
 <script src="<?= sigra_public_url('assets/js/modules/seismic-map/catalog.js') ?>"></script>
 <?php
 $contenido = ob_get_clean();

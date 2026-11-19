@@ -1,5 +1,10 @@
 # Fuentes sísmicas · 19 de noviembre de 2026
 
+En la pre-release local se usa el [resumen completo SGC de cinco días](https://archive.sgc.gov.co/feed/v1.0.1/summary/five_days_all.json),
+incluidos sismos menores de magnitud 2. El resumen anterior `five_days_2.json`
+dejaba esos eventos fuera. Consulta la [revisión de sincronización](SINCRONIZACION_FUENTES_2026-11-19.md)
+para comparar feed, catálogo y referencias de las seis fuentes sin nuevas consultas externas.
+
 SGC consulta únicamente el feed configurado, una vez por turno. Un rechazo no
 activa otro endpoint ni un reintento inmediato. La comparación con `sigra_old`
 aisló una incompatibilidad del `User-Agent`: el mismo feed devolvió HTTP 403

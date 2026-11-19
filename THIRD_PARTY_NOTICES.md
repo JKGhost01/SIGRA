@@ -31,6 +31,7 @@ claim ownership of the original data. Always link back to the official source.
 | Component | License | Notes |
 |---|---|---|
 | **CodeIgniter 4** | MIT | © British Columbia Institute of Technology and the CodeIgniter Foundation. |
+| **CesiumJS 1.146** | Apache License 2.0 | © 2011–2026 CesiumJS Contributors. Loaded from cesium.com, including workers and widget assets; built-in credits retained. <https://github.com/CesiumGS/cesium/blob/1.146/LICENSE.md> |
 | **Leaflet** | BSD 2-Clause | © Volodymyr Agafonkin and Leaflet contributors. |
 | **Bootstrap** | MIT | © The Bootstrap Authors. |
 | **DM Sans** | SIL Open Font License 1.1 | Served through Google Fonts; the service is subject to Google APIs Terms. |
