@@ -1,63 +1,62 @@
-name: Bug report
-description: Report a reproducible problem in SIGRA
+name: Reporte de error
+description: Informa de un problema reproducible en SIGRA
 title: "[bug] "
 labels: ["bug"]
 body:
   - type: markdown
     attributes:
       value: |
-        Thanks for helping improve SIGRA. Please remove secrets and personal data
-        from logs before submitting.
+        Antes de enviar, retira secretos y datos personales de los registros.
   - type: input
     id: version
     attributes:
-      label: SIGRA version
-      description: Output of `/api/health` or the badge in the navbar.
+      label: Versión de SIGRA
+      description: Valor de `/api/health` o la etiqueta de la barra de navegación.
       placeholder: "1.3.1.3"
     validations:
       required: true
   - type: input
     id: environment
     attributes:
-      label: Environment
-      description: PHP, database and browser/OS (or Android device).
+      label: Entorno
+      description: PHP, base de datos y navegador/sistema (o dispositivo Android).
       placeholder: "PHP 8.2, MariaDB 10.4, Firefox 128 / Windows 11"
     validations:
       required: true
   - type: textarea
     id: steps
     attributes:
-      label: Steps to reproduce
+      label: Pasos para reproducir
       placeholder: |
-        1. Open /sismos
-        2. Press "Mi ubicación"
+        1. Abre /sismos
+        2. Pulsa "Mi ubicación"
         3. ...
     validations:
       required: true
   - type: textarea
     id: expected
     attributes:
-      label: Expected behavior
+      label: Resultado esperado
     validations:
       required: true
   - type: textarea
     id: actual
     attributes:
-      label: Actual behavior
+      label: Resultado observado
     validations:
       required: true
   - type: textarea
     id: logs
     attributes:
-      label: Relevant logs
-      description: Lines from `writable/logs/` with secrets removed.
+      label: Registros relevantes
+      description: Fragmentos de `writable/logs/` sin secretos.
       render: shell
   - type: checkboxes
     id: checks
     attributes:
-      label: Checklist
+      label: Comprobaciones
       options:
-        - label: I searched existing issues.
+        - label: Revisé los issues existentes.
           required: true
-        - label: I removed credentials and personal data from this report.
+        - label: Retiré credenciales y datos personales del reporte.
           required: true

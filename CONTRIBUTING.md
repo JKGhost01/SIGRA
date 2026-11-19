@@ -1,17 +1,16 @@
-# Contributing to SIGRA
+# Contribuir a SIGRA
 
-Thanks for helping improve an open seismic-monitoring project. This guide keeps
-contributions consistent and reviewable.
+Esta guía establece cómo preparar contribuciones claras y verificables. La documentación principal se escribe en **español**. El README inglés se conserva en [README.en.md](README.en.md); los nombres de archivos, claves de API y contratos de código se mantienen estables.
 
-## Before you start
+## Antes de empezar
 
-- Search existing issues and pull requests.
-- For a large feature, open an issue first so we can agree on the approach.
-- Do not publish credentials, private telemetry or personal user data in public issues.
+- Revisa los issues y pull requests existentes.
+- Para una función amplia, abre primero un issue para acordar el alcance.
+- No publiques credenciales, telemetría privada ni datos personales en reportes públicos.
 
-## Development setup
+## Preparar el entorno
 
-Follow the single [installation procedure](docs/INSTALLATION.md):
+Sigue el [procedimiento de instalación](docs/INSTALLATION.md):
 
 ```bash
 git clone https://github.com/JKGhost01/SIGRA.git
@@ -19,77 +18,43 @@ cd SIGRA
 composer install
 cp .env.example .env
 php tools/setup-local.php
-# Create an empty database and configure .env.
+# Crea una base vacía y configura su conexión en .env.
 php spark migrate --all
 php -S 127.0.0.1:8080 -t public
 ```
 
-The repository includes CI4 under `system/`, not `vendor/`. Composer installs the
-locked runtime libraries and PHPStan without running framework-development scripts.
-Automated checks additionally require Node 22+, Python 3 and PHP-CGI. Run
-`composer test` and `composer analyse`; database integration is opt-in and isolated.
+CI4 se distribuye en `system/`; Composer instala las dependencias fijadas en el lock y PHPStan. Las comprobaciones requieren Node 22+, Python 3 y PHP-CGI. La integración MySQL usa una base de pruebas independiente seleccionada expresamente.
 
-## Code style
+## Estilo y arquitectura
 
-- PHP 8.2+, `declare(strict_types=1);` in new classes.
-- Follow PSR-12 and the [modular architecture](docs/architecture/README.md):
-  - controllers parse HTTP input, call use cases and produce responses;
-  - application handlers coordinate operations through injected contracts;
-  - domain rules stay independent of CI4;
-  - infrastructure owns persistence, providers and external delivery;
-  - views only render prepared data; they do not validate permissions or execute writes.
-- Existing `app/Libraries` and `app/Models` compatibility names delegate to modules;
-  new business behavior belongs to its capability module.
-- Escape all external data in HTML (`esc()` in PHP, `escaparHtml()` in JS).
-- Do not hardcode credentials, API keys, phone numbers or production domains.
-- Keep new JavaScript framework-free and compatible with current evergreen
-  browsers.
+- PHP 8.2+ y `declare(strict_types=1);` en clases nuevas; sigue PSR-12.
+- Respeta la [arquitectura modular](docs/architecture/README.md): HTTP recibe solicitudes; Application coordina casos de uso mediante contratos; Domain conserva reglas independientes de CI4; Infrastructure integra persistencia, proveedores y entregas; Presentation muestra datos preparados.
+- Los nombres de compatibilidad en `app/Libraries` y `app/Models` delegan a módulos. El comportamiento nuevo pertenece al módulo correspondiente.
+- Escapa datos externos con `esc()` en PHP y `escaparHtml()` en JavaScript.
+- No incluyas credenciales, claves, teléfonos ni dominios de producción en código.
+- Conserva JavaScript sin frameworks y compatible con navegadores actuales.
 
-## Tests and checks
+## Comprobaciones
 
 ```bash
-# Check ignored runtime artifacts and source visibility
 python3 tools/check-git.py
-
-# Architecture, domain, HTTP and presentation regression checks
 composer test
-
-# Syntax check every PHP file you touched
-php -l app/Path/To/File.php
-
-# JavaScript syntax
+composer analyse
+php -l app/Ruta/Archivo.php
 node --check public/assets/js/mapa-sismos.js
-
-# Manual smoke test
-php spark serve
-# open /sismos, /sismos/historico, /sismos/detalle/{id}, /api/health
 ```
 
-When adding a source normalizer, include fixtures and a unit test covering:
+Comprueba manualmente mapa, histórico y detalle cuando cambie la interfaz. Un normalizador nuevo necesita fixtures para eventos válidos, campos científicos ausentes, conversión horaria, identificadores largos y duplicados entre fuentes.
 
-- a valid event,
-- a missing magnitude/coordinate,
-- a timezone conversion,
-- an ID longer than 24 characters,
-- a duplicate against another source.
+## Commits y pull requests
 
-## Commits and pull requests
+- Escribe mensajes claros, por ejemplo: `Corrige el filtro de radio`.
+- Mantén un cambio lógico por pull request y explica qué cambia, por qué y cómo se comprobó.
+- Actualiza la documentación y `docs/VERSIONES.md` si cambia el comportamiento público.
+- Cambia la versión cuando el mantenedor lo solicite.
+- Incluye módulos nuevos y rutas retiradas en la misma entrega. Consulta la [guía de publicación](docs/architecture/git-publication.md).
+- Un push a una rama no modifica `main`: abre un pull request hacia la rama principal y verifica sus comprobaciones antes de integrarlo.
 
-- Use clear, imperative commit messages: `Add EMSC normalizer`, `Fix radius API`.
-- One logical change per pull request.
-- Describe **what** changed, **why**, and how it was tested.
-- Update documentation and `docs/VERSIONES.md` when the public behaviour changes.
-- Do not bump the version in a feature PR unless a maintainer asks you to.
-- For the modular migration, include new modules and retired paths in the same
-  commit with `git add -A`; see the [Git publication guide](docs/architecture/git-publication.md).
+## Reportar errores
 
-## Reporting bugs
-
-Include:
-
-- SIGRA version (`/api/health`),
-- PHP and database versions,
-- browser/OS or Android model,
-- steps to reproduce,
-- expected vs. actual behavior,
-- relevant lines from `writable/logs/` with secrets removed.
+Incluye la versión de SIGRA (`/api/health`), versiones de PHP y base de datos, navegador/sistema o dispositivo Android, pasos para reproducir, resultado esperado y observado, y fragmentos relevantes de `writable/logs/` sin secretos ni datos personales.

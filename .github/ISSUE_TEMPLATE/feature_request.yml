@@ -1,45 +1,45 @@
-name: Feature request
-description: Suggest an improvement or a new data source
+name: Propuesta de mejora
+description: Propón una mejora o una nueva fuente de datos
 title: "[feature] "
 labels: ["enhancement"]
 body:
   - type: textarea
     id: problem
     attributes:
-      label: Problem or opportunity
-      description: What is missing or painful today?
+      label: Problema u oportunidad
+      description: ¿Qué falta o dificulta el uso actual?
     validations:
       required: true
   - type: textarea
     id: proposal
     attributes:
-      label: Proposed solution
-      description: Describe the behavior you would like, including API or UI changes.
+      label: Solución propuesta
+      description: Describe el comportamiento deseado, incluidos cambios de API o interfaz.
     validations:
       required: true
   - type: dropdown
     id: area
     attributes:
-      label: Area
+      label: Área
       options:
-        - Data ingestion / new source
-        - Map and radius filter
-        - History and detail page
+        - Ingesta de datos / nueva fuente
+        - Mapa y filtro de radio
+        - Histórico y detalle
         - API
-        - Citizen network
-        - Android app
-        - Documentation
-        - Other
+        - Red ciudadana
+        - Aplicación Android
+        - Documentación
+        - Otra
     validations:
       required: true
   - type: textarea
     id: alternatives
     attributes:
-      label: Alternatives considered
+      label: Alternativas consideradas
   - type: checkboxes
     id: checks
     attributes:
-      label: Checklist
+      label: Comprobaciones
       options:
-        - label: I searched existing issues and discussions.
+        - label: Revisé los issues y debates existentes.
           required: true

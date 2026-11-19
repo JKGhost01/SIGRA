@@ -2,7 +2,7 @@
 
 Este procedimiento instala SIGRA web/backend desde los archivos de esta versión.
 Android está en desarrollo en otro repositorio. El monitoreo sensorial es experimental.
-El README en inglés, su traducción y CONTRIBUTING remiten a esta misma secuencia.
+El README principal en español, su traducción inglesa (`README.en.md`) y CONTRIBUTING remiten a esta misma secuencia.
 
 ## Requisitos
 

@@ -1,118 +1,116 @@
-# SIGRA · Global Seismic Monitor & Citizen Network
+# SIGRA · Monitor sísmico global y red ciudadana
 
-> **v1.3.1.3 · SGC connection restored** — Published earthquakes from six official sources in one map, with experimental citizen monitoring.
+> **v1.3.1.3 · Conexión SGC recuperada** — eventos de seis fuentes oficiales en un mapa, con monitoreo ciudadano experimental.
 
-[![Version](https://img.shields.io/badge/version-1.3.1.3-087f78.svg)](#versioning)
+[![Versión](https://img.shields.io/badge/versi%C3%B3n-1.3.1.3-087f78.svg)](#versionado)
 [![PHP](https://img.shields.io/badge/PHP-%3E%3D8.2-777bb4.svg)](https://www.php.net/)
 [![CodeIgniter](https://img.shields.io/badge/CodeIgniter-4.7-ee4323.svg)](https://codeigniter.com/)
-[![License](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
+[![Licencia](https://img.shields.io/badge/licencia-MIT-blue.svg)](LICENSE)
 
-*Read this in [Spanish](README.es.md).*
+**Documentación principal en español.**
 
-SIGRA is an open-source PHP application that unifies earthquake feeds from the
-**SGC, USGS, EMSC, GeoNet, GEOFON/GFZ and INGV** into a single searchable map, with a “near me” radius filter, a
-historical archive, a JSON API and an experimental server-side sensor network.
-The Android client is still under development in a separate repository.
+[Español](README.md) · [English](README.en.md) · [Português](README.pt.md) · [Français](README.fr.md) · [Deutsch](README.de.md) · [Italiano](README.it.md) · [日本語](README.ja.md) · [简体中文](README.zh-CN.md) · [العربية](README.ar.md)
 
-It is not tied to a single country: the map, the history, the API and the radius
-filter work anywhere on Earth.
+SIGRA es una aplicación PHP de código abierto que unifica los sismos de
+**SGC, USGS, EMSC, GeoNet, GEOFON/GFZ e INGV** en un solo mapa consultable, con filtro de cercanía, archivo
+histórico, API JSON y un backend experimental para señales de dispositivos.
+El cliente Android está en construcción en un repositorio independiente.
+
+No está atada a un solo país: el mapa, el histórico, la API y el filtro por
+radio funcionan en cualquier parte del mundo.
 
 ---
 
-## Why SIGRA
+## Qué aporta
 
-Most public seismic viewers are either global and impersonal, or local and
-limited. SIGRA combines both:
+- **Un mapa global**: eventos del SGC para Colombia y del USGS para el mundo en
+  la misma tabla, el mismo listado y la misma API.
+- **“Cerca de mí” estilo detector sísmico**: comparte tu ubicación en el
+  navegador y filtra eventos en 50, 100, 250, 500, 1.000, 2.000 o 5.000 km.
+  Ordena por distancia y consulta qué tan lejos está cada epicentro.
+- **Deduplicación entre fuentes**: si el mismo sismo aparece en SGC y USGS, se
+  conserva el registro local, que trae más detalle.
+- **Archivo histórico**: cada evento queda en MySQL y se puede consultar por
+  fecha, magnitud, profundidad, lugar y fuente.
+- **Backend ciudadano experimental**: recibe señales, calcula candidatos TDOA y
+  tiempos estimados. No se presenta como alerta validada; Android sigue en desarrollo.
+- **Abierto y autoalojable**: sin servicios propietarios. Los mapas usan
+  OpenStreetMap/Esri y los datos vienen de agencias públicas.
 
-- **One global map** — SGC events for Colombia and USGS events worldwide in the
-  same table, the same list and the same API.
-- **“Near me” like a seismic detector** — share your location in the browser and
-  filter events within 50 km, 100 km, 250 km, 500 km, 1,000 km, 2,000 km or
-  5,000 km. Sort by distance and see how far each epicenter is from you.
-- **Cross-source deduplication** — if the same earthquake appears in SGC and
-  USGS, only the richer local record is kept.
-- **Historical archive** — every event is stored in MySQL and can be queried by
-  date, magnitude, depth, place and source.
-- **Experimental citizen backend** — accepts device signals; the Android client is in development;
-  the backend evaluates experimental TDOA candidates and estimated arrival times.
-  These estimates are not validated early warnings and do not replace authorities.
-- **Open and self-hostable** — no proprietary services are required. Map tiles
-  use OpenStreetMap/Esri and the data comes from public agencies.
+## Estado y alcance
 
-## Status and scope
+- **Disponible:** catálogo publicado de varias fuentes, mapa/listado/histórico, filtros, API y reportes ciudadanos privados.
+- **Experimental:** fusión de sensores, estimación de magnitud/ubicación, tiempos de llegada y entrega por navegador/FCM. No se afirma validación de campo ni anticipación garantizada.
+- **En desarrollo:** Android en un repositorio separado; este backend no incluye una app móvil.
+- **Futuro:** evaluación de campo, carga y nuevas fuentes; consulta el [estado de recomendaciones](docs/RECOMMENDATIONS_STATUS.md).
 
-- **Available:** published multi-source catalog, map/list/history, filters, API and private citizen reports.
-- **Experimental:** sensor fusion, inferred magnitude/location, estimated arrival times and browser/FCM delivery. No field validation or warning-time guarantee is claimed.
-- **In development:** Android in a separate repository; this backend does not ship a mobile app.
-- **Future work:** field evaluation, load benchmarks and further sources; see the [tracked recommendations](docs/RECOMMENDATIONS_STATUS.md).
+SIGRA sirve para consulta, educación y experimentación técnica. No predice terremotos ni sustituye sistemas oficiales de emergencia.
 
-SIGRA is for exploration, education and technical experimentation. It does not predict earthquakes or replace official emergency systems.
+## Funciones
 
-## Features
-
-| Area | What it does |
+| Área | Qué hace |
 |---|---|
-| Global map | Leaflet map with worldwide events, magnitude/depth styling and four base layers. |
-| Unified ingestion | Six official providers normalized to one schema, with disk cache and per-source fault tolerance. |
-| Radius filter | Geolocation is opt-in; the radius circle, distances and “nearest first” order are computed in the browser. |
-| Filters | Free-text place search, source filter (all / SGC / USGS / EMSC / GEONET / GEOFON / INGV), magnitude range (M2.5+ ? M6+) and intensity ordering. |
-| Replay | Animated playback of the last five days of activity. |
-| Detail page | Source-specific technical sheet, official report link and distance from the user. |
-| API | JSON endpoints for web and mobile clients, with Bearer authentication. |
-| Citizen network | Device registry, P-wave detections, TDOA fusion, alert delivery and public dashboard. |
-| PWA | Installable app, offline page, browser notifications and emergency overlay. |
+| Mapa global | Leaflet, eventos mundiales, estilo por magnitud/profundidad y cuatro capas base. |
+| Ingesta unificada | Seis proveedores oficiales normalizados a un solo esquema, con caché en disco y tolerancia a fallos por fuente. |
+| Filtro por radio | Geolocalización opcional; círculo, distancias y orden “más cercanos” calculados en el navegador. |
+| Filtros | Búsqueda por lugar, fuente (todas / SGC / USGS / EMSC / GEONET / GEOFON / INGV), magnitud e intensidad. |
+| Reproducción | Animación de la actividad de los últimos cinco días. |
+| Ficha | Detalle técnico según la fuente, enlace al reporte oficial y distancia al usuario. |
+| API | Endpoints JSON para web y móvil con autenticación Bearer. |
+| Red ciudadana | Registro de dispositivos, detecciones de onda P, fusión TDOA, alertas y panel público. |
+| PWA | App instalable, página offline, notificaciones y overlay de emergencia. |
 
-## Data sources
+## Fuentes de datos
 
-| Source | Coverage | Notes |
+| Fuente | Cobertura | Notas |
 |---|---|---|
-| **SGC** — Servicio Geológico Colombiano | Colombia | Richer local records: CDI, MMI, PGA, felt reports, nearby towns and station metadata. |
-| **USGS** — U.S. Geological Survey | Worldwide | Static weekly GeoJSON feed, filtered locally to five days and magnitude 2.5+ by default; FDSN for custom queries. |
-| **EMSC** | Worldwide | FDSN JSON, with source references retained. |
-| **GeoNet** | New Zealand | Up to 100 recent provider observations, filtered locally. |
-| **GEOFON / GFZ** | Worldwide | Limited recent-event feed, complemented by the other catalogues. |
-| **INGV** | Italy and surroundings | FDSN GeoJSON regional catalogue. |
+| **SGC** — Servicio Geológico Colombiano | Colombia | Registro local más rico: CDI, MMI, PGA, reportes sentidos, municipios y estaciones. |
+| **USGS** — U.S. Geological Survey | Mundo | Feed GeoJSON semanal estático, filtrado localmente a cinco días y magnitud 2.5+ por defecto; FDSN para consultas especiales. |
+| **EMSC** | Mundo | FDSN JSON con referencias de procedencia. |
+| **GeoNet** | Nueva Zelanda | Hasta 100 observaciones recientes del proveedor, filtradas localmente. |
+| **GEOFON / GFZ** | Mundo | Feed limitado de eventos recientes, complementado por otros catálogos. |
+| **INGV** | Italia y entorno | Catálogo regional FDSN GeoJSON. |
 
-The feeds are public. SIGRA stores a normalized copy for history and never
-claims ownership over the original data. Always check the official source in an
-emergency:
+Los feeds son públicos. SIGRA guarda una copia normalizada para el histórico
+y no reclama propiedad sobre los datos originales. En una emergencia consulta
+siempre la fuente oficial:
 
 - SGC: <https://www.sgc.gov.co/>
 - USGS: <https://earthquake.usgs.gov/>
 
-The default feed parameters can be changed in `app/Config/Quakes.php` or with
-environment variables (`quakes.*`).
+Los parámetros se cambian en `app/Config/Quakes.php` o con variables de entorno
+(`quakes.*`).
 
-## Architecture
+## Arquitectura
 
 ```
 app/
   Modules/SeismicCatalog/        Domain, Application, Infrastructure, Http, Presentation
-  Modules/SeismicIngestion/      Sources, deduplicator, sync handler and audit
-  Modules/CitizenReports/        Report validation, submission and reconciliation
-  Modules/SensorNetwork/         Devices, heartbeats and detection commands
-  Modules/Alerting/              Candidate decisions, audit and delivery
-  Modules/System/                Health and public information
-  Shared/                       Clock, contracts and HTTP boundaries
-  Config/Services.php           Dependency composition
-  Commands/SigraSync.php         Scheduled ingestion with a process lock
-  Views/layouts/                Shared rendering layout
-public/assets/js/modules/       Browser behavior
+  Modules/SeismicIngestion/      Fuentes, deduplicación, sincronización y auditoría
+  Modules/CitizenReports/        Validación, envío y reconciliación de reportes
+  Modules/SensorNetwork/         Dispositivos, latidos y detecciones
+  Modules/Alerting/              Decisiones de candidatos, auditoría y entrega
+  Modules/System/                Estado e información pública
+  Shared/                       Reloj, contratos y fronteras HTTP
+  Config/Services.php           Composición de dependencias
+  Commands/SigraSync.php         Ingesta programada con bloqueo de proceso
+  Views/layouts/                Plantilla compartida
+public/assets/js/modules/       Comportamiento del navegador
 ```
 
 - **PHP 8.2+ / CodeIgniter 4.7**
-- **MySQL or MariaDB** (utf8mb4)
-- **No build step** for the web app; assets are plain PHP, CSS and JavaScript.
+- **MySQL o MariaDB** (utf8mb4)
+- **Sin build** para la web: PHP, CSS y JavaScript planos.
 
-## Quick start
+## Inicio rápido
 
-### Requirements
+### Requisitos
 
-PHP 8.2+ with `curl`, `intl`, `mbstring` and `mysqli`, Composer 2, and a dedicated MySQL/MariaDB database. The bundled framework is CI4 4.7.3 under `system/`; `vendor/` is **not** committed and is installed from `composer.lock`. Node and Python are only required for automated tests.
+PHP 8.2+ con `curl`, `intl`, `mbstring` y `mysqli`, Composer 2 y una base MySQL/MariaDB propia. CI4 4.7.3 está incluido en `system/`; `vendor/` **no está versionado** y se instala desde `composer.lock`. Node y Python solo se necesitan para las pruebas.
 
-### Installation
+### Instalación
 
-The supported procedure is in [INSTALLATION.md](docs/INSTALLATION.md), including secrets, database creation and troubleshooting:
+El procedimiento soportado está en [INSTALLATION.md](docs/INSTALLATION.md), con claves, creación de base y resolución de errores:
 
 ```bash
 git clone https://github.com/JKGhost01/SIGRA.git
@@ -120,68 +118,73 @@ cd SIGRA
 composer install
 cp .env.example .env
 php tools/setup-local.php
-# Create an empty database and configure database.default.* in .env.
+# Crea una base vacía y configura database.default.* en .env.
 php spark migrate --all
 php -S 127.0.0.1:8080 -t public
 ```
 
-Open <http://127.0.0.1:8080/index.php/sismos>. Use `app.baseURL = 'http://127.0.0.1:8080/'` locally. New deployments should expose only `public/`; existing Hostinger root deployments remain compatible with their protection rules.
+Abre <http://127.0.0.1:8080/index.php/sismos>. En local configura `app.baseURL = 'http://127.0.0.1:8080/'`. Las instalaciones nuevas deben publicar únicamente `public/`; el hosting existente desde la raíz sigue siendo compatible con sus reglas de protección.
 
-The map requests updates automatically, sharing a minimum 300-second cache and ingestion lock with cron. Persistent host budgets, conditional caching, Retry-After and 403/429 cooldowns limit provider traffic. Provider failure keeps stored events visible and displays a degraded status. Cron remains optional.
+El mapa solicita actualizaciones automáticamente, con caché compartida de al menos 300 segundos y bloqueo de ingesta compartido con cron. Los presupuestos por host, caché condicional, Retry-After y pausas 403/429 limitan las consultas externas. Si una fuente falla, conserva los eventos guardados y muestra el estado degradado. Cron es opcional.
 
-### Keep the archive up to date (recommended)
+### Mantener el archivo actualizado (recomendado)
 
-The map automatically refreshes sources while it is open, at most once every
-`quakes.cacheSeconds` across visitors. Optionally run cron to update without visitors:
+El mapa actualiza automáticamente las fuentes al vencer `quakes.cacheSeconds`.
+Cron es opcional para actualizar también cuando no hay visitantes:
 
 ```cron
 */5 * * * * cd /var/www/sigra && php spark sigra:sync >> writable/logs/sync.log 2>&1
 ```
 
-## Languages
+## Idiomas
 
-The interface ships in **Spanish (source language)** and **English**. Views are
-written once with keys (`lang('Sigra.*')`); the English file is generated and
-updated automatically:
+La documentación principal es este README en español. El selector de arriba enlaza
+la traducción inglesa y siete guías de entrada: portugués, francés, alemán,
+italiano, japonés, chino simplificado y árabe. Las guías técnicas enlazadas se
+mantienen en español; los comandos, rutas y contratos no se traducen.
+
+La interfaz está en **español (idioma fuente)** e **inglés**. Las vistas se
+escriben una sola vez con claves (`lang('Sigra.*')`); el archivo inglés se genera
+y actualiza automáticamente:
 
 ```bash
-php spark sigra:translate                 # fill missing English keys
-php spark sigra:translate --dry-run       # preview
-php spark sigra:translate --force         # retranslate everything
-php spark sigra:translate --key navMap    # retranslate one key
+php spark sigra:translate                 # completa las claves que falten
+php spark sigra:translate --dry-run       # previsualiza
+php spark sigra:translate --force         # retraduce todo
+php spark sigra:translate --key navMap    # retraduce una clave
 ```
 
-The provider is configured in `.env` (`translator.provider` = `google`,
-`mymemory`, `libretranslate` or `deepl`). Translations are cached in
-`writable/cache/translations/`. To add a new language, create
-`app/Language/<locale>/Sigra.php` and run the command with `--locale <locale>`.
+El proveedor se configura en `.env` (`translator.provider` = `google`,
+`mymemory`, `libretranslate` o `deepl`). Las traducciones se cachean en
+`writable/cache/translations/`. Para añadir otro idioma, crea
+`app/Language/<locale>/Sigra.php` y ejecuta el comando con `--locale <locale>`.
 
-## Automated checks
+## Pruebas automatizadas
 
-After `composer install`, install Node 22+, Python 3 and PHP-CGI for your PHP version, then run `composer test`. The tests do not require production credentials. `composer analyse` runs progressive PHPStan checks. MySQL integration uses a separate, explicitly selected test database; see [test instructions](docs/PRUEBAS_WEB.md).
+Después de `composer install`, instala Node 22+, Python 3 y PHP-CGI de tu versión de PHP; ejecuta `composer test`. Las pruebas no necesitan credenciales de producción. `composer analyse` ejecuta PHPStan de forma progresiva. La integración MySQL exige una base de pruebas explícita e independiente; consulta [las instrucciones](docs/PRUEBAS_WEB.md).
 
-## Configuration
+## Configuración
 
-Copy `.env.example` and adjust:
+Copia `.env.example` y ajusta:
 
-| Variable | Purpose |
+| Variable | Para qué sirve |
 |---|---|
-| `CI_ENVIRONMENT` | `development` locally, `production` on the server. |
-| `app.baseURL` | Public URL with a trailing slash. Use `http://` only for local development. |
-| `APP_API_TOKEN` | Bearer token required by the mobile/API endpoints. |
-| `database.default.*` | MySQL connection. |
-| `encryption.key` | 32 random bytes, `hex2bin:` format. **Required in production.** |
-| `quakes.sgcEnabled` | Enable the SGC source. |
-| `quakes.globalEnabled` | Enable the USGS global source. |
-| `quakes.usgsMinMagnitude` | Global magnitude threshold (default `2.5`). |
-| `quakes.windowDays` | Shared time window (default `5`). |
-| `quakes.cacheSeconds` | Sync cache TTL (default `60`). |
-| `quakes.dedupeCrossSource` | Remove SGC/USGS duplicates. |
-| `red.*` | Citizen-network thresholds. |
-| `translator.provider` | `google`, `mymemory`, `libretranslate` or `deepl` for `sigra:translate`. |
-| `translator.apiKey` | API key for DeepL/LibreTranslate (optional for Google/MyMemory). |
+| `CI_ENVIRONMENT` | `development` en local, `production` en el servidor. |
+| `app.baseURL` | URL pública con barra final. Usa `http://` solo en local. |
+| `APP_API_TOKEN` | Token Bearer que exigen la app y la API. |
+| `database.default.*` | Conexión MySQL. |
+| `encryption.key` | 32 bytes aleatorios en formato `hex2bin:`. **Obligatorio en producción.** |
+| `quakes.sgcEnabled` | Activa la fuente SGC. |
+| `quakes.globalEnabled` | Activa la fuente global USGS. |
+| `quakes.usgsMinMagnitude` | Umbral global de magnitud (por defecto `2.5`). |
+| `quakes.windowDays` | Ventana temporal compartida (por defecto `5`). |
+| `quakes.cacheSeconds` | Intervalo mínimo entre descargas automáticas compartido por todos los visitantes (mínimo 300 s). |
+| `quakes.dedupeCrossSource` | Correlaciona observaciones de todas las fuentes. |
+| `red.*` | Umbrales de la red ciudadana. |
+| `translator.provider` | `google`, `mymemory`, `libretranslate` o `deepl` para `sigra:translate`. |
+| `translator.apiKey` | Clave de API para DeepL/LibreTranslate (opcional para Google/MyMemory). |
 
-Generate an encryption key:
+Genera una clave de cifrado:
 
 ```bash
 php -r "echo 'hex2bin:' . bin2hex(random_bytes(32)) . PHP_EOL;"
@@ -189,111 +192,121 @@ php -r "echo 'hex2bin:' . bin2hex(random_bytes(32)) . PHP_EOL;"
 
 ## API
 
-All `/api/sismos/*` endpoints accept `Authorization: Bearer <APP_API_TOKEN>`.
+Los endpoints `/api/sismos/*` aceptan `Authorization: Bearer <APP_API_TOKEN>`.
 
-| Method | Endpoint | Description |
+| Método | Endpoint | Descripción |
 |---|---|---|
-| `GET` | `/api/sismos/recent` | Recent events. Filters: `hours`, `limit`, `min_magnitude`, `fuente`, `order`. |
-| `GET` | `/api/sismos/recent?lat=&lng=&radius_km=500&order=distancia` | Events inside a radius, nearest first, with `distancia_km`. |
-| `GET` | `/api/sismos/detalle/{id}` | One event. |
-| `GET` | `/api/sismos/ultimo` | Latest event. |
-| `GET` | `/api/sismos/alertas` | Alert level for the latest event. |
-| `GET` | `/api/health` | Public version and database status. |
-| `GET` | `/api/red/config` | Public citizen-network configuration. |
-| `POST` | `/api/red/registro` | Register an Android device. |
-| `POST` | `/api/red/deteccion` | Report a P-wave detection. |
-| `GET` | `/api/red/alertas` | Alerts near a device. |
+| `GET` | `/api/sismos/recent` | Eventos recientes. Filtros: `hours`, `limit`, `min_magnitude`, `fuente`, `order`. |
+| `GET` | `/api/sismos/recent?lat=&lng=&radius_km=500&order=distancia` | Eventos dentro de un radio, con `distancia_km`. |
+| `GET` | `/api/sismos/detalle/{id}` | Un evento. |
+| `GET` | `/api/sismos/ultimo` | Último evento. |
+| `GET` | `/api/sismos/alertas` | Nivel de alerta del último evento. |
+| `GET` | `/api/health` | Versión pública y estado de la base de datos. |
+| `GET` | `/api/red/config` | Configuración pública de la red. |
+| `POST` | `/api/red/registro` | Registro de un Android. |
+| `POST` | `/api/red/deteccion` | Reporte de onda P. |
+| `GET` | `/api/red/alertas` | Alertas cercanas a un dispositivo. |
 
-Example:
+Ejemplo:
 
 ```bash
 curl -H "Authorization: Bearer $APP_API_TOKEN" \
   "https://tu-dominio/api/sismos/recent?lat=4.6097&lng=-74.0817&radius_km=500&limit=10&order=distancia"
 ```
 
-## Privacy and the radius filter
+## Privacidad y filtro por radio
 
-Geolocation is **opt-in** and stays in the browser:
+La geolocalización es **opcional** y se queda en el navegador:
 
-- The list page never asks for your location automatically.
-- Pressing **Mi ubicación** calls `navigator.geolocation` and draws a circle on
-  the map. Nothing is sent to the server or stored in the database.
-- If the browser denies precise geolocation, SIGRA can fall back to an IP-based
-  approximate location (`ipapi.co`) to keep the distance feature usable.
-- The chosen radius is saved in `localStorage`; the coordinates are not.
-- The public citizen-network dashboard rounds phone coordinates to ~1 km and
-  never exposes device tokens.
+- El listado nunca pide la ubicación automáticamente.
+- Al pulsar **Mi ubicación** se llama a `navigator.geolocation` y se dibuja un
+  círculo en el mapa. Nada se envía al servidor ni se guarda en la base de datos.
+- Si el navegador niega la ubicación precisa, SIGRA puede usar una aproximación
+  por IP (`ipapi.co`) para que la distancia siga funcionando.
+- El radio elegido se guarda en `localStorage`; las coordenadas no.
+- El panel público de la red redondea las coordenadas de los teléfonos a ~1 km y
+  nunca expone tokens de dispositivo.
 
-## Android app
+## App Android
 
-The Android client is available in [SIGRA_MOBILE](https://github.com/JKGhost01/SIGRA_MOBILE).
-The website includes `/app-movil` with registered and online device counts and
-an APK download section. Its version and download link come from GitHub Releases;
-until a stable release exists, it shows the source version and pending publication.
-The About page uses the same metadata.
+El cliente Android está disponible en [SIGRA_MOBILE](https://github.com/JKGhost01/SIGRA_MOBILE).
+La web incorpora `/app-movil` con dispositivos registrados, teléfonos conectados y
+un espacio de descarga del APK. La versión y el enlace se leen de GitHub Releases;
+si todavía no hay una release estable se muestra la versión del código y la
+publicación pendiente. Acerca de utiliza los mismos metadatos.
 
-Publishing and caching: [docs/APP_MOVIL.md](docs/APP_MOVIL.md) (Spanish).
-Integration contract: [OpenAPI](docs/api/openapi.yaml).
+Publicación y caché: [docs/APP_MOVIL.md](docs/APP_MOVIL.md).
+Contrato de integración: [OpenAPI](docs/api/openapi.yaml).
 
-## Documentation
+## Documentación
 
-- [Functional guide (Spanish)](README_GUIA.md)
-- [Versioning and changelog](docs/VERSIONES.md)
-- [Third-party notices](THIRD_PARTY_NOTICES.md)
-- [Citizen network and TDOA algorithm](docs/RED_TELEFONOS.md)
-- [Citizen network API](docs/API_RED.md)
-- [Database and maintenance](docs/BASE_DATOS.md)
-- [Web and API tests](docs/PRUEBAS_WEB.md)
-- [Production checklist](docs/PRODUCCION.md)
-- [Seismic architecture](docs/ARQUITECTURA_SISMOS.md)
+- [Idiomas disponibles y mantenimiento](docs/IDIOMAS.md)
+- [Guía funcional](README_GUIA.md)
+- [Versionado e historial](docs/VERSIONES.md)
+- [Avisos de terceros](THIRD_PARTY_NOTICES.md)
+- [Red de teléfonos y TDOA](docs/RED_TELEFONOS.md)
+- [API de la red](docs/API_RED.md)
+- [Base de datos y mantenimiento](docs/BASE_DATOS.md)
+- [Pruebas web y API](docs/PRUEBAS_WEB.md)
+- [Checklist de producción](docs/PRODUCCION.md)
+- [Arquitectura sísmica](docs/ARQUITECTURA_SISMOS.md)
 
-## Contributing
+## Contribuir
 
-Contributions are welcome. Please read [CONTRIBUTING.md](CONTRIBUTING.md) and
-[CODE_OF_CONDUCT.md](CODE_OF_CONDUCT.md). Do not publish credentials or private user data in public issues.
+Las contribuciones son bienvenidas. Lee [CONTRIBUTING.md](CONTRIBUTING.md) y
+[CODE_OF_CONDUCT.md](CODE_OF_CONDUCT.md). No publiques credenciales ni datos privados de usuarios en Issues públicos.
 
-Good first issues:
+Buenos primeros aportes:
 
-- Add another public source (EMSC, GEOFON) behind the existing normalizer.
-- Improve the global deduplication heuristic.
-- Add integration tests for the radius API.
-- Translate the UI to English and Portuguese.
-- Improve accessibility of the map and emergency overlay.
+- Añadir otra fuente pública usando el normalizador existente.
+- Mejorar la heurística de deduplicación global.
+- Añadir pruebas de integración para la API de radio.
+- Revisar las traducciones y mejorar la accesibilidad lingüística.
+- Mejorar la accesibilidad del mapa y del overlay de emergencia.
 
-## Donations
+## Donaciones
 
-If SIGRA is useful to you, you can support its development and maintenance with
-a voluntary donation. Thank you for supporting the project!
+Si SIGRA te resulta útil, puedes apoyar su desarrollo y mantenimiento con una
+donación voluntaria. ¡Gracias por aportar al proyecto!
 
-| Method | Donation details |
+| Medio | Número para donar |
 |---|---|
 | **Nequi** | `315 9287929` |
-| **Bancolombia** | Account `912-982627-76` |
+| **Bancolombia** | Cuenta `912-982627-76` |
 
-## Upgrade to 1.3.0
+## Actualizar a 1.3.1.3
 
-After uploading the code, run `php spark migrate --all` or import
-[deploy/corregir-coordenadas-usgs.sql](deploy/corregir-coordenadas-usgs.sql) to repair
-legacy USGS latitude/longitude values. Preserve `writable/cache/providers` between
-deployments. Small-event coverage still depends on local networks; SGC availability
-is not restored by this release. See [provider details](docs/FUENTES_SISMICAS.md).
+La conexión SGC se recuperó con un User-Agent compatible. La comprobación local
+recibió HTTP 200 y 100 eventos normalizados; el usuario confirmó después que
+funcionó al desplegar la corrección. Esta revisión no añade migraciones.
+Consulta [el diagnóstico y los archivos que subir](docs/SGC_CONEXION_2026-11-19.md),
+conserva las pausas de proveedores y revisa overrides de versión en `.env`.
 
-## Versioning
+### Si vienes de una versión anterior a 1.3.0
 
-SIGRA follows semantic versioning with an optional fourth revision component for small patch adjustments. The current release is **1.3.1.3 · SGC connection restored** (2026-11-19, build `20261119.1`). See [docs/VERSIONES.md](docs/VERSIONES.md).
+Después de subir el código, ejecuta `php spark migrate --all` o importa
+[deploy/corregir-coordenadas-usgs.sql](deploy/corregir-coordenadas-usgs.sql) para reparar
+las coordenadas USGS antiguas. Conserva `writable/cache/providers` entre despliegues.
+El detalle de sismos pequeños depende de las redes locales. La recuperación SGC
+se incorporó después, en 1.3.1.3; la cobertura completa no está garantizada. Ver [fuentes y límites](docs/FUENTES_SISMICAS.md).
 
-API contracts: [Earthquakes](docs/API_SISMOS.md) · [Citizen network](docs/API_RED.md).
+## Versionado
 
-## Disclaimer
+SIGRA usa versionado semántico con un cuarto componente opcional para revisiones pequeñas de un parche. La versión actual es **1.3.1.3 · Conexión SGC recuperada**
+(2026-11-19, build `20261119.1`). Ver [docs/VERSIONES.md](docs/VERSIONES.md).
 
-SIGRA is an **experimental** system. It does not predict earthquakes and does
-not replace the SGC, USGS, civil-protection agencies or official warning
-systems. In an emergency, follow the instructions of local authorities.
+Contratos API: [Sismos](docs/API_SISMOS.md) · [Red ciudadana](docs/API_RED.md).
 
-## License
+## Advertencia
 
-MIT. See [LICENSE](LICENSE) and [THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md) for OpenStreetMap, SGC, USGS, Esri, Leaflet, Bootstrap, Google Fonts and Android attributions. CodeIgniter 4 is distributed under its own MIT license and its copyright notices are preserved in `LICENSE`.
+SIGRA es un sistema **experimental**. No predice sismos y no sustituye al SGC,
+al USGS, a los organismos de gestión del riesgo ni a los sistemas oficiales de
+alerta temprana. En una emergencia sigue las instrucciones de las autoridades.
 
-Citizen report verification: [flow and setup](docs/REPORTES_CIUDADANOS.md).
+## Licencia
+
+MIT. Ver [LICENSE](LICENSE) y [THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md) para las atribuciones de OpenStreetMap, SGC, USGS, Esri, Leaflet, Bootstrap, Google Fonts y Android. CodeIgniter 4 se distribuye bajo su propia licencia MIT y sus avisos de copyright se conservan en `LICENSE`.
+
+Validación de reportes ciudadanos: [flujo y configuración](docs/REPORTES_CIUDADANOS.md).
 
 Consulta la [arquitectura modular](docs/architecture/README.md), los [pasos de migración](docs/architecture/migration.md) y el [contrato OpenAPI](docs/api/openapi.yaml).

@@ -1,178 +1,167 @@
-# Changelog
+# Historial de cambios de SIGRA
 
-All notable changes to SIGRA are documented here. The project follows
-[Semantic Versioning](https://semver.org/), with an optional fourth revision component
-for small patch adjustments such as `1.3.1.1`.
+La documentación principal se mantiene en español. SIGRA usa versionado semántico
+con un cuarto componente opcional para revisiones pequeñas. El historial inglés
+se conserva en [CHANGELOG.en.md](CHANGELOG.en.md).
 
-## [1.3.1.3] — 2026-11-19 · “SGC connection restored”
+## Pendiente de publicación
 
-- Restore the legacy browser-compatible User-Agent for SGC while retaining the SIGRA version and repository identity; the bare SIGRA identity returned HTTP 403.
-- Keep TLS verification, the configured feed URL, shared cache and fifteen-minute polling interval. Existing provider cooldowns retain their expiry.
-- Verify HTTP 200 and 100 normalized SGC events through the real PHP client, cache reuse without database writes, and the full local regression suite.
-- Document the legacy comparison, deployment acceptance and rollback in [the SGC recovery report](docs/SGC_CONEXION_2026-11-19.md).
-- Build `20261119.1`; no new migrations. API v1 and Android version unchanged.
-- User confirmed the deployed hotfix works in production; the hosting was not inspected directly.
+- README principal, guía de contribución, código de conducta y plantillas de GitHub en español.
+- Traducciones del README en inglés y siete idiomas adicionales, enlazadas desde la portada.
+- La versión 1.3.1.3 sigue identificando la recuperación SGC; esta entrega documental no cambia el contrato ni el comportamiento de la interfaz.
 
-## [1.3.1.2] — 2026-11-13 · “Source status and progressive cooldowns”
+### v1.3.1.3 · Conexión SGC recuperada · 2026-11-19
 
-- About page shows all six sources, HTTP codes and timestamps for the last attempt, result and valid response.
-- Display the next permitted request; refreshing the panel does not contact providers or change cooldowns.
-- HTTP 401/403: two hours after the first consecutive failure and 24 hours from the second, across all sources.
-- A valid response resets the failure counter; honor Retry-After and existing cooldowns.
-- Responsive Spanish and English panel; do not infer missing timestamps in legacy states.
-- Local architecture, transport, diagnostics and HTTP contract tests; desktop and mobile visual checks.
-- Build `20261113.4`; no new migrations. Preserve `writable/cache/providers`.
+- User-Agent compatible con SGC conservando identidad, versión y repositorio de SIGRA.
+- TLS, caché compartida, intervalo de quince minutos y pausas existentes conservados.
+- Prueba local real: HTTP 200, 100 eventos normalizados y reutilización de caché sin escritura en base.
+- Funcionamiento en producción confirmado por el usuario tras desplegar el hotfix; no se inspeccionó el servidor directamente.
+- Build `20261119.1`; sin migraciones nuevas. API v1 y versión Android independientes.
+- [Diagnóstico y despliegue](docs/SGC_CONEXION_2026-11-19.md).
 
-## [1.3.1.1] — 2026-11-13 · “SGC polling interval”
+### v1.3.1.2 · Estado de fuentes y pausas progresivas · 2026-11-13
 
-- Use a fifteen-minute interval per SGC host, shared by the map, CLI and PHP workers.
-- Other sources retain their five-minute minimum; the SGC response timeout remains ten seconds.
-- Offline tests verify the SGC interval and shared protection across URLs.
-- Build `20261113.3`; no new migrations. Preserve existing provider cooldowns.
+- Panel en Acerca de con estado de las seis fuentes, código HTTP y fechas del último intento, resultado y respuesta válida.
+- Próxima consulta permitida visible; actualizar el panel no consulta proveedores ni modifica sus pausas.
+- HTTP 401/403: dos horas tras el primer fallo consecutivo y 24 horas desde el segundo, para todas las fuentes.
+- Una respuesta válida reinicia el contador; Retry-After y las pausas existentes se respetan.
+- Panel en español e inglés, adaptable a móvil, con estados antiguos sin fechas inventadas.
+- Pruebas locales de arquitectura, transporte, diagnóstico y contratos HTTP; revisión visual en escritorio y móvil.
+- Build `20261113.4`; sin nuevas migraciones. Conservar `writable/cache/providers`.
 
-## [1.3.1] — 2026-11-13 · “HTTP headers and source recovery”
 
-- Read repeated Cache-Control headers without rejecting valid provider responses.
-- Remove CodeIgniter outgoing-page defaults from incoming provider responses.
-- Repeated Retry-After headers respect the longest delay; conflicting ETag and Last-Modified validators are not reused.
-- Use uppercase GET/POST route methods to eliminate repeated deprecation warnings.
-- Exercise real CodeIgniter responses for repeated headers, 304 and no-store; retain cooldowns and request budgets.
-- Build `20261113.2`; no new migrations. Preserve existing provider cooldowns until they expire.
+### v1.3.1.1 · Intervalo de consultas SGC · 2026-11-13
 
-## [1.3.0] — 2026-11-13 · “Global sources, responsible polling and corrected map”
+- El intervalo mínimo entre consultas al SGC aumenta de cinco a quince minutos.
+- Intervalo de quince minutos por host SGC, compartido por mapa, CLI y procesos PHP.
+- Las demás fuentes conservan su intervalo mínimo de cinco minutos; el timeout SGC sigue en diez segundos.
+- Pruebas sin red verifican el intervalo SGC y la protección compartida entre URLs.
+- Build `20261113.3`; sin nuevas migraciones. Conservar las pausas persistentes existentes.
 
-- EMSC, GeoNet, GEOFON/GFZ and INGV join SGC and USGS in the catalog, API and filters; source references survive correlation.
-- Map and cron share polling, with a five-minute minimum per provider, conditional caching and persistent 403/429 cooldowns.
-- Honor Retry-After and Cache-Control, back off after failures and identify SIGRA publicly; use the static USGS feed for compatible queries.
-- Correct USGS latitude/longitude mapping; provide an idempotent migration and SQL alternative to repair stored data with an audit trail.
-- Validate coordinates before rendering and bound vertical map panning; update per-source degraded status and ES/EN translations.
-- Regression checks cover normalization, six sources, HTTP cooldowns, MySQL repair and Leaflet browser projection.
-- Upgrade: run `php spark migrate --all` or import `deploy/corregir-coordenadas-usgs.sql` after installing the code. Preserve `writable/cache/providers` across deployments.
-- Application build: `20261113.1`; API contract `v1` and Android version `1.0.0` remain unchanged. Local small-event coverage still depends on regional providers; the SGC 403 is unresolved.
 
-## [1.2.1] — 2026-11-12 · “Instalación reproducible y robustez del backend”
+### v1.3.1 · Cabeceras HTTP y recuperación de fuentes · 2026-11-13
 
-- Reproducible Composer installation, project metadata, minimal PHP 8.2-compatible lock and progressive PHPStan analysis.
-- Safe local secret initialization, additive deployment instructions and retirement of the HTTP database-reset helper.
-- Require the current device token before re-registration; rotate it and reject the previous token.
-- Validate provider fields and external links, verify TLS, bound HTTP retries and expose the last successful map refresh.
-- Support assets and offline pages with traditional and public document roots; never cache API/refresh requests in the service worker.
-- Clarify experimental limitations and the separate Android development repository in both READMEs.
-- Application build: `20261112.5`. API contract remains `v1`; existing device re-registration now requires its current token.
+- Lectura de cabeceras Cache-Control repetidas sin rechazar respuestas válidas de los proveedores.
+- Respuesta HTTP entrante sin las cabeceras predeterminadas de páginas HTML de CodeIgniter.
+- Retry-After múltiple respeta la espera más larga; validadores ETag y Last-Modified contradictorios no se reutilizan.
+- Rutas con métodos GET/POST en mayúsculas para eliminar avisos deprecados repetidos.
+- Pruebas con respuestas reales de CodeIgniter para cabeceras múltiples, 304 y no-store; pausas y límites conservados.
+- Build `20261113.2`; sin nuevas migraciones. Las pausas existentes se conservan hasta su vencimiento.
 
-## [1.2.0] — 2026-11-12 · “Arquitectura modular y sincronización automática”
 
-- Capability modules for catalog, ingestion, citizen reports, sensors, alerting and system, with explicit contracts and dependencies.
-- Thin controllers and presentation-only views; queries and processing outside Views, with catalog JavaScript in public assets.
-- Automatic map updates with a shared 60-second cache, concurrency locking and stored-data fallback; cron is optional.
-- Preserved legacy routes, /api/v1 endpoints, versioned errors, correlation IDs and an OpenAPI contract.
-- Ingestion and alert-decision audits in two new tables, committing each alert and its decision together before delivery.
-- Isolated simulations, a publication kill switch and server-console alert cancellation.
-- SGC/USGS correlation retains both source references and preserves ambiguous candidates.
-- Architecture, HTTP contract, automatic refresh and isolated MySQL persistence tests, with deployment documentation.
-- Requires additive migration `20261112000002_CreateArchitectureAudit`, or the equivalent generated deployment SQL; no database reset.
-- Application build: `20261112.4`. Existing API contract remains `v1`.
+### v1.3.0 · Fuentes globales, consultas responsables y mapa corregido · 2026-11-13
 
-## [1.1.1] — 2026-11-12 · “Reportes contrastados con SGC”
+- EMSC, GeoNet, GEOFON/GFZ e INGV integrados con SGC y USGS en catálogo, API y filtros; referencias conservadas al correlacionar.
+- Consultas compartidas entre mapa y cron, mínimo de cinco minutos por proveedor, caché condicional y pausas persistentes ante 403/429.
+- Respeto de Retry-After y Cache-Control, espera progresiva ante fallos e identificación pública de SIGRA; USGS usa su feed estático cuando es compatible.
+- Latitud y longitud USGS corregidas; migración idempotente y SQL alternativo para reparar datos antiguos conservando auditoría.
+- Validación de coordenadas al dibujar y límites verticales del mapa; estado degradado por fuente y traducciones ES/EN actualizados.
+- Regresiones de normalización, seis fuentes, pausas HTTP, reparación MySQL y proyección Leaflet en navegador.
+- Build `20261113.1`; contrato API `v1`, versión Android `1.0.0`. La cobertura local detallada sigue dependiendo de SGC, cuyo 403 no se ha resuelto.
+- Tras subir el código: `php spark migrate --all` o importar `deploy/corregir-coordenadas-usgs.sql`. Conservar `writable/cache/providers`.
 
-- Store citizen submissions privately in one new `citizen_reports` table in the existing MySQL database.
-- Require at least three distinct participants and a unique SGC match within configurable time/distance tolerances before publishing a count on the official event.
-- Keep unconfirmed and ambiguous reports off event lists, maps, history and API; exclude legacy citizen rows too.
-- Add `citizen_reports_count` without changing official magnitudes or the SGC `felt` metric.
-- Add CSRF, single-use session challenges, honeypot, body/type validation and session/network rate limits.
-- Deduplicate networks including IPv6 /64, protect identifiers with HMAC and expire/purge private records during reconciliation.
-- Serialize rate checking/insertion and reconciliation with MySQL advisory locks and InnoDB transactions.
-- Block unauthenticated public editing/deletion of official events.
-- Re-read public events through the model even when external downloads are cached.
-- Add logic/CGI security tests and a MySQL test using rolled-back fixtures in the existing database.
-- Requires the additive migration `20261112000001_CreateCitizenReports` (`php spark migrate --all`).
 
-## [1.1.0] — 2026-11-12 · “API y contratos”
+### v1.2.1 · Instalación reproducible y robustez del backend · 2026-11-12
 
-- Validate numeric query parameters, coordinate pairs, radius and sorting before reading data.
-- Reject malformed JSON (400), invalid field types/ranges (422) and unsupported body types (415).
-- Normalize device booleans so `"false"` is not interpreted as enabled.
-- Return JSON errors for service construction, device authentication and database failures.
-- Apply `Cache-Control: no-store`, `X-SIGRA-Version` and `X-API-Version` to both APIs.
-- Compare API keys with `hash_equals`; protected endpoints reject missing configuration in production.
-- Reject invalid optional device tokens with 401.
-- Preserve Android routes and successful response fields. API contract stays `v1`.
-- Document earthquake and network endpoints and add CGI and isolated controller response tests.
+- Identidad y autoload Composer corregidos, lock compatible con PHP 8.2 e instalación documentada desde cero.
+- Generación local de secretos sin exponer valores ni reemplazar claves existentes; reinicio remoto por HTTP retirado.
+- Registro de UUID existente protegido con el token vigente; rotación autenticada que invalida el anterior.
+- Validación de campos y enlaces externos, verificación TLS, reintentos acotados y umbral de magnitud en la correlación.
+- Estado de actualización del catálogo visible, assets compatibles con ambas raíces web y APIs fuera de la caché PWA.
+- Documentación ES/EN coherente, Android separado y experimentalidad explícita; PHPStan y pruebas MySQL aisladas en CI.
+- Build `20261112.5`; contrato API `v1`. Re-registrar un UUID existente requiere su token vigente.
 
-## [1.0.4] — 2026-11-12 · “Filtros y presentación”
+### v1.2.0 · Arquitectura modular y sincronización automática · 2026-11-12
 
-- Enable radius selection on load and request location when a distance is selected.
-- Bound IP geolocation requests and allow retry after failures.
-- Preserve filter behavior when local storage is blocked or cleared during a request.
-- Translate release history and channel labels into Spanish and English.
-- Replace interface emojis with local SVG icons.
-- Refresh the static cache and retrieve updated scripts and styles from the network.
-- Add deterministic distance-filter regression tests (`node tools/test-map-filters.js`).
+- Módulos por capacidad: catálogo, ingesta, reportes ciudadanos, sensores, alertas y sistema, con contratos y dependencias explícitos.
+- Controladores ligeros y vistas de presentación; consulta y procesamiento fuera de Views, con JavaScript del catálogo en archivos públicos.
+- Actualización automática del mapa con caché compartida de 60 segundos, bloqueo de concurrencia y conservación de datos ante fallos; cron opcional.
+- Rutas antiguas conservadas, endpoints /api/v1, errores versionados, IDs de correlación y contrato OpenAPI.
+- Auditoría de lotes y decisiones de alerta en dos tablas nuevas, con alerta y decisión en la misma transacción antes de la entrega.
+- Simulaciones aisladas, interruptor de publicación y cancelación de alertas desde la consola del servidor.
+- Correlación SGC/USGS con referencias de ambas fuentes y conservación de candidatos ambiguos.
+- Pruebas de arquitectura, contratos HTTP, actualización automática y persistencia en MySQL aislado, además de documentación de despliegue.
+- Build `20261112.4`; contrato API `v1` y versión móvil independientes.
+- Despliegue y migración en [architecture/migration.md](docs/architecture/migration.md).
 
-## [1.0.3] — 2026-11-11 · “Alcance global”
+### v1.1.1 · Reportes contrastados con SGC · 2026-11-12
 
-### Added
+- Reportes privados en una sola tabla nueva de la misma base MySQL.
+- Confirmación del conteo con al menos tres participantes distintos y un evento SGC compatible único.
+- Conteos agregados en mapa, listado, histórico, detalle y API; ningún reporte crea un epicentro.
+- CSRF, tokens de un solo uso, campo trampa y límites de frecuencia por sesión/red.
+- Identificadores protegidos con HMAC, deduplicación IPv6 /64 y retención de 30 días.
+- Reportes antiguos ocultos y edición/eliminación públicas bloqueadas.
+- Migración aditiva: `php spark migrate --all`. No se requiere otra base ni un reset.
+- Flujo, configuración, despliegue y pruebas en [REPORTES_CIUDADANOS.md](docs/REPORTES_CIUDADANOS.md).
 
-- Unified ingestion of **SGC (Colombia)** and **USGS (worldwide)** events into a
-  single normalized table, map, history and API.
-- New `Config\Quakes` with environment overrides for source thresholds, window,
-  cache and cross-source deduplication.
-- `UsgsClient` normalizer and `QuakeSyncService` orchestrator with per-source
-  fault tolerance.
-- “Cerca de mí” radius filter (50 km → 5,000 km), distance-aware list and
-  “nearest first” ordering. Geolocation is opt-in and stays in the browser.
-- Source filter and global place search.
-- Magnitude-range filter (M2.5+ → M6+) and a compact, collapsible filter panel.
-- Bilingual Spanish/English interface with a navbar switcher and automatic key translation.
-- New icons and colors for “Report quake” and browser alerts.
-- Third-party legal notices (OpenStreetMap, SGC, USGS, Esri, Leaflet, etc.).
-- Cross-source deduplication (same event reported by SGC and USGS).
-- `php spark sigra:sync` command for cron-based background sync.
-- Radius parameters in `/api/sismos/recent` (`lat`, `lng`, `radius_km`,
-  `order=distancia`).
-- USGS technical sheet: alert level, tsunami flag, significance and official
-  report link.
-- Open-source project files: English/Spanish README, `LICENSE`, `CONTRIBUTING`,
-  `CODE_OF_CONDUCT`, `SECURITY`, `.env.example` and CI lint workflow.
 
-### Changed
+### v1.1.0 · API y contratos · 2026-11-12
 
-- `/sismos` is now the global map. `/sismos/globales` redirects to it for
-  backwards compatibility.
-- `/sismos/historico` reads only from the database; the live USGS request was
-  removed.
-- Version displayed in navbar, footer, `/acerca-de`, `/api/health` and
-  `/api/red/health`.
+- Validación de coordenadas, radio, orden y parámetros numéricos.
+- Validación JSON y de tipos/rangos en el cuerpo de solicitudes de dispositivos.
+- Booleanos normalizados; JSON malformado devuelve 400, datos inválidos 422 y tipos de contenido no admitidos 415.
+- JSON y `no-store` también en errores de autenticación y de base de datos.
+- Cabeceras `X-SIGRA-Version` y `X-API-Version`.
+- Claves comparadas con `hash_equals`; sin clave en producción las rutas protegidas rechazan el acceso.
+- Tokens opcionales inválidos devuelven 401.
+- Documentación en `docs/API_SISMOS.md` y `docs/API_RED.md`.
+- Pruebas: `python3 tests/ApiHttpTest.py` y `php tests/ApiResponsesTest.php`.
+- Contrato `v1` y rutas/campos de Android conservados.
 
-### Fixed
 
-- Removed the hardcoded Carto tile key from `mapa-sismos.js`.
-- Escaped external feed data in map popups to prevent HTML injection.
-- Removed the `https://localhost:8080` base URL trap in local development.
-- Map and list no longer request geolocation without user action.
+### v1.0.4 · Filtros y presentación · 2026-11-12
 
-## [1.0.2] — 2026-11-03 · “Red en vivo”
+- Radio seleccionable desde el inicio; ubicación solicitada al elegir distancia.
+- Consulta por IP con tiempo límite, reintentos y soporte sin almacenamiento local.
+- Historial y canal de versiones traducidos a ES/EN.
+- Iconos SVG locales en lugar de emojis.
+- Caché renovada y actualización por red de scripts y estilos.
+- Pruebas deterministas del filtro de distancia.
 
-- Citizen network entry in the navbar with phone count and alert state.
-- Browser notifications, emergency overlay with S-wave countdown.
-- Installable PWA, manifest, service worker, offline page.
-- Animated P/S wave propagation on `/red`.
-- Personal risk panel with distance, ETA and risk level.
-- Animated replay of seismic activity on `/sismos`.
-- Shareable alerts and push/polling delivery.
-- Removal of SMS/OTP/Twilio and the `sms_subscriptions` table.
 
-## [1.0.1] — 2026-11-03 · “Red de teléfonos”
+### v1.0.3 · Alcance global · 2026-11-11
 
-- Citizen network backend: devices, detections, alerts and deliveries.
-- TDOA fusion, magnitude estimation, confidence and S-wave ETA.
-- `/api/red/*` endpoints and public `/red` dashboard.
-- Android app with foreground service, sensor and notifications.
+- Ingesta unificada de SGC (Colombia) y USGS (mundo) en una sola tabla, mapa, histórico y API.
+- Deduplicación automática entre fuentes para no repetir el mismo sismo.
+- Filtro “Cerca de mí” con radio de 50 km a 5.000 km y orden por distancia.
+- Filtro por fuente y búsqueda por lugar en todo el mundo.
+- Filtro por rango de magnitud y panel de filtros compacto y plegable.
+- Interfaz bilingüe español/inglés con selector en el navbar y traducción automática de claves.
+- Nuevos iconos y colores para “Reportar sismo” y las alertas del navegador.
+- Avisos legales de terceros (OpenStreetMap, SGC, USGS, Esri, Leaflet, etc.).
+- Geolocalización opcional con activación automática si el permiso ya estaba concedido.
+- Caché del sync y comando `php spark sigra:sync` para cron.
+- API `/api/sismos/recent` con `lat`, `lng`, `radius_km` y `order=distancia`.
+- Ficha técnica adaptada a USGS (alerta, tsunami, significancia y reporte oficial).
+- Geolocalización opcional: el mapa ya no la solicita automáticamente.
+- Preparación open source: README bilingüe, licencia, contribución, seguridad y `.env.example`.
 
-## [1.0.0] — 2026-09-21 · “Mapa sísmico”
+### v1.0.2 · Red en vivo · 2026-11-03
 
-- Leaflet/OpenStreetMap interactive map.
-- SGC feed synchronization.
-- Searchable history, filters and event detail.
-- Citizen location reports.
-- Light/dark themes and visual/sound alerts.
+- “Red en vivo” como entrada principal del navbar, con contador de teléfonos y estado de alerta.
+- Alertas del navegador con Web Notifications, sonido y overlay de emergencia con cuenta atrás.
+- PWA instalable: manifest, service worker, iconos y página offline.
+- Propagación animada de ondas P/S en `/red`.
+- Panel “Tu riesgo ahora” con distancia, ETA y nivel de riesgo.
+- Reproducción animada de la actividad sísmica en `/sismos`.
+- Alertas compartibles y API con distancia/ETA.
+- Eliminación completa de SMS, OTP, Twilio y la tabla `sms_subscriptions`.
+- Endurecimiento de `.htaccess`, health check con versión y pruebas web.
+
+### v1.0.1 · Red de teléfonos · 2026-11-03
+
+- Backend de dispositivos, detecciones, alertas y entregas.
+- Fusión TDOA, magnitud, confianza y ETA de onda S.
+- API `/api/red/*`.
+- Panel `/red`.
+- App Android con servicio en primer plano y notificaciones.
+- FCM opcional y polling de respaldo.
+
+### v1.0.0 · Mapa sísmico · 2026-09-21
+
+- Mapa Leaflet/OpenStreetMap.
+- Sincronización con el SGC.
+- Histórico, filtros y ficha técnica.
+- Reporte ciudadano.
+- Temas claro/oscuro y alertas visuales/sonoras.

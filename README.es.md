@@ -7,7 +7,9 @@
 [![CodeIgniter](https://img.shields.io/badge/CodeIgniter-4.7-ee4323.svg)](https://codeigniter.com/)
 [![Licencia](https://img.shields.io/badge/licencia-MIT-blue.svg)](LICENSE)
 
-*Read this in [English](README.md).*
+**Documentación principal en español.**
+
+[Español](README.md) · [English](README.en.md) · [Português](README.pt.md) · [Français](README.fr.md) · [Deutsch](README.de.md) · [Italiano](README.it.md) · [日本語](README.ja.md) · [简体中文](README.zh-CN.md) · [العربية](README.ar.md)
 
 SIGRA es una aplicación PHP de código abierto que unifica los sismos de
 **SGC, USGS, EMSC, GeoNet, GEOFON/GFZ e INGV** en un solo mapa consultable, con filtro de cercanía, archivo
@@ -84,16 +86,16 @@ Los parámetros se cambian en `app/Config/Quakes.php` o con variables de entorno
 ```
 app/
   Modules/SeismicCatalog/        Domain, Application, Infrastructure, Http, Presentation
-  Modules/SeismicIngestion/      Sources, deduplicator, sync handler and audit
-  Modules/CitizenReports/        Report validation, submission and reconciliation
-  Modules/SensorNetwork/         Devices, heartbeats and detection commands
-  Modules/Alerting/              Candidate decisions, audit and delivery
-  Modules/System/                Health and public information
-  Shared/                       Clock, contracts and HTTP boundaries
-  Config/Services.php           Dependency composition
-  Commands/SigraSync.php         Scheduled ingestion with a process lock
-  Views/layouts/                Shared rendering layout
-public/assets/js/modules/       Browser behavior
+  Modules/SeismicIngestion/      Fuentes, deduplicación, sincronización y auditoría
+  Modules/CitizenReports/        Validación, envío y reconciliación de reportes
+  Modules/SensorNetwork/         Dispositivos, latidos y detecciones
+  Modules/Alerting/              Decisiones de candidatos, auditoría y entrega
+  Modules/System/                Estado e información pública
+  Shared/                       Reloj, contratos y fronteras HTTP
+  Config/Services.php           Composición de dependencias
+  Commands/SigraSync.php         Ingesta programada con bloqueo de proceso
+  Views/layouts/                Plantilla compartida
+public/assets/js/modules/       Comportamiento del navegador
 ```
 
 - **PHP 8.2+ / CodeIgniter 4.7**
@@ -136,6 +138,11 @@ Cron es opcional para actualizar también cuando no hay visitantes:
 
 ## Idiomas
 
+La documentación principal es este README en español. El selector de arriba enlaza
+la traducción inglesa y siete guías de entrada: portugués, francés, alemán,
+italiano, japonés, chino simplificado y árabe. Las guías técnicas enlazadas se
+mantienen en español; los comandos, rutas y contratos no se traducen.
+
 La interfaz está en **español (idioma fuente)** e **inglés**. Las vistas se
 escriben una sola vez con claves (`lang('Sigra.*')`); el archivo inglés se genera
 y actualiza automáticamente:
@@ -171,7 +178,7 @@ Copia `.env.example` y ajusta:
 | `quakes.globalEnabled` | Activa la fuente global USGS. |
 | `quakes.usgsMinMagnitude` | Umbral global de magnitud (por defecto `2.5`). |
 | `quakes.windowDays` | Ventana temporal compartida (por defecto `5`). |
-| `quakes.cacheSeconds` | Intervalo mínimo entre descargas automáticas compartido por todos los visitantes (60 s). |
+| `quakes.cacheSeconds` | Intervalo mínimo entre descargas automáticas compartido por todos los visitantes (mínimo 300 s). |
 | `quakes.dedupeCrossSource` | Correlaciona observaciones de todas las fuentes. |
 | `red.*` | Umbrales de la red ciudadana. |
 | `translator.provider` | `google`, `mymemory`, `libretranslate` o `deepl` para `sigra:translate`. |
@@ -233,6 +240,7 @@ Contrato de integración: [OpenAPI](docs/api/openapi.yaml).
 
 ## Documentación
 
+- [Idiomas disponibles y mantenimiento](docs/IDIOMAS.md)
 - [Guía funcional](README_GUIA.md)
 - [Versionado e historial](docs/VERSIONES.md)
 - [Avisos de terceros](THIRD_PARTY_NOTICES.md)
@@ -250,10 +258,10 @@ Las contribuciones son bienvenidas. Lee [CONTRIBUTING.md](CONTRIBUTING.md) y
 
 Buenos primeros aportes:
 
-- Añadir otra fuente pública (EMSC, GEOFON) usando el normalizador existente.
+- Añadir otra fuente pública usando el normalizador existente.
 - Mejorar la heurística de deduplicación global.
 - Añadir pruebas de integración para la API de radio.
-- Traducir la interfaz a inglés y portugués.
+- Revisar las traducciones y mejorar la accesibilidad lingüística.
 - Mejorar la accesibilidad del mapa y del overlay de emergencia.
 
 ## Donaciones
@@ -266,13 +274,21 @@ donación voluntaria. ¡Gracias por aportar al proyecto!
 | **Nequi** | `315 9287929` |
 | **Bancolombia** | Cuenta `912-982627-76` |
 
-## Actualizar a 1.3.0
+## Actualizar a 1.3.1.3
+
+La conexión SGC se recuperó con un User-Agent compatible. La comprobación local
+recibió HTTP 200 y 100 eventos normalizados; el usuario confirmó después que
+funcionó al desplegar la corrección. Esta revisión no añade migraciones.
+Consulta [el diagnóstico y los archivos que subir](docs/SGC_CONEXION_2026-11-19.md),
+conserva las pausas de proveedores y revisa overrides de versión en `.env`.
+
+### Si vienes de una versión anterior a 1.3.0
 
 Después de subir el código, ejecuta `php spark migrate --all` o importa
 [deploy/corregir-coordenadas-usgs.sql](deploy/corregir-coordenadas-usgs.sql) para reparar
 las coordenadas USGS antiguas. Conserva `writable/cache/providers` entre despliegues.
-El detalle de sismos pequeños depende de las redes locales; esta versión no restablece
-la disponibilidad del SGC. Ver [fuentes y límites](docs/FUENTES_SISMICAS.md).
+El detalle de sismos pequeños depende de las redes locales. La recuperación SGC
+se incorporó después, en 1.3.1.3; la cobertura completa no está garantizada. Ver [fuentes y límites](docs/FUENTES_SISMICAS.md).
 
 ## Versionado
 
