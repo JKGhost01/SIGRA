@@ -6,6 +6,10 @@ no acreditan utilidad para emergencias.
 
 ## Antes de actualizar
 
+Para la recuperación de SGC del 19 de noviembre, consulta el
+[procedimiento específico y sus criterios de aceptación](SGC_CONEXION_2026-11-19.md).
+Ese hotfix no añade migraciones; conserva las pausas de proveedores existentes.
+
 1. Exporta la base completa y conserva una copia de los archivos desplegados, `.env`
    y datos necesarios de `writable/` en almacenamiento privado, fuera de la raíz web.
 2. Ensaya la restauración del export en una base separada antes de usarlo como respaldo.

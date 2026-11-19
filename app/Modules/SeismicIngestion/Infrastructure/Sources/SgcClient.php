@@ -46,7 +46,11 @@ class SgcClient
     {
         // A refusal must not trigger another request to the same agency.
         $contenido = ($this->transport ?? new CiFeedTransport())->json($this->config->feedUrl, 10, [
-            'Accept' => 'application/json', 'User-Agent' => 'SIGRA/' . config(\Config\Sigra::class)->version,
+            'Accept' => 'application/json',
+            // SGC rejects the bare SIGRA user agent (403). Keep the legacy
+            // browser compatibility tokens and identify SIGRA explicitly.
+            'User-Agent' => 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 Chrome/140 Safari/537.36 SIGRA/'
+                . config(\Config\Sigra::class)->version,
         ]);
         if (!isset($contenido['features']) || !is_array($contenido['features'])) {
             throw new RuntimeException('El SGC devolvió un formato de datos no esperado.');

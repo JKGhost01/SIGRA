@@ -4,6 +4,13 @@ All notable changes to SIGRA are documented here. The project follows
 [Semantic Versioning](https://semver.org/), with an optional fourth revision component
 for small patch adjustments such as `1.3.1.1`.
 
+## [Unreleased]
+
+- Restore the legacy browser-compatible User-Agent for SGC while retaining the SIGRA version and repository identity; the bare SIGRA identity returned HTTP 403.
+- Keep TLS verification, the configured feed URL, shared cache and fifteen-minute polling interval. Existing provider cooldowns retain their expiry.
+- Verify HTTP 200 and 100 normalized SGC events through the real PHP client, cache reuse without database writes, and the full local regression suite.
+- Document the legacy comparison, deployment acceptance and rollback in [the SGC recovery report](docs/SGC_CONEXION_2026-11-19.md).
+
 ## [1.3.1.2] — 2026-11-13 · “Source status and progressive cooldowns”
 
 - About page shows all six sources, HTTP codes and timestamps for the last attempt, result and valid response.
