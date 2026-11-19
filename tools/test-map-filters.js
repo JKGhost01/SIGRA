@@ -13,11 +13,13 @@ const text = { ...dictionary, locale: 'en-US', months: [] };
 const pageScript = fs.readFileSync(path.join(root, 'public/assets/js/modules/seismic-map/catalog.js'), 'utf8');
 const mapScript = fs.readFileSync(path.join(root, 'public/assets/js/mapa-sismos.js'), 'utf8');
 
-function page({ saved = null, storageBlocked = false, permission = 'prompt', locate, syncResult = null } = {}) {
+function page({ saved = null, storageBlocked = false, permission = 'prompt', locate, syncResult = null, initialEvents = null } = {}) {
     const elements = new Map();
     const required = ['radio-filtro', 'btn-mi-ubicacion', 'estado-ubicacion', 'orden-eventos',
         'filtro-municipio', 'eventos-lista', 'contador-eventos', 'filtro-fuente', 'filtro-magnitud',
-        'btn-limpiar-filtros', 'filtros-resumen', 'catalog-sync-status', 'catalog-source-indicator'];
+        'btn-limpiar-filtros', 'filtros-resumen', 'catalog-sync-status', 'catalog-source-indicator',
+        'catalog-pagination', 'catalog-page-range', 'catalog-page-size', 'catalog-page-number',
+        'catalog-page-first', 'catalog-page-prev', 'catalog-page-next', 'catalog-page-last'];
     for (const id of required) elements.set(id, {
         value: id === 'radio-filtro' ? '0' : '', textContent: '', disabled: false,
         innerHTML: '', listeners: {},
@@ -34,9 +36,11 @@ function page({ saved = null, storageBlocked = false, permission = 'prompt', loc
     const store = new Map(saved === null ? [] : [['sigra-radio-km', saved]]);
     let requests = 0;
     let visible = [];
+    let interval;
+    let currentSync = syncResult;
     const sandbox = {
         SIGRA_MAP_TEXT: text, SIGRA_MAP_URLS: { sync: "/sismos/sync", detail: "/sismos/detalle" },
-        SISMOS: [{ id: 'near', lat: 4.6, lng: -74.1, ubicacion: 'Nearby', magnitud: 3 },
+        SISMOS: initialEvents || [{ id: 'near', lat: 4.6, lng: -74.1, ubicacion: 'Nearby', magnitud: 3 },
             { id: 'far', lat: 45, lng: 20, ubicacion: 'Far away', magnitud: 4 }],
         navigator: { geolocation: {}, permissions: { query: async () => ({ state: permission }) } },
         localStorage: {
@@ -49,9 +53,9 @@ function page({ saved = null, storageBlocked = false, permission = 'prompt', loc
             querySelector: () => null, querySelectorAll: () => [],
             addEventListener(type, callback) { if (type === 'DOMContentLoaded') ready.push(callback); },
         },
-        setTimeout: () => 1, clearTimeout() {}, setInterval: () => 1, clearInterval() {},
+        setTimeout: () => 1, clearTimeout() {}, setInterval(callback) { interval = callback; return 1; }, clearInterval() {},
         matchMedia: () => ({ matches: false }),
-        fetch: async () => ({ json: async () => syncResult || ({ ok: false }) }),
+        fetch: async () => ({ json: async () => currentSync || ({ ok: false }) }),
         inicializarMapaListado() {}, fijarUbicacionListado() {}, dibujarRadioListado() {},
         ajustarVistaListado() {}, actualizarDistanciaListado() {},
         pintarMarcadoresListado(events) { visible = events; },
@@ -67,7 +71,10 @@ function page({ saved = null, storageBlocked = false, permission = 'prompt', loc
     vm.runInContext(pageScript, sandbox);
     ready.forEach(callback => callback());
     return {
-        elements, store, get requests() { return requests; }, get visible() { return visible; },
+        elements, store,
+        refresh(result) { currentSync = result; interval(); },
+        get cards() { return [...elements.get('eventos-lista').innerHTML.matchAll(/data-id="([^"]+)"/g)].map(match => match[1]); },
+        get requests() { return requests; }, get visible() { return visible; },
         change(radius) { const el = elements.get('radio-filtro'); el.value = radius; el.listeners.change(); },
         click(id) { elements.get(id).listeners.click(); },
     };
@@ -107,7 +114,65 @@ async function main() {
         selector.listeners.change();
         assert.deepEqual(Array.from(multiple.visible, event => event.fuente), [source]);
     }
+    const catalog = Array.from({ length: 65 }, (_, index) => ({
+        id: `event-${String(index).padStart(2, '0')}`, fuente: index < 12 ? 'SGC' : 'USGS',
+        magnitud: index, lat: 4.6, lng: -74.1, ubicacion: `Place ${index}`,
+        fecha_hora: `2026-11-19 10:${String(Math.floor(index / 60)).padStart(2, '0')}:${String(index % 60).padStart(2, '0')}`,
+    }));
+    const paged = page({ initialEvents: catalog });
+    await flush();
+    assert.equal(paged.cards.length, 20);
+    assert.equal(paged.cards[0], 'event-64', 'Sort the entire catalog before slicing the first page');
+    assert.equal(paged.visible.length, 65, 'Pagination removed events from the map');
+    assert.equal(paged.elements.get('catalog-page-prev').disabled, true);
+    paged.click('catalog-page-next');
+    assert.equal(paged.cards.length, 20);
+    assert.equal(paged.cards[0], 'event-44');
+    paged.refresh({ ok: true, eventos: catalog, errors: {} });
+    await flush();
+    assert.equal(paged.cards[0], 'event-44', 'Polling reset the current page');
+    paged.click('catalog-page-last');
+    assert.equal(paged.cards.length, 5);
+    assert.equal(paged.elements.get('catalog-page-next').disabled, true);
+    const sort = paged.elements.get('orden-eventos');
+    sort.value = 'magnitud-asc'; sort.listeners.change();
+    assert.equal(paged.cards[0], 'event-00', 'Changing order must reset to page one');
+    paged.click('catalog-page-last');
+    const source = paged.elements.get('filtro-fuente');
+    source.value = 'SGC'; source.listeners.change();
+    assert.equal(paged.cards.length, 12, 'Filtering on a later page must return to the first matching page');
+    assert.equal(paged.visible.length, 12);
+    assert.equal(paged.elements.get('catalog-page-next').disabled, true);
+    paged.click('btn-limpiar-filtros');
+    const size = paged.elements.get('catalog-page-size');
+    size.value = '50'; size.listeners.change();
+    assert.equal(paged.cards.length, 50);
+    paged.click('catalog-page-next');
+    assert.equal(paged.cards.length, 15);
+    assert.equal(paged.visible.length, 65);
+    const number = paged.elements.get('catalog-page-number');
+    number.value = '1'; number.listeners.change();
+    assert.equal(paged.cards.length, 50);
+    paged.click('catalog-page-last');
+    paged.refresh({ ok: true, eventos: catalog.slice(0, 3), errors: {} });
+    await flush();
+    assert.equal(paged.cards.length, 3, 'A shrinking catalog must clamp the page');
+    paged.refresh({ ok: true, eventos: [], errors: {} });
+    await flush();
+    assert.equal(paged.cards.length, 0);
+    assert.equal(paged.elements.get('catalog-page-range').textContent, '0–0 of 0 earthquakes');
+    assert.equal(paged.elements.get('catalog-page-next').disabled, true);
     const p = page();
+    const shared = page({ syncResult: { ok: true, errors: {}, eventos: [
+        { id: 'shared', fuente: 'SGC', fuentes: ['SGC', 'USGS', 'EMSC'], lat: 4, lng: -74, magnitud: 4 },
+    ] } });
+    await flush();
+    for (const source of ['SGC', 'USGS', 'EMSC', 'INGV']) {
+        const selector = shared.elements.get('filtro-fuente');
+        selector.value = source;
+        selector.listeners.change();
+        assert.equal(shared.visible.length, source === 'INGV' ? 0 : 1, 'Multi-source filter lost the canonical event');
+    }
     await flush();
     assert.equal(p.elements.get('radio-filtro').disabled, false);
     assert.equal(p.requests, 0, 'Opening the page must not request location without permission');

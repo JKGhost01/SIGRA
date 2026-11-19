@@ -12,7 +12,7 @@ body:
     attributes:
       label: Versión de SIGRA
       description: Valor de `/api/health` o la etiqueta de la barra de navegación.
-      placeholder: "1.4.0-beta.1"
+      placeholder: "1.4.0.1-beta.2"
     validations:
       required: true
   - type: input

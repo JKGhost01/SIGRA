@@ -3,6 +3,18 @@
 return array (
   'history' => 
   array (
+        '1.4.0.1-beta.2' => [
+            'name' => 'Catálogo unificado y paginación',
+            'summary' => 'Un sismo con varias fuentes y navegación paginada en el mapa y el histórico.',
+            'changes' => [
+                'Correlación con el catálogo guardado para incorporar fuentes tardías y conservar referencias durante fallos parciales.',
+                'Un sismo reúne varias agencias en mapa, listado, detalle y API; los filtros reconocen cualquiera de sus fuentes.',
+                'Duplicados existentes conservados como alias, con enlaces y reportes ciudadanos asociados al evento unificado.',
+                'Páginas de 20, 50 o 100 sismos en el listado del mapa y el histórico; filtros, orden y página conservados durante las actualizaciones.',
+                'Histórico paginado desde la base de datos, sin el límite anterior de 500 eventos y con orden estable.',
+                'Nueva migración aditiva de identidad canónica, sin cambios en las dependencias Composer ni en la versión del contrato API v1.',
+            ],
+        ],
         '1.4.0-beta.1' => [
             'name' => 'Globo 3D experimental',
             'summary' => 'Primera beta del mapa CesiumJS, con respaldo 2D y catálogo SGC completo.',

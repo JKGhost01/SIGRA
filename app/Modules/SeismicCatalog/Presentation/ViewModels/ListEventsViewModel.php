@@ -23,6 +23,7 @@ final readonly class ListEventsViewModel
                 'ubicacion'          => $sismo['ubicacion'],
                 'fecha_hora'         => $sismo['fecha_hora'],
                 'fuente'             => $sismo['fuente'],
+                'fuentes'            => \App\Modules\SeismicCatalog\Domain\Services\SourceProvenance::sources($sismo),
                 'estado'             => $sismo['estado'] ?? 'automatico',
                 'intensidadPercibida' => $metadata['cdi'] ?? null,
                 'intensidadInstrumental' => $metadata['mmi'] ?? null,

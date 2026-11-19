@@ -83,3 +83,8 @@ html[data-bs-theme="dark"] .map-globe-popup button { background: #ffffff0d; }
 @media (prefers-reduced-motion: reduce) {
     .map-engine-toolbar *, .map-globe-popup { transition: none !important; }
 }
+
+/* Keep page navigation available while scrolling through the event cards. */
+.catalog-pagination { position: sticky; top: 0; z-index: 5; background: var(--surface, #fff); }
+.catalog-pagination .btn { min-width: 2.25rem; min-height: 2.25rem; }
+.catalog-pagination .form-select { min-width: 0; max-width: 11rem; }

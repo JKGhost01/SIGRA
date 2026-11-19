@@ -1,8 +1,8 @@
 # SIGRA · Monitoraggio sismico globale e rete civica
 
-**v1.4.0-beta.1 · Globo 3D sperimentale · BETA** · `20261119.beta1` · 2026-11-19
+**v1.4.0.1-beta.2 · Catalogo unificato e paginazione · BETA** · `20261119.beta2` · 2026-11-19
 
-> Beta di prova con CesiumJS, mappa 2D di riserva e catalogo SGC completo. La versione stabile rimane 1.3.1.3. [1.4.0-beta.1](docs/BETA_1.4.0.md)
+> Beta di prova con CesiumJS, mappa 2D di riserva e catalogo SGC completo. La versione stabile rimane 1.3.1.3. [1.4.0.1-beta.2](docs/BETA_1.4.0.md)
 
 [Español](README.md) · [English](README.en.md) · [Português](README.pt.md) · [Français](README.fr.md) · [Deutsch](README.de.md) · [Italiano](README.it.md) · [日本語](README.ja.md) · [简体中文](README.zh-CN.md) · [العربية](README.ar.md)
 

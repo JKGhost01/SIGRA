@@ -31,7 +31,15 @@ ob_start();
                     <tr><th><?= esc(lang('Sigra.detailCoords')) ?></th><td><?= esc($datos['latitud']) ?>, <?= esc($datos['longitud']) ?></td></tr>
                     <tr><th><?= esc(lang('Sigra.location')) ?></th><td><?= esc($datos['ubicacion']) ?></td></tr>
                     <tr><th><?= esc(lang('Sigra.dateTime')) ?></th><td><?= esc($datos['fecha_hora']) ?></td></tr>
-                    <tr><th><?= esc(lang('Sigra.source')) ?></th><td><?= esc($fuente) ?></td></tr>
+                    <tr><th><?= esc(lang('Sigra.source')) ?></th><td>
+                        <?php foreach (\App\Modules\SeismicCatalog\Domain\Services\SourceProvenance::references($datos) as $reference): ?>
+                            <?php $referenceUrl = \App\Shared\Domain\ExternalUrl::http($reference['url'] ?? null); ?>
+                            <div class="mb-1">
+                                <?php if ($referenceUrl !== null): ?><a href="<?= esc($referenceUrl) ?>" target="_blank" rel="noopener"><?= esc($reference['source']) ?></a><?php else: ?><?= esc($reference['source']) ?><?php endif; ?>
+                                <small class="text-secondary"><?= esc($reference['source_event_id']) ?></small>
+                            </div>
+                        <?php endforeach; ?>
+                    </td></tr>
                     <tr><th><?= esc(lang('Sigra.detailDistance')) ?></th><td id="distancia-detalle"><?= esc(lang('Sigra.loading')) ?></td></tr>
                 </table>
 
@@ -121,6 +129,7 @@ ob_start();
         ubicacion:   <?= json_encode($datos['ubicacion']) ?>,
         fecha_hora:  <?= json_encode($datos['fecha_hora']) ?>,
         fuente:      <?= json_encode($fuente) ?>,
+        fuentes:     <?= json_encode(\App\Modules\SeismicCatalog\Domain\Services\SourceProvenance::sources($datos)) ?>,
         citizen_reports_count: <?= (int) ($datos['citizen_reports_count'] ?? 0) ?>,
         url:         <?= json_encode($enlaceOficial) ?>
     };

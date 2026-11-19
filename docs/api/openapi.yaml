@@ -4620,6 +4620,26 @@ components:
           type: string
         fuente:
           type: string
+          description: Fuente preferida para los parámetros científicos del sismo.
+        fuentes:
+          type: array
+          description: Todas las fuentes asociadas al mismo sismo; el filtro fuente incluye cualquiera de ellas.
+          items:
+            type: string
+        source_references:
+          type: array
+          items:
+            type: object
+            properties:
+              source:
+                type: string
+              source_event_id:
+                type: string
+              event_id:
+                type: string
+              url:
+                type: string
+                nullable: true
         cdi:
           type: number
           nullable: true

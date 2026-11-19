@@ -3,7 +3,7 @@
 Aplicación CodeIgniter 4 para visualizar sismos de todo el mundo (SGC, USGS, EMSC, GeoNet, GEOFON e INGV), conservar
 un histórico, recibir reportes ciudadanos y operar una red de detección temprana con teléfonos.
 
-## Estado del proyecto: versión 1.4.0-beta.1 · Globo 3D experimental
+## Estado del proyecto: versión 1.4.0.1-beta.2 · Catálogo unificado y paginación
 
 Pre-release para pruebas. La estable continúa en 1.3.1.3. El mapa principal usa
 CesiumJS con opción Leaflet 2D; detalle, reportes y red conservan sus mapas.

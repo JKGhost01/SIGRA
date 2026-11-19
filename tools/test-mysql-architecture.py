@@ -20,6 +20,7 @@ env.update({'SIGRA_TEST_DATABASE': args.database, 'database.default.database': a
             'database.default.port': os.environ.get('SIGRA_TEST_PORT', '3306')})
 for command, marker in [(['php', '-d', 'variables_order=EGPCS', 'tests/Integration/MigrateTestDatabase.php'], 'Migrations complete'),
                         (['php', '-d', 'variables_order=EGPCS', 'tests/Integration/RepositoriesTest.php'], 'rollback passed'),
+                        (['php', 'tests/Integration/HistoryPaginationTest.php'], 'with rollback'),
                         (['php', 'tests/Integration/UsgsCoordinateRepairTest.php'], 'with rollback'),
                         (['php', '-d', 'variables_order=EGPCS', 'tests/CitizenReportsTest.php'], 'checks passed'),
                         (['php', 'tests/Integration/AlertAtomicityTest.php'], 'cancellation passed')]:

@@ -93,7 +93,7 @@ return [
 
     // Navigation and layout
     'navLive'          => 'Mobile app',
-    'releaseName'      => 'Experimental 3D globe',
+    'releaseName'      => 'Unified catalog and pagination',
     'tagline'          => 'Global seismic monitor and citizen network',
     'navMap'           => 'Global map',
     'navHistory'       => 'History',
@@ -586,4 +586,17 @@ return [
     'redAlertsActiveDisable'       => 'Browser alerts active · disable',
     'redNotSupportedShort'         => 'Not supported',
     'redBlockedShort'              => 'Blocked',
+
+    // Catalog pagination.
+    'pagination' => 'Earthquake pagination',
+    'perPage' => 'Per page',
+    'paginationRange' => '{0}–{1} of {2} earthquakes',
+    'pageOf' => 'Page {0} of {1}',
+    'previousPage' => 'Previous',
+    'nextPage' => 'Next',
+    'firstPage' => 'First page',
+    'lastPage' => 'Last page',
+    'goToPage' => 'Go to page {0}',
+    'goToPageLabel' => 'Go to page',
+    'mapAllFiltered' => 'The map shows all filtered results.',
 ];

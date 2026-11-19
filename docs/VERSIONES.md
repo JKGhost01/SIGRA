@@ -24,23 +24,23 @@ La versión se define en `app/Config/Sigra.php` y se muestra en:
 Se puede sobrescribir sin tocar código con:
 
 ```ini
-sigra.version = '1.4.0-beta.1'
-sigra.build = '20261119.beta1'
+sigra.version = '1.4.0.1-beta.2'
+sigra.build = '20261119.beta2'
 sigra.channel = 'beta'
 ```
 
 ## Versión actual
 
-**v1.4.0-beta.1 · Globo 3D experimental**
+**v1.4.0.1-beta.2 · Catálogo unificado y paginación**
 
 - Fecha: 2026-11-19
-- Build: `20261119.beta1`
+- Build: `20261119.beta2`
 - Canal: `beta` (pre-release)
 - API: `v1`
 - App Android: consultar [SIGRA_MOBILE](https://github.com/JKGhost01/SIGRA_MOBILE); la web lee su versión y APK desde GitHub.
 - Licencia: MIT
 
-La versión de la aplicación (`1.4.0-beta.1`) es independiente del contrato de la API
+La versión de la aplicación (`1.4.0.1-beta.2`) es independiente del contrato de la API
 (`v1`). Se conservan las rutas y los campos de las respuestas válidas para Android.
 Se añaden rutas /api/v1 con errores estructurados; las rutas antiguas conservan su formato.
 La sincronización del mapa funciona automáticamente: no requiere configurar cron.
@@ -51,6 +51,17 @@ propios, sin integrar automáticamente en main ni sustituir la release estable.
 Véase [la guía de la beta](BETA_1.4.0.md).
 
 ## Historial
+
+### v1.4.0.1-beta.2 · Catálogo unificado y paginación · 2026-11-19
+
+- Un sismo con varias fuentes, incluidas agencias tardías y actualizaciones parciales.
+- Alias para duplicados previos; enlaces y reportes ciudadanos conservados.
+- Listado del mapa e histórico con páginas de 20, 50 o 100 sismos y orden estable.
+- Histórico completo sin el límite anterior de 500 eventos.
+- Ejecutar `php spark migrate --all` para añadir `canonical_event_id` antes de abrir el mapa.
+- Build `20261119.beta2`; API v1, canal beta y dependencias Composer conservados.
+- [Paquetes de actualización y reversión](BETA_1.4.0.md).
+
 
 ### v1.4.0-beta.1 · Globo 3D experimental · 2026-11-19
 

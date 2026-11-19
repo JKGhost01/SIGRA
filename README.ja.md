@@ -1,8 +1,8 @@
 # SIGRA · 世界の地震情報と市民ネットワーク
 
-**v1.4.0-beta.1 · 実験版3D地球 · BETA** · `20261119.beta1` · 2026-11-19
+**v1.4.0.1-beta.2 · 統合カタログとページ分割 · BETA** · `20261119.beta2` · 2026-11-19
 
-> CesiumJS、予備の2D地図、SGCの全件フィードを備えたテスト用ベータ版です。安定版は1.3.1.3のままです。 [1.4.0-beta.1](docs/BETA_1.4.0.md)
+> CesiumJS、予備の2D地図、SGCの全件フィードを備えたテスト用ベータ版です。安定版は1.3.1.3のままです。 [1.4.0.1-beta.2](docs/BETA_1.4.0.md)
 
 [Español](README.md) · [English](README.en.md) · [Português](README.pt.md) · [Français](README.fr.md) · [Deutsch](README.de.md) · [Italiano](README.it.md) · [日本語](README.ja.md) · [简体中文](README.zh-CN.md) · [العربية](README.ar.md)
 

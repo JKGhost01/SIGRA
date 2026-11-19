@@ -166,7 +166,7 @@ function popupSismo(s, distanciaTexto) {
     const intensidadPercibida = s.intensidadPercibida ?? mt('noData');
     const intensidadInstrumental = s.intensidadInstrumental ?? mt('noData');
     const aceleracion = s.aceleracion ?? mt('noData');
-    const fuente = s.fuente || 'SGC';
+    const fuente = (s.fuentes || [s.fuente || 'SGC']).join(' · ');
     const enlace = s.url ? `<br><a href="${escaparHtml(s.url)}" target="_blank" rel="noopener">${escaparHtml(mt('viewOfficial'))}</a>` : '';
 
     return `

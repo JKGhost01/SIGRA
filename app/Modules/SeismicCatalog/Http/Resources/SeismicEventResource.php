@@ -37,6 +37,11 @@ final class SeismicEventResource
             'nivel' => MagnitudeDisplay::level($magnitud),
             'estado' => (string) ($evento['estado'] ?? 'automatico'),
             'fuente' => $fuente,
+            'fuentes' => \App\Modules\SeismicCatalog\Domain\Services\SourceProvenance::sources($evento),
+            'source_references' => array_map(static function (array $reference): array {
+                if (isset($reference['url'])) $reference['url'] = \App\Shared\Domain\ExternalUrl::http($reference['url']);
+                return $reference;
+            }, \App\Modules\SeismicCatalog\Domain\Services\SourceProvenance::references($evento)),
             'cdi' => $this->numeroMetadata($metadata, 'cdi'),
             'mmi' => $this->numeroMetadata($metadata, 'mmi'),
             'pga' => $this->numeroMetadata($metadata, 'maxPGA'),
