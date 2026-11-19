@@ -1,8 +1,8 @@
 # SIGRA · Global Seismic Monitor & Citizen Network
 
-> **v1.4.0-beta.1 · Experimental 3D globe · PRE-RELEASE** — Published earthquakes from six official sources in one map, with experimental citizen monitoring.
+> **v1.4.0.1-beta.2 · Unified catalog and pagination · PRE-RELEASE** — Published earthquakes from six official sources in one map, with experimental citizen monitoring.
 
-[![Version](https://img.shields.io/badge/version-1.4.0--beta.1-d89926.svg)](#versioning)
+[![Version](https://img.shields.io/badge/version-1.4.0.1--beta.2-d89926.svg)](#versioning)
 [![PHP](https://img.shields.io/badge/PHP-%3E%3D8.2-777bb4.svg)](https://www.php.net/)
 [![CodeIgniter](https://img.shields.io/badge/CodeIgniter-4.7-ee4323.svg)](https://codeigniter.com/)
 [![License](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
@@ -278,10 +278,11 @@ a voluntary donation. Thank you for supporting the project!
 | **Nequi** | `315 9287929` |
 | **Bancolombia** | Account `912-982627-76` |
 
-## Upgrade to 1.4.0-beta.1
+## Upgrade to 1.4.0.1-beta.2
 
-No new migrations or Composer changes are required when upgrading from 1.3.1.3.
-This beta includes the Cesium globe, Leaflet 2D fallback and the full SGC feed.
+When upgrading from 1.3.1.3 or beta.1, upload the files and run `php spark migrate --all`
+before opening the map. Beta.2 adds canonical event identity for multiple sources,
+and pages of 20, 50 or 100 earthquakes in the map list and history. No Composer changes.
 Preserve `.env` and `writable/cache/providers`; review version, channel and feed overrides.
 See [the beta deployment guide](docs/BETA_1.4.0.md).
 
@@ -302,7 +303,7 @@ in 1.3.1.3; complete coverage is not guaranteed. See [provider details](docs/FUE
 
 ## Versioning
 
-SIGRA follows semantic versioning with an optional fourth revision component for small patch adjustments. The current pre-release is **1.4.0-beta.1 · Experimental 3D globe** (2026-11-19, build `20261119.beta1`, channel `beta`). The stable release remains 1.3.1.3. See [docs/VERSIONES.md](docs/VERSIONES.md).
+SIGRA follows semantic versioning with an optional fourth revision component for small patch adjustments. The current pre-release is **1.4.0.1-beta.2 · Unified catalog and pagination** (2026-11-19, build `20261119.beta2`, channel `beta`). The stable release remains 1.3.1.3. See [docs/VERSIONES.md](docs/VERSIONES.md).
 
 API contracts: [Earthquakes](docs/API_SISMOS.md) · [Citizen network](docs/API_RED.md).
 

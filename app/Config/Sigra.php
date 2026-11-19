@@ -18,10 +18,10 @@ class Sigra extends BaseConfig
 
     public string $project = 'SIGRA';
     public string $tagline = 'Monitor sísmico global y red ciudadana';
-    public string $version = '1.4.0-beta.1';
-    public string $releaseName = 'Globo 3D experimental';
+    public string $version = '1.4.0.1-beta.2';
+    public string $releaseName = 'Catálogo unificado y paginación';
     public string $releaseDate = '2026-11-19';
-    public string $build = '20261119.beta1';
+    public string $build = '20261119.beta2';
     public string $channel = 'beta';
     public string $apiVersion = 'v1';
     public string $mobileVersion = '1.0.0.0';
@@ -44,6 +44,19 @@ class Sigra extends BaseConfig
      * @var array<string, array{date: string, name: string, summary: string, changes: list<string>}>
      */
     public array $changelog = [
+        '1.4.0.1-beta.2' => [
+            'date' => '2026-11-19',
+            'name' => 'Catálogo unificado y paginación',
+            'summary' => 'Un sismo con varias fuentes y navegación paginada en el mapa y el histórico.',
+            'changes' => [
+                'Correlación con el catálogo guardado para incorporar fuentes tardías y conservar referencias durante fallos parciales.',
+                'Un sismo reúne varias agencias en mapa, listado, detalle y API; los filtros reconocen cualquiera de sus fuentes.',
+                'Duplicados existentes conservados como alias, con enlaces y reportes ciudadanos asociados al evento unificado.',
+                'Páginas de 20, 50 o 100 sismos en el listado del mapa y el histórico; filtros, orden y página conservados durante las actualizaciones.',
+                'Histórico paginado desde la base de datos, sin el límite anterior de 500 eventos y con orden estable.',
+                'Nueva migración aditiva de identidad canónica, sin cambios en las dependencias Composer ni en la versión del contrato API v1.',
+            ],
+        ],
         '1.4.0-beta.1' => [
             'date' => '2026-11-19',
             'name' => 'Globo 3D experimental',

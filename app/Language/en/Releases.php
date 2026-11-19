@@ -2,6 +2,18 @@
 
 return [
     'history' => [
+        '1.4.0.1-beta.2' => [
+            'name' => 'Unified catalog and pagination',
+            'summary' => 'One earthquake with multiple sources and paginated browsing in the map list and history.',
+            'changes' => [
+                'Correlate refreshes with the stored catalog to handle delayed providers and retain references during partial failures.',
+                'One earthquake lists multiple agencies in the map, list, detail and API; source filters recognize all its providers.',
+                'Keep existing duplicates as aliases, preserving old links and moving citizen reports to the unified event.',
+                'Pages of 20, 50 or 100 earthquakes in the map list and history, retaining filters, ordering and the current page during refreshes.',
+                'Database-backed history pagination beyond the previous 500-event limit, with stable ordering.',
+                'New additive canonical-identity migration; Composer dependencies and the API v1 contract version remain unchanged.',
+            ],
+        ],
         '1.4.0-beta.1' => [
             'name' => 'Experimental 3D globe',
             'summary' => 'First CesiumJS map beta, with 2D fallback and the full SGC catalog.',

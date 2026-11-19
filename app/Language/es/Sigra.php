@@ -90,7 +90,7 @@ return [
 
     // Navegación y layout
     'navLive'          => 'App móvil',
-    'releaseName'      => 'Globo 3D experimental',
+    'releaseName'      => 'Catálogo unificado y paginación',
     'tagline'          => 'Monitor sísmico global y red ciudadana',
     'navMap'           => 'Mapa global',
     'navHistory'       => 'Histórico',

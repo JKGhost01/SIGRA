@@ -4,6 +4,16 @@ All notable changes to SIGRA are documented here. The project follows
 [Semantic Versioning](https://semver.org/), with an optional fourth revision component
 for small patch adjustments such as `1.3.1.1`.
 
+## [1.4.0.1-beta.2] · 2026-11-19 · Unified catalog and pagination
+
+- Correlate incoming observations with stored events, including delayed providers and partial failures.
+- Show all associated agencies in the map, list, history, detail and API; filter by any source.
+- Retain duplicate rows as aliases, preserving old links and citizen evidence.
+- Paginate map cards and history with 20, 50 or 100 earthquakes per page. Keep filters, ordering and the current page during automatic refreshes.
+- Query the full history with stable ordering, beyond the former 500-event limit.
+- Run `php spark migrate --all` before serving this version: migration `20261119000001_AddCanonicalEvent` adds canonical identity.
+- Build `20261119.beta2`; beta channel. [Deployment and rollback](docs/BETA_1.4.0.md).
+
 ## [1.4.0-beta.1] · 2026-11-19 · Experimental 3D globe
 
 - CesiumJS main globe with unified view/layer controls, dark theme and mobile layout; Leaflet fallback retains filters, location and radius.

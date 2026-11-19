@@ -4,13 +4,14 @@ La documentación principal se mantiene en español. SIGRA usa versionado semán
 con un cuarto componente opcional para revisiones pequeñas. El historial inglés
 se conserva en [CHANGELOG.en.md](CHANGELOG.en.md).
 
-## Sin publicar · Catálogo unificado y paginación
+## [1.4.0.1-beta.2] · 2026-11-19 · Catálogo unificado y paginación
 
 - El catálogo cruza cada actualización con los eventos guardados, incluidas fuentes tardías y fallos parciales.
 - Un sismo reúne las referencias de sus agencias en listado, mapa, detalle y API; los filtros aceptan cualquiera de sus fuentes.
 - Los duplicados existentes se conservan como alias fuera del catálogo público; los enlaces anteriores y los reportes ciudadanos apuntan al evento unificado.
 - Listado del mapa e histórico con páginas de 20, 50 o 100 sismos, conservando filtros y orden. El mapa mantiene todos los resultados filtrados y la actualización automática conserva la página abierta.
 - Histórico paginado desde la base de datos, sin el tope de 500 eventos; conteo completo y orden estable entre páginas.
+- Build `20261119.beta2`; canal `beta`. [Despliegue y reversión](docs/BETA_1.4.0.md).
 - Nueva migración `20261119000001_AddCanonicalEvent`: ejecutar `php spark migrate --all` antes de servir esta versión. La primera actualización consolida los duplicados de su ventana temporal.
 
 ## [1.4.0-beta.1] · 2026-11-19 · Globo 3D experimental

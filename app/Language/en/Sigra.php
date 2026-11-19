@@ -93,7 +93,7 @@ return [
 
     // Navigation and layout
     'navLive'          => 'Mobile app',
-    'releaseName'      => 'Experimental 3D globe',
+    'releaseName'      => 'Unified catalog and pagination',
     'tagline'          => 'Global seismic monitor and citizen network',
     'navMap'           => 'Global map',
     'navHistory'       => 'History',
