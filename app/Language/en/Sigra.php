@@ -81,7 +81,7 @@ return [
 
     // Navigation and layout
     'navLive'          => 'Mobile app',
-    'releaseName'      => 'Source status and progressive cooldowns',
+    'releaseName'      => 'SGC connection restored',
     'tagline'          => 'Global seismic monitor and citizen network',
     'navMap'           => 'Global map',
     'navHistory'       => 'History',

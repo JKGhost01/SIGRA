@@ -18,10 +18,10 @@ class Sigra extends BaseConfig
 
     public string $project = 'SIGRA';
     public string $tagline = 'Monitor sísmico global y red ciudadana';
-    public string $version = '1.3.1.2';
-    public string $releaseName = 'Estado de fuentes y pausas progresivas';
-    public string $releaseDate = '2026-11-13';
-    public string $build = '20261113.4';
+    public string $version = '1.3.1.3';
+    public string $releaseName = 'Conexión SGC recuperada';
+    public string $releaseDate = '2026-11-19';
+    public string $build = '20261119.1';
     public string $channel = 'stable';
     public string $apiVersion = 'v1';
     public string $mobileVersion = '1.0.0.0';
@@ -44,6 +44,16 @@ class Sigra extends BaseConfig
      * @var array<string, array{date: string, name: string, summary: string, changes: list<string>}>
      */
     public array $changelog = [
+        '1.3.1.3' => [
+            'date' => '2026-11-19',
+            'name' => 'Conexión SGC recuperada',
+            'summary' => 'Compatibilidad HTTP restaurada para recuperar la consulta del catálogo oficial SGC.',
+            'changes' => [
+                'User-Agent compatible con SGC, conservando la versión de SIGRA y el repositorio público.',
+                'Verificación TLS, caché compartida, intervalo de quince minutos y pausas existentes conservados.',
+                'Regresión automatizada y comprobación real con HTTP 200 y 100 eventos normalizados.',
+            ],
+        ],
         '1.3.1.2' => [
             'date' => '2026-11-13',
             'name' => 'Estado de fuentes y pausas progresivas',

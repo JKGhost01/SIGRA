@@ -6,13 +6,15 @@ El cliente PHP corregido recibió HTTP 200 y normalizó 100 eventos del feed
 oficial. Una segunda llamada devolvió los mismos eventos desde la caché local.
 La prueba se ejecutó en este entorno con `ENVIRONMENT=production`, TLS verificado,
 un directorio temporal para el estado del proveedor y sin escribir en la base.
-El despliegue y la comprobación desde el hosting quedan a cargo del operador.
+El usuario confirmó posteriormente que la corrección funcionó tras desplegarla.
+No se inspeccionó directamente el hosting. La subida de la revisión de versión
+1.3.1.3 queda a cargo del operador.
 
 Rama: [`hotfix/sgc-user-agent`](https://github.com/JKGhost01/SIGRA/tree/hotfix/sgc-user-agent).
 Base: `ed08158a351974d35126078fc541fef3dfa62209`, desde
-`hotfix/1.3.1-provider-headers`. La versión declarada sigue siendo `1.3.1.2`,
-build `20261113.4`; este cambio se identifica por la rama y su commit, sin
-crear una release ni modificar el contrato API v1.
+`hotfix/1.3.1-provider-headers`. El hotfix inicial `b249ba4` conservaba la versión `1.3.1.2`. La revisión
+publicada ahora declara **1.3.1.3**, build **20261119.1**, fecha **2026-11-19**,
+nombre **Conexión SGC recuperada**. El contrato API sigue en v1.
 
 ## Comparación con la copia antigua
 
@@ -62,8 +64,14 @@ ni sustituye una prueba de persistencia contra su base de datos.
    de la rama indicada. Este hotfix sobre la base declarada no requiere migraciones,
    Composer ni reconstrucción de assets. Si el servidor es más antiguo, revisa
    las actualizaciones intermedias antes de aplicar un paquete acumulativo.
-2. El único archivo de ejecución modificado por este hotfix es
-   `app/Modules/SeismicIngestion/Infrastructure/Sources/SgcClient.php`.
+2. Para instalar la corrección y su versión, sube estos archivos de ejecución:
+   `app/Modules/SeismicIngestion/Infrastructure/Sources/SgcClient.php`,
+   `app/Config/Sigra.php`, `app/Language/es/Releases.php` y
+   `app/Language/en/Releases.php`, `app/Language/es/Sigra.php` y
+   `app/Language/en/Sigra.php`. Si ya instalaste `b249ba4`, solo faltan
+   los cinco archivos de configuración e idioma. Revisa cualquier override
+   `sigra.version`, `sigra.build`, `sigra.releaseName` y `sigra.releaseDate`
+   en el `.env` del servidor para que no prevalezca la versión anterior.
    Conserva `.env`, `vendor/` y `writable/`, especialmente `cache/providers`.
    Si PHP mantiene código anterior en OPcache, usa el mecanismo habitual del hosting
    para recargarlo.

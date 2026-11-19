@@ -1,46 +1,35 @@
-# Contributor Covenant Code of Conduct
+# Código de conducta de la comunidad
 
-## Our pledge
+## Nuestro compromiso
 
-We as members, contributors and leaders pledge to make participation in SIGRA a
-harassment-free experience for everyone, regardless of age, body size, visible
-or invisible disability, ethnicity, sex characteristics, gender identity and
-expression, level of experience, education, socio-economic status, nationality,
-personal appearance, race, religion or sexual identity and orientation.
+Quienes participan, contribuyen y mantienen SIGRA se comprometen a ofrecer una experiencia libre de acoso, independientemente de edad, apariencia, discapacidad visible o no visible, origen étnico, características sexuales, identidad o expresión de género, experiencia, formación, situación económica, nacionalidad, raza, religión, identidad u orientación sexual.
 
-We pledge to act and interact in ways that contribute to an open, welcoming,
-diverse, inclusive and healthy community.
+Promovemos una comunidad abierta, acogedora, diversa, inclusiva y saludable.
 
-## Our standards
+## Normas de convivencia
 
-Examples of behavior that contributes to a positive environment:
+Conductas que contribuyen a un entorno positivo:
 
-- Demonstrating empathy and kindness toward other people.
-- Being respectful of differing opinions, viewpoints and experiences.
-- Giving and gracefully accepting constructive feedback.
-- Accepting responsibility and apologizing to those affected by our mistakes.
-- Focusing on what is best for the community and the project.
+- Mostrar empatía y amabilidad.
+- Respetar opiniones, perspectivas y experiencias diferentes.
+- Dar y aceptar comentarios constructivos.
+- Asumir la responsabilidad por los errores y disculparse ante las personas afectadas.
+- Buscar lo mejor para la comunidad y el proyecto.
 
-Examples of unacceptable behavior:
+Conductas inaceptables:
 
-- Sexualized language or imagery, and sexual attention or advances.
-- Trolling, insulting or derogatory comments, and personal or political attacks.
-- Public or private harassment.
-- Publishing others' private information without explicit permission.
-- Other conduct which could reasonably be considered inappropriate in a
-  professional setting.
+- Lenguaje o imágenes sexualizadas y atención o insinuaciones sexuales no deseadas.
+- Provocaciones, insultos, comentarios despectivos y ataques personales o políticos.
+- Acoso público o privado.
+- Publicar información privada de otra persona sin su permiso explícito.
+- Otras conductas impropias de un entorno profesional.
 
-## Enforcement
+## Aplicación
 
-Project maintainers are responsible for clarifying and enforcing these
-standards. They may remove, edit or reject comments, commits, code, issues and
-other contributions that do not align with this Code of Conduct.
+Las personas que mantienen el proyecto aclaran y aplican estas normas. Pueden retirar, editar o rechazar comentarios, commits, código, issues y otras contribuciones que incumplan este código.
 
-Report abusive, harassing or otherwise unacceptable behavior privately to the
-maintainers. All complaints will be reviewed and investigated promptly and
-fairly. Maintainers must respect the privacy and security of the reporter.
+Reporta de forma privada a los responsables del proyecto cualquier abuso, acoso o conducta inaceptable. Las denuncias deben revisarse con prontitud e imparcialidad, respetando la privacidad y la seguridad de quien informa.
 
-## Attribution
+## Atribución
 
-This Code of Conduct is adapted from the
-[Contributor Covenant](https://www.contributor-covenant.org/), version 2.1.
+Adaptado del [Contributor Covenant](https://www.contributor-covenant.org/), versión 2.1. Esta versión en español conserva el alcance del código anterior del proyecto.

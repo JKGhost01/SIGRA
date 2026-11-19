@@ -3,6 +3,15 @@
 return array (
   'history' => 
   array (
+        '1.3.1.3' => [
+            'name' => 'Conexión SGC recuperada',
+            'summary' => 'Compatibilidad HTTP restaurada para recuperar la consulta del catálogo oficial SGC.',
+            'changes' => [
+                'User-Agent compatible con SGC, conservando la versión de SIGRA y el repositorio público.',
+                'Verificación TLS, caché compartida, intervalo de quince minutos y pausas existentes conservados.',
+                'Regresión automatizada y comprobación real con HTTP 200 y 100 eventos normalizados.',
+            ],
+        ],
         '1.3.1.2' => [
             'name' => 'Estado de fuentes y pausas progresivas',
             'summary' => 'Estado de las conexiones visible y pausas progresivas ante rechazos de los proveedores.',

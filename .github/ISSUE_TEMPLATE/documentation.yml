@@ -1,22 +1,22 @@
-name: Documentation correction
-description: Report an incorrect command, broken link or unclear explanation
+name: Corrección de documentación
+description: Informa de un comando incorrecto, enlace roto o explicación confusa
 title: "[docs] "
 labels: ["documentation"]
 body:
   - type: input
     id: location
     attributes:
-      label: File or section
+      label: Archivo o sección
     validations:
       required: true
   - type: textarea
     id: problem
     attributes:
-      label: What is incorrect or unclear?
-      description: Include the command and error if relevant, without credentials or personal data.
+      label: ¿Qué es incorrecto o poco claro?
+      description: Incluye el comando y error pertinentes, sin credenciales ni datos personales.
     validations:
       required: true
   - type: textarea
     id: suggestion
     attributes:
-      label: Suggested correction
+      label: Corrección sugerida

@@ -1,22 +1,23 @@
-## What changed
+## Qué cambia
 
-<!-- One or two sentences. -->
+<!-- Explica el problema y el comportamiento resultante en una o dos frases. -->
 
-## Why
+## Motivo
 
-<!-- Link the issue or explain the user problem. -->
+<!-- Enlaza el issue o describe la necesidad. -->
 
-## How it was tested
+## Verificación
 
-- [ ] `php -l` on every modified PHP file
-- [ ] `node --check` on modified JavaScript
-- [ ] Manual check of `/sismos`, `/sismos/historico` and `/sismos/detalle/{id}`
-- [ ] `/api/health` returns the expected version
-- [ ] Radius filter works with and without geolocation permission
-- [ ] No secrets, personal data or production domains were added
-- [ ] `python3 tools/check-git.py` passes; generated packages and runtime files stay ignored
-- [ ] New modules and retired paths are included together; views only render prepared data
+- [ ] Sintaxis PHP de los archivos modificados (`php -l`)
+- [ ] Sintaxis del JavaScript modificado (`node --check`)
+- [ ] Pruebas adecuadas al cambio y resultado indicado abajo
+- [ ] Mapa, histórico y detalle revisados si cambia la interfaz
+- [ ] Versión esperada en `/api/health` si cambia la versión
+- [ ] Filtro de radio con y sin permiso de ubicación, si corresponde
+- [ ] Sin secretos ni datos personales añadidos
+- [ ] `python3 tools/check-git.py` correcto; paquetes y archivos de ejecución fuera de Git
+- [ ] Módulos nuevos y rutas retiradas incluidos; vistas limitadas a presentación
 
-## Screenshots / API output
+## Evidencia y límites
 
-<!-- Optional, but very helpful for UI or API changes. -->
+<!-- Indica comandos, resultados, capturas y comprobaciones pendientes pertinentes. -->
