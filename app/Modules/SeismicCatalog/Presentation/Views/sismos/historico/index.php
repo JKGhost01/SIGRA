@@ -24,7 +24,7 @@ ob_start();
                     <label for="hasta" class="form-label small fw-semibold"><?= esc(lang('Sigra.to')) ?></label>
                     <input type="date" id="hasta" name="hasta" class="form-control" value="<?= esc($filtros['hasta']) ?>">
                 </div>
-                <div class="col-sm-6 col-lg-3">
+                <div class="col-sm-6 col-lg-2">
                     <label for="orden" class="form-label small fw-semibold"><?= esc(lang('Sigra.listOrder')) ?></label>
                     <select id="orden" name="orden" class="form-select">
                         <?php foreach ($ordenes as $valor => $etiqueta): ?>
@@ -39,7 +39,15 @@ ob_start();
                         <option value="ASC" <?= $direccion === 'ASC' ? 'selected' : '' ?>><?= esc(lang('Sigra.ascending')) ?></option>
                     </select>
                 </div>
-                <div class="col-lg-3 d-flex gap-2">
+                <div class="col-sm-6 col-lg-2">
+                    <label for="history-per-page" class="form-label small fw-semibold"><?= esc(lang('Sigra.perPage')) ?></label>
+                    <select id="history-per-page" name="per_page" class="form-select">
+                        <?php foreach ([20, 50, 100] as $size): ?>
+                            <option value="<?= $size ?>" <?= $pagination->perPage === $size ? 'selected' : '' ?>><?= $size ?></option>
+                        <?php endforeach; ?>
+                    </select>
+                </div>
+                <div class="col-lg-2 d-flex gap-2">
                     <button type="submit" class="btn btn-report flex-grow-1"><?= esc(lang('Sigra.applyFilters')) ?></button>
                     <a href="<?= site_url('sismos/historico') ?>" class="btn btn-outline-secondary"><?= esc(lang('Sigra.clearFilters')) ?></a>
                 </div>
@@ -48,7 +56,7 @@ ob_start();
     </form>
 
     <div class="d-flex justify-content-between align-items-center mb-2">
-        <p class="small text-secondary mb-0"><?= esc(lang('Sigra.eventsFound', [(string) count($eventos)])) ?></p>
+        <p class="small text-secondary mb-0" role="status"><?= esc(lang('Sigra.paginationRange', [$pagination->from, $pagination->to, $pagination->total])) ?></p>
         <span class="small text-secondary"><?= esc(lang('Sigra.includesSources')) ?></span>
     </div>
 
@@ -74,13 +82,30 @@ ob_start();
                             <td><strong>M <?= esc($evento['magnitud']) ?></strong></td>
                             <td><?= esc($evento['profundidad']) ?> km</td>
                             <td><?= esc($evento['ubicacion']) ?><?php if (($evento['citizen_reports_count'] ?? 0) > 0): ?><br><small class="text-success"><?= esc(lang('Sigra.reportedByUsers', [(string) $evento['citizen_reports_count']])) ?></small><?php endif; ?></td>
-                            <td><?= esc((string) ($evento['fuente'] ?? 'SGC')) ?></td>
+                            <td><?= esc(implode(' · ', \App\Modules\SeismicCatalog\Domain\Services\SourceProvenance::sources($evento))) ?></td>
                         </tr>
                     <?php endforeach; ?>
                 </tbody>
             </table>
         </div>
     </div>
+    <nav class="d-flex flex-wrap justify-content-between align-items-center gap-3 mt-3" aria-label="<?= esc(lang('Sigra.pagination')) ?>">
+        <span class="small text-secondary"><?= esc(lang('Sigra.pageOf', [$pagination->page, $pagination->pages])) ?></span>
+        <ul class="pagination pagination-sm flex-wrap mb-0">
+            <li class="page-item <?= $pagination->page === 1 ? 'disabled' : '' ?>">
+                <?php if ($pagination->page > 1): ?><a class="page-link" href="<?= esc($pageLinks[$pagination->page - 1]) ?>" rel="prev"><?= esc(lang('Sigra.previousPage')) ?></a><?php else: ?><span class="page-link"><?= esc(lang('Sigra.previousPage')) ?></span><?php endif; ?>
+            </li>
+            <?php $previousNumber = 0; foreach ($pageLinks as $number => $url): ?>
+                <?php if ($previousNumber && $number > $previousNumber + 1): ?><li class="page-item disabled"><span class="page-link">…</span></li><?php endif; ?>
+                <li class="page-item <?= $number === $pagination->page ? 'active' : '' ?>">
+                    <?php if ($number === $pagination->page): ?><span class="page-link" aria-current="page"><?= $number ?></span><?php else: ?><a class="page-link" href="<?= esc($url) ?>" aria-label="<?= esc(lang('Sigra.goToPage', [$number])) ?>"><?= $number ?></a><?php endif; ?>
+                </li>
+            <?php $previousNumber = $number; endforeach; ?>
+            <li class="page-item <?= $pagination->page === $pagination->pages ? 'disabled' : '' ?>">
+                <?php if ($pagination->page < $pagination->pages): ?><a class="page-link" href="<?= esc($pageLinks[$pagination->page + 1]) ?>" rel="next"><?= esc(lang('Sigra.nextPage')) ?></a><?php else: ?><span class="page-link"><?= esc(lang('Sigra.nextPage')) ?></span><?php endif; ?>
+            </li>
+        </ul>
+    </nav>
 </div>
 
 <?php

@@ -45,6 +45,8 @@
 
     const idsConocidos = new Set(SISMOS.map(function (evento) { return String(evento.id); }));
     let eventosActuales = SISMOS;
+    let paginaActual = 1;
+    let tamanoPagina = 20;
     let idsNuevos = new Set();
     let resaltadoNuevoActivo = true;
     let temporizadorResaltadoNuevo;
@@ -109,7 +111,7 @@
             if (filtro && !String(evento.municipios || evento.ubicacion).toLowerCase().includes(filtro)) {
                 return false;
             }
-            if (filtroFuente && String(evento.fuente || 'SGC') !== filtroFuente) {
+            if (filtroFuente && !(evento.fuentes || [evento.fuente || 'SGC']).includes(filtroFuente)) {
                 return false;
             }
             if (filtroMagnitud && Number(evento.magnitud) < Number(filtroMagnitud)) {
@@ -131,16 +133,22 @@
 
         const listaEventos = document.getElementById('eventos-lista');
         const contadorEventos = document.getElementById('contador-eventos');
-        const eventosFiltrados = eventosVisibles();
+        const eventosFiltrados = ordenarCatalogo(eventosVisibles());
+        const totalPaginas = Math.max(1, Math.ceil(eventosFiltrados.length / tamanoPagina));
+        paginaActual = Math.max(1, Math.min(paginaActual, totalPaginas));
+        actualizarPaginacion(eventosFiltrados.length, totalPaginas);
+        const inicio = (paginaActual - 1) * tamanoPagina;
+        const eventosPagina = eventosFiltrados.slice(inicio, inicio + tamanoPagina);
 
-        listaEventos.innerHTML = eventosFiltrados.map(function (evento, indice) {
+        listaEventos.innerHTML = eventosPagina.map(function (evento, indice) {
             const fechaTexto = formatearFechaLocal(evento.fecha_hora);
-            const esNuevo = resaltadoNuevoActivo && indice === 0;
+            const esNuevo = resaltadoNuevoActivo && paginaActual === 1 && indice === 0;
             const intensidadPercibida = evento.intensidadPercibida ?? '';
             const intensidadInstrumental = evento.intensidadInstrumental ?? '';
             const aceleracion = evento.aceleracion ?? '';
             const distancia = distanciaDeEvento(evento);
             const fuente = evento.fuente || 'SGC';
+            const fuentes = (evento.fuentes || [fuente]).join(' · ');
             const textoPercibida = intensidadPercibida !== '' && Number(intensidadPercibida) > 0 ? escaparHtml(intensidadPercibida) : escaparHtml(tr('noData'));
             const textoInstrumental = intensidadInstrumental !== '' && Number(intensidadInstrumental) > 0 ? escaparHtml(intensidadInstrumental) : escaparHtml(tr('noData'));
             const textoAceleracion = aceleracion !== '' && aceleracion !== null ? escaparHtml(aceleracion) : escaparHtml(tr('noData'));
@@ -168,7 +176,7 @@
                          data-pga="${escaparHtml(aceleracion)}">
                     <div class="d-flex justify-content-between align-items-center gap-2 mb-2">
                         <span class="badge rounded-pill bg-dark-subtle text-dark">M ${escaparHtml(evento.magnitud)}</span>
-                        <span class="small text-secondary">${escaparHtml(tr('sourceLabel', fuente))}</span>
+                        <span class="small text-secondary">${escaparHtml(tr('sourceLabel', fuentes))}</span>
                     </div>
                     <h2 class="h6 mb-1">${escaparHtml(evento.ubicacion)}</h2>
                     ${Number(evento.citizen_reports_count) > 0 ? `<p class="small text-success mb-1">${escaparHtml(tr('reportedByUsers', Number(evento.citizen_reports_count)))}</p>` : ''}
@@ -209,7 +217,6 @@
             }
             resumenFiltros.textContent = resumen.join(' · ');
         }
-        ordenarEventos();
         actualizarDistanciaListado();
 
         if (!replayTimer) {
@@ -221,49 +228,56 @@
     let filtroMunicipio;
     let listaEventos;
 
-    function valorNumerico(elemento, atributo) {
-        const valor = Number(elemento.dataset[atributo]);
-        return Number.isFinite(valor) && elemento.dataset[atributo] !== '' ? valor : null;
+    function compararValores(a, b, direccion) {
+        const valorA = a === null || a === undefined || a === '' ? null : Number(a);
+        const valorB = b === null || b === undefined || b === '' ? null : Number(b);
+        const validoA = valorA !== null && Number.isFinite(valorA);
+        const validoB = valorB !== null && Number.isFinite(valorB);
+        if (!validoA && !validoB) return 0;
+        if (!validoA) return 1;
+        if (!validoB) return -1;
+        return (valorA - valorB) * direccion;
     }
 
-    function compararNumeros(a, b, atributo, direccion) {
-        const valorA = valorNumerico(a, atributo);
-        const valorB = valorNumerico(b, atributo);
-        if (valorA === null && valorB === null) return 0;
-        if (valorA === null) return 1;
-        if (valorB === null) return -1;
-        return (valorB - valorA) * direccion;
+    function ordenarCatalogo(eventos) {
+        const orden = selectorOrden ? selectorOrden.value : 'fecha-desc';
+        return eventos.sort(function (a, b) {
+            let diferencia;
+            if (orden === 'fecha-asc') diferencia = fechaLocalTimestamp(a.fecha_hora) - fechaLocalTimestamp(b.fecha_hora);
+            else if (orden === 'magnitud-desc') diferencia = compararValores(a.magnitud, b.magnitud, -1);
+            else if (orden === 'magnitud-asc') diferencia = compararValores(a.magnitud, b.magnitud, 1);
+            else if (orden === 'cdi-desc') diferencia = compararValores(a.intensidadPercibida, b.intensidadPercibida, -1);
+            else if (orden === 'mmi-desc') diferencia = compararValores(a.intensidadInstrumental, b.intensidadInstrumental, -1);
+            else if (orden === 'pga-desc') diferencia = compararValores(a.aceleracion, b.aceleracion, -1);
+            else if (orden === 'pga-exists') diferencia = Number(a.aceleracion == null || a.aceleracion === '') - Number(b.aceleracion == null || b.aceleracion === '');
+            else if (orden === 'distancia-asc') diferencia = compararValores(distanciaDeEvento(a), distanciaDeEvento(b), 1);
+            else diferencia = fechaLocalTimestamp(b.fecha_hora) - fechaLocalTimestamp(a.fecha_hora);
+            return diferencia || String(a.id).localeCompare(String(b.id));
+        });
     }
 
-    function ordenarEventos() {
-        if (!listaEventos || !selectorOrden) {
-            return;
-        }
+    function actualizarPaginacion(total, pages) {
+        const nav = document.getElementById('catalog-pagination');
+        if (!nav) return;
+        nav.hidden = false;
+        const inicio = total === 0 ? 0 : (paginaActual - 1) * tamanoPagina + 1;
+        document.getElementById('catalog-page-range').textContent = tr('paginationRange', inicio, Math.min(paginaActual * tamanoPagina, total), total);
+        const selector = document.getElementById('catalog-page-number');
+        selector.innerHTML = Array.from({ length: pages }, function (_, index) {
+            const number = index + 1;
+            return `<option value="${number}">${escaparHtml(tr('pageOf', number, pages))}</option>`;
+        }).join('');
+        selector.value = String(paginaActual);
+        selector.disabled = pages === 1;
+        document.getElementById('catalog-page-first').disabled = paginaActual === 1;
+        document.getElementById('catalog-page-prev').disabled = paginaActual === 1;
+        document.getElementById('catalog-page-next').disabled = paginaActual === pages;
+        document.getElementById('catalog-page-last').disabled = paginaActual === pages;
+    }
 
-        const eventos = Array.from(listaEventos.querySelectorAll('.evento-item'));
-        const orden = selectorOrden.value;
-
-        eventos.sort(function (a, b) {
-            if (orden === 'fecha-asc') return Number(a.dataset.fecha) - Number(b.dataset.fecha);
-            if (orden === 'magnitud-desc') {
-                return Number(b.dataset.magnitud) - Number(a.dataset.magnitud);
-            }
-            if (orden === 'magnitud-asc') return Number(a.dataset.magnitud) - Number(b.dataset.magnitud);
-            if (orden === 'cdi-desc') return compararNumeros(a, b, 'cdi', 1);
-            if (orden === 'mmi-desc') return compararNumeros(a, b, 'mmi', 1);
-            if (orden === 'pga-desc') return compararNumeros(a, b, 'pga', 1);
-            if (orden === 'pga-exists') return (a.dataset.pga === '' ? 1 : 0) - (b.dataset.pga === '' ? 1 : 0);
-            if (orden === 'distancia-asc') return compararNumeros(a, b, 'distancia', 1);
-            return Number(b.dataset.fecha) - Number(a.dataset.fecha);
-        });
-
-        eventos.forEach(function (evento) {
-            listaEventos.appendChild(evento);
-        });
-
-        eventos.forEach(function (evento, indice) {
-            evento.classList.toggle('evento-nuevo', resaltadoNuevoActivo && indice === 0);
-        });
+    function reiniciarPagina() {
+        paginaActual = 1;
+        actualizarListaEventos();
     }
 
     let contextoAudio;
@@ -421,9 +435,9 @@
             filtroMunicipio = document.getElementById('filtro-municipio');
             listaEventos = document.getElementById('eventos-lista');
 
-            selectorOrden.addEventListener('change', ordenarEventos);
+            selectorOrden.addEventListener('change', reiniciarPagina);
             filtroMunicipio.addEventListener('input', function () {
-                actualizarListaEventos(eventosActuales);
+                reiniciarPagina();
             });
 
             selectorFuente = document.getElementById('filtro-fuente');
@@ -519,7 +533,7 @@
                             guardarRadio(radioKm);
                         }
 
-                        actualizarListaEventos();
+                        reiniciarPagina();
                         refrescarVistaFiltros();
                         actualizarEstadoRadio();
 
@@ -542,7 +556,7 @@
             if (selectorFuente) {
                 selectorFuente.addEventListener('change', function () {
                     filtroFuente = selectorFuente.value;
-                    actualizarListaEventos();
+                    reiniciarPagina();
                     refrescarVistaFiltros();
                     actualizarEstadoRadio();
                 });
@@ -551,7 +565,7 @@
             if (selectorMagnitud) {
                 selectorMagnitud.addEventListener('change', function () {
                     filtroMagnitud = selectorMagnitud.value;
-                    actualizarListaEventos();
+                    reiniciarPagina();
                     refrescarVistaFiltros();
                     actualizarEstadoRadio();
                 });
@@ -564,7 +578,7 @@
                     if (radioKm > 0 && !posicionUsuario) {
                         activarUbicacion(false);
                     }
-                    actualizarListaEventos();
+                    reiniciarPagina();
                     refrescarVistaFiltros();
                     actualizarEstadoRadio();
                 });
@@ -593,7 +607,7 @@
                         selectorRadio.value = '0';
                     }
                     guardarRadio(0);
-                    actualizarListaEventos();
+                    reiniciarPagina();
                     refrescarVistaFiltros();
                     actualizarEstadoRadio();
                 });
@@ -609,6 +623,32 @@
                         }
                     })
                     .catch(function () { /* El navegador puede no soportar esta consulta. */ });
+            }
+
+            const pageSize = document.getElementById('catalog-page-size');
+            const pageNumber = document.getElementById('catalog-page-number');
+            if (pageSize) {
+                pageSize.value = String(tamanoPagina);
+                pageSize.addEventListener('change', function () {
+                    const size = Number(pageSize.value);
+                    tamanoPagina = [20, 50, 100].includes(size) ? size : 20;
+                    reiniciarPagina();
+                });
+            }
+            function cambiarPagina(number) {
+                paginaActual = number;
+                actualizarListaEventos();
+                const nav = document.getElementById('catalog-pagination');
+                if (nav && typeof nav.scrollIntoView === 'function') nav.scrollIntoView({ block: 'nearest' });
+            }
+            if (pageNumber) pageNumber.addEventListener('change', function () { cambiarPagina(Number(pageNumber.value) || 1); });
+            for (const [id, destination] of [
+                ['catalog-page-first', () => 1], ['catalog-page-prev', () => paginaActual - 1],
+                ['catalog-page-next', () => paginaActual + 1],
+                ['catalog-page-last', () => Math.max(1, Math.ceil(eventosVisibles().length / tamanoPagina))],
+            ]) {
+                const button = document.getElementById(id);
+                if (button) button.addEventListener('click', function () { cambiarPagina(destination()); });
             }
 
             actualizarListaEventos();

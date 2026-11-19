@@ -586,4 +586,17 @@ return [
     'redAlertsActiveDisable'       => 'Browser alerts active · disable',
     'redNotSupportedShort'         => 'Not supported',
     'redBlockedShort'              => 'Blocked',
+
+    // Catalog pagination.
+    'pagination' => 'Earthquake pagination',
+    'perPage' => 'Per page',
+    'paginationRange' => '{0}–{1} of {2} earthquakes',
+    'pageOf' => 'Page {0} of {1}',
+    'previousPage' => 'Previous',
+    'nextPage' => 'Next',
+    'firstPage' => 'First page',
+    'lastPage' => 'Last page',
+    'goToPage' => 'Go to page {0}',
+    'goToPageLabel' => 'Go to page',
+    'mapAllFiltered' => 'The map shows all filtered results.',
 ];

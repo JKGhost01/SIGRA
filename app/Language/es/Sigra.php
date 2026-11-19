@@ -582,4 +582,17 @@ return [
     'redAlertsActiveDisable'       => 'Alertas del navegador activas · desactivar',
     'redNotSupportedShort'         => 'No soportadas',
     'redBlockedShort'              => 'Bloqueadas',
+
+    // Catalog pagination.
+    'pagination' => 'Paginación de sismos',
+    'perPage' => 'Por página',
+    'paginationRange' => '{0}–{1} de {2} sismos',
+    'pageOf' => 'Página {0} de {1}',
+    'previousPage' => 'Anterior',
+    'nextPage' => 'Siguiente',
+    'firstPage' => 'Primera página',
+    'lastPage' => 'Última página',
+    'goToPage' => 'Ir a la página {0}',
+    'goToPageLabel' => 'Ir a la página',
+    'mapAllFiltered' => 'El mapa muestra todos los resultados filtrados.',
 ];

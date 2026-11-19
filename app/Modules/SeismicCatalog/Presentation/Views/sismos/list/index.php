@@ -104,12 +104,31 @@ ob_start();
                 </div>
             </details>
 
+            <nav id="catalog-pagination" class="catalog-pagination border-bottom p-3" aria-label="<?= esc(lang('Sigra.pagination')) ?>" hidden>
+                <div class="d-flex justify-content-between align-items-center gap-2 mb-2">
+                    <span id="catalog-page-range" class="small text-secondary" role="status" aria-live="polite"></span>
+                    <label class="small text-secondary d-flex align-items-center gap-1" for="catalog-page-size">
+                        <?= esc(lang('Sigra.perPage')) ?>
+                        <select id="catalog-page-size" class="form-select form-select-sm w-auto">
+                            <option value="20">20</option><option value="50">50</option><option value="100">100</option>
+                        </select>
+                    </label>
+                </div>
+                <div class="d-flex align-items-center justify-content-between gap-1">
+                    <button id="catalog-page-first" class="btn btn-outline-secondary btn-sm" type="button" aria-label="<?= esc(lang('Sigra.firstPage')) ?>">«</button>
+                    <button id="catalog-page-prev" class="btn btn-outline-secondary btn-sm" type="button" aria-label="<?= esc(lang('Sigra.previousPage')) ?>">‹</button>
+                    <select id="catalog-page-number" class="form-select form-select-sm w-auto" aria-label="<?= esc(lang('Sigra.goToPageLabel')) ?>"></select>
+                    <button id="catalog-page-next" class="btn btn-outline-secondary btn-sm" type="button" aria-label="<?= esc(lang('Sigra.nextPage')) ?>">›</button>
+                    <button id="catalog-page-last" class="btn btn-outline-secondary btn-sm" type="button" aria-label="<?= esc(lang('Sigra.lastPage')) ?>">»</button>
+                </div>
+                <p class="small text-secondary mb-0 mt-2"><?= esc(lang('Sigra.mapAllFiltered')) ?></p>
+            </nav>
             <div id="eventos-lista" class="p-3">
             <?php if (empty($sismos)): ?>
                 <p class="small text-secondary mb-0"><?= esc(lang('Sigra.noReports')) ?></p>
             <?php endif; ?>
 
-            <?php foreach ($sismos as $loopIndex => $s): ?>
+            <?php foreach (array_slice($sismos, 0, 20) as $loopIndex => $s): ?>
                 <?php $metadata = json_decode((string) ($s['sgc_metadata'] ?? ''), true); $metadata = is_array($metadata) ? $metadata : []; ?>
                 <article class="evento-item border-bottom pb-3 mb-3<?= $loopIndex === 0 ? ' evento-nuevo' : '' ?>" tabindex="0" role="link"
                          data-id="<?= esc($s['id']) ?>"
@@ -126,7 +145,7 @@ ob_start();
                          data-pga="<?= esc((string) ($metadata['maxPGA'] ?? '')) ?>">
                     <div class="d-flex justify-content-between align-items-center gap-2 mb-2">
                         <span class="badge rounded-pill bg-dark-subtle text-dark">M <?= esc($s['magnitud']) ?></span>
-                        <span class="small text-secondary"><?= esc(lang('Sigra.sourceLabel', [(string) $s['fuente']])) ?></span>
+                        <span class="small text-secondary"><?= esc(lang('Sigra.sourceLabel', [implode(' · ', \App\Modules\SeismicCatalog\Domain\Services\SourceProvenance::sources($s))])) ?></span>
                     </div>
                     <h2 class="h6 mb-1"><?= esc($s['ubicacion']) ?></h2>
                     <?php if (($s['citizen_reports_count'] ?? 0) > 0): ?><p class="small text-success mb-1"><?= esc(lang('Sigra.reportedByUsers', [(string) $s['citizen_reports_count']])) ?></p><?php endif; ?>
@@ -244,6 +263,8 @@ ob_start();
         'replayDone'       => lang('Sigra.replayDone'),
         'showMapInfo'      => lang('Sigra.showMapInfo'),
         'hideMapInfo'      => lang('Sigra.hideMapInfo'),
+        'paginationRange' => lang('Sigra.paginationRange'),
+        'pageOf' => lang('Sigra.pageOf'),
     ], JSON_UNESCAPED_UNICODE | JSON_HEX_TAG | JSON_HEX_AMP | JSON_HEX_APOS | JSON_HEX_QUOT) ?>;
 
     const SIGRA_MAP_URLS = <?= json_encode(['sync' => parse_url(site_url('sismos/sync'), PHP_URL_PATH), 'detail' => parse_url(site_url('sismos/detalle'), PHP_URL_PATH)], JSON_HEX_TAG | JSON_HEX_AMP | JSON_HEX_APOS | JSON_HEX_QUOT) ?>;

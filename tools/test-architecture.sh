@@ -3,6 +3,7 @@ set -euo pipefail
 cd "$(dirname "$0")/.."
 php tests/Unit/ArchitectureTest.php
 php tests/Unit/IngestionTest.php
+php tests/Unit/CatalogConsolidatorTest.php
 php tests/Unit/SourceProvenanceTest.php
 php tests/Unit/ProviderNormalizationTest.php
 php tests/Unit/FeedTransportTest.php

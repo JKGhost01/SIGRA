@@ -58,7 +58,7 @@ class SismoModel extends Model
      */
     private function eventosPublicos(\CodeIgniter\Database\BaseBuilder $query): \CodeIgniter\Database\BaseBuilder
     {
-        return $query->whereIn('fuente', ['SGC', 'USGS', 'EMSC', 'GEONET', 'GEOFON', 'INGV'])->notLike('id', 'SGI', 'after');
+        return $query->where('canonical_event_id', null)->whereIn('fuente', ['SGC', 'USGS', 'EMSC', 'GEONET', 'GEOFON', 'INGV'])->notLike('id', 'SGI', 'after');
     }
 
     public function obtenerTodos(): array
@@ -110,11 +110,11 @@ class SismoModel extends Model
         if ($minMagnitud !== null) {
             $consulta->where('magnitud >=', $minMagnitud);
         }
-        if ($fuente !== '') {
-            $consulta->where('fuente', $fuente);
-        }
-
         $filas = $consulta->orderBy('fecha_hora', 'DESC')->get()->getResultArray();
+        if ($fuente !== '') {
+            $filas = array_values(array_filter($filas, static fn(array $row): bool =>
+                in_array($fuente, \App\Modules\SeismicCatalog\Domain\Services\SourceProvenance::sources($row), true)));
+        }
 
         $filtrarPorRadio = $origenLat !== null && $origenLng !== null && $radioKm !== null && $radioKm > 0;
         if ($filtrarPorRadio) {
@@ -285,7 +285,7 @@ class SismoModel extends Model
     /**
      * @param array<string, string|null> $filtros
      */
-    public function obtenerHistorico(array $filtros, string $orden, string $direccion, int $limite = 500): array
+    private function consultaHistorico(array $filtros): \CodeIgniter\Database\BaseBuilder
     {
         $consulta = $this->eventosPublicos($this->builder());
 
@@ -296,12 +296,22 @@ class SismoModel extends Model
             $consulta->where('fecha_hora <=', $filtros['hasta'] . ' 23:59:59');
         }
 
-        if ($limite > 0) {
-            $consulta->limit($limite);
-        }
+        return $consulta;
+    }
+
+    public function contarHistorico(array $filtros): int
+    {
+        return $this->consultaHistorico($filtros)->countAllResults();
+    }
+
+    public function obtenerHistorico(array $filtros, string $orden, string $direccion, int $limite = 500, int $offset = 0): array
+    {
+        $consulta = $this->consultaHistorico($filtros);
+        if ($limite > 0) $consulta->limit($limite, max(0, $offset));
 
         return $consulta
             ->orderBy($orden, $direccion)
+            ->orderBy('id', 'ASC')
             ->get()
             ->getResultArray();
     }
@@ -311,6 +321,51 @@ class SismoModel extends Model
      */
     public function obtenerPorId(string $id): ?array
     {
-        return $this->eventosPublicos($this->builder())->where('id', $id)->get()->getRowArray();
+        $row = $this->db->table('sismos')->where('id', $id)->get()->getRowArray();
+        if (!empty($row['canonical_event_id'])) {
+            return $this->eventosPublicos($this->builder())->where('id', $row['canonical_event_id'])->get()->getRowArray();
+        }
+        $matches = $this->eventosPublicos($this->builder())->groupStart()->where('id', $id)
+            ->orLike('sgc_metadata', $id)->groupEnd()->get()->getResultArray();
+        foreach ($matches as $match) {
+            if ((string) $match['id'] === $id) return $match;
+            foreach (\App\Modules\SeismicCatalog\Domain\Services\SourceProvenance::references($match) as $ref) {
+                if (($ref['event_id'] ?? null) === $id || $ref['source_event_id'] === $id) return $match;
+            }
+        }
+        return null;
+    }
+
+    /** Candidate rows for persistence-time correlation, including known identities after large revisions. */
+    public function obtenerParaConsolidar(array $events, int $seconds): array
+    {
+        if ($events === []) return [];
+        $times = array_filter(array_map(static fn(array $e) => strtotime((string) ($e['fecha_hora'] ?? '')), $events), static fn($t) => $t !== false);
+        $query = $this->eventosPublicos($this->builder())->groupStart();
+        if ($times !== []) {
+            $query->groupStart()->where('fecha_hora >=', date('Y-m-d H:i:s', min($times) - $seconds))
+                ->where('fecha_hora <=', date('Y-m-d H:i:s', max($times) + $seconds))->groupEnd();
+        } else {
+            $query->whereIn('id', array_column($events, 'id'));
+        }
+        $query->orWhereIn('id', array_column($events, 'id'));
+        foreach ($events as $event) {
+            foreach (\App\Modules\SeismicCatalog\Domain\Services\SourceProvenance::references($event) as $ref) {
+                $query->orLike('sgc_metadata', $ref['source_event_id']);
+            }
+        }
+        return $query->groupEnd()->get()->getResultArray();
+    }
+
+    /** Retain original rows for audit and old URLs; move citizen evidence to the canonical event. */
+    public function vincularAlias(array $aliases): void
+    {
+        foreach ($aliases as $alias => $canonical) {
+            $this->db->table('sismos')->where('id', $alias)->update(['canonical_event_id' => $canonical]);
+            $this->db->table('sismos')->where('canonical_event_id', $alias)->update(['canonical_event_id' => $canonical]);
+            $this->db->table('citizen_reports')->where('event_id', $alias)->update(['event_id' => $canonical]);
+            $count = $this->db->table('citizen_reports')->where('event_id', $canonical)->where('status', 'confirmed')->countAllResults();
+            $this->db->table('sismos')->where('id', $canonical)->update(['citizen_reports_count' => $count]);
+        }
     }
 }

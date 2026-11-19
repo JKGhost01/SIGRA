@@ -14,6 +14,7 @@ $retained = SourceProvenance::retain($before, $incoming);
 $metadata = json_decode($retained['sgc_metadata'], true);
 expectArchitecture($metadata['source_references'] === $refs, 'A partial refresh erased existing provider references');
 expectArchitecture($retained['magnitud'] === 4.3 && $metadata['url'] === 'https://updated.example/', 'Provenance preservation blocked scientific corrections');
+expectArchitecture(SourceProvenance::references($retained)[0]['url'] === 'https://updated.example/', 'Source reference kept an outdated preferred URL');
 expectArchitecture(SourceProvenance::retain($retained, $incoming) === $retained, 'Repeated partial refresh changed metadata');
 $extra = ['source' => 'GEOFON', 'source_event_id' => 'gfz-one'];
 $incoming['sgc_metadata'] = json_encode(['source_id' => 'us-one', 'source_references' => [$refs[0], $extra]]);

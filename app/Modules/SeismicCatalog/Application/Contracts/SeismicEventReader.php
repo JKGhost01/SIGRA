@@ -15,5 +15,6 @@ interface SeismicEventReader
     public function recent(int $hours): array;
     public function get(string $id): ?SeismicEventDTO;
     /** @return list<SeismicEventDTO> */
-    public function history(array $filters, string $order, string $direction): array;
+    public function history(array $filters, string $order, string $direction, int $limit = 500, int $offset = 0): array;
+    public function countHistory(array $filters): int;
 }

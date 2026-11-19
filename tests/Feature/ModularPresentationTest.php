@@ -22,11 +22,14 @@ use CodeIgniter\HTTP\{IncomingRequest, Response, URI, UserAgent};
 $fixture = json_decode(file_get_contents(dirname(__DIR__) . '/Contract/fixtures/legacy-event.json'), true, 512, JSON_THROW_ON_ERROR);
 expectArchitecture(json_decode(json_encode((new SeismicEventResource())->serialize(new SeismicEventDTO($fixture['input']), 4.6, -74.1)), true) === $fixture['expected'], 'Original event JSON changed');
 $reader = new class($fixture['input']) implements SeismicEventReader {
+    public int $historyTotal = 1;
+    public array $historyReceived = [];
     public function __construct(public array $event) {}
     public function list(ListEventsQuery $query): array { return $this->recent(120); }
     public function recent(int $hours): array { return [new SeismicEventDTO($this->event)]; }
     public function get(string $id): ?SeismicEventDTO { return $id === $this->event['id'] ? new SeismicEventDTO($this->event) : null; }
-    public function history(array $filters, string $order, string $direction): array { return $this->recent(120); }
+    public function history(array $filters, string $order, string $direction, int $limit = 500, int $offset = 0): array { $this->historyReceived = func_get_args(); return $this->recent(120); }
+    public function countHistory(array $filters): int { return $this->historyTotal; }
 };
 Config\Services::injectMock('listEvents', new ListEventsHandler($reader));
 Config\Services::injectMock('getEvent', new GetEventHandler($reader));
@@ -51,6 +54,17 @@ foreach (['EMSC', 'GEONET', 'GEOFON', 'INGV'] as $source) {
     expectArchitecture($json['fuente'] === $source && $json['source_id'] === 'fixture' && $json['mapa_sgc_url'] === null, 'New source API mapping invalid');
 }
 $reader->event = $fixture['input'];
+$reader->historyTotal = 525;
+$request->setGlobal('get', ['page' => '27', 'per_page' => '20', 'desde' => '2001-01-01', 'hasta' => '2001-01-31', 'orden' => 'magnitud', 'direccion' => 'ASC']);
+$paginatedHistory = $controller->history();
+expectArchitecture($reader->historyReceived === [['desde' => '2001-01-01', 'hasta' => '2001-01-31'], 'magnitud', 'ASC', 20, 520], 'History controller queried the wrong page or lost filters');
+expectArchitecture(str_contains($paginatedHistory, 'Página 27 de 27') && str_contains($paginatedHistory, '521–525 de 525'), 'History pagination metadata is wrong');
+expectArchitecture(str_contains($paginatedHistory, 'desde=2001-01-01&amp;hasta=2001-01-31&amp;orden=magnitud&amp;direccion=ASC&amp;per_page=20&amp;page=26'), 'History page links dropped query settings');
+$request->setGlobal('get', ['page' => ['2'], 'per_page' => ['100'], 'desde' => ['2001-01-01'], 'hasta' => '2001-02-31']);
+$controller->history();
+expectArchitecture($reader->historyReceived === [['desde' => '', 'hasta' => ''], 'fecha_hora', 'DESC', 20, 0], 'Malformed pagination or invalid dates reached the query');
+$request->setGlobal('get', []);
+$reader->historyTotal = 1;
 try { $controller->detail('missing'); throw new RuntimeException('Missing event rendered'); }
 catch (CodeIgniter\Exceptions\PageNotFoundException) {}
 $reader->event['ubicacion'] = '</script><script>alert(1)</script>';

@@ -23,9 +23,10 @@ final class CiSeismicEventRepository implements SeismicEventReader
         $row = $this->model->obtenerPorId($id);
         return $row === null ? null : new SeismicEventDTO($row);
     }
-    public function history(array $filters, string $order, string $direction): array
+    public function history(array $filters, string $order, string $direction, int $limit = 500, int $offset = 0): array
     {
-        return $this->records($this->model->obtenerHistorico($filters, $order, $direction));
+        return $this->records($this->model->obtenerHistorico($filters, $order, $direction, $limit, $offset));
     }
+    public function countHistory(array $filters): int { return $this->model->contarHistorico($filters); }
     private function records(array $rows): array { return array_map(static fn(array $r) => new SeismicEventDTO($r), $rows); }
 }

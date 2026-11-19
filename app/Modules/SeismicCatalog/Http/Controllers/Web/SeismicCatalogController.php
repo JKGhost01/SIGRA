@@ -37,12 +37,26 @@ final class SeismicCatalogController extends BaseController
         $filtros = [];
         foreach (['desde', 'hasta'] as $key) {
             $value = $this->request->getGet($key);
-            $filtros[$key] = is_string($value) ? trim($value) : '';
+            $value = is_string($value) ? trim($value) : '';
+            $parts = explode('-', $value);
+            $filtros[$key] = preg_match('/^\d{4}-\d{2}-\d{2}$/D', $value)
+                && checkdate((int) $parts[1], (int) $parts[2], (int) $parts[0]) ? $value : '';
         }
-        $events = service('listHistory')->handle($filtros, $orden, $direccion);
+        $pageValue = $this->request->getGet('page');
+        $page = is_string($pageValue) ? filter_var($pageValue, FILTER_VALIDATE_INT, ['options' => ['min_range' => 1]]) : false;
+        $sizeValue = $this->request->getGet('per_page');
+        $perPage = is_string($sizeValue) && in_array($sizeValue, ['20', '50', '100'], true) ? (int) $sizeValue : 20;
+        $result = service('listHistory')->page($filtros, $orden, $direccion, $page ?: 1, $perPage);
+        $pagination = $result->pagination;
+        $links = [];
+        foreach (array_unique([1, max(1, $pagination->page - 1), $pagination->page, min($pagination->pages, $pagination->page + 1), $pagination->pages]) as $number) {
+            $links[$number] = site_url('sismos/historico') . '?' . http_build_query($filtros + [
+                'orden' => $orden, 'direccion' => $direccion, 'per_page' => $perPage, 'page' => $number]);
+        }
         return view('App\Modules\SeismicCatalog\Presentation\Views\sismos\historico\index', [
             'ordenes' => $ordenes, 'orden' => $orden, 'direccion' => $direccion,
-            'filtros' => $filtros, 'eventos' => array_map(static fn($dto) => $dto->record, $events),
+            'filtros' => $filtros, 'eventos' => array_map(static fn($dto) => $dto->record, $result->events),
+            'pagination' => $pagination, 'pageLinks' => $links,
         ]);
     }
     public function globales() { return redirect()->to(site_url('sismos'), 301); }

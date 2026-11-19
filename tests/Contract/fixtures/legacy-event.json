@@ -28,6 +28,17 @@
         "nivel": 2,
         "estado": "automatico",
         "fuente": "SGC",
+        "fuentes": [
+            "SGC"
+        ],
+        "source_references": [
+            {
+                "source": "SGC",
+                "source_event_id": "golden",
+                "event_id": "SGC-golden",
+                "url": "https://example.org/event"
+            }
+        ],
         "cdi": 2,
         "mmi": 3.5,
         "pga": 0.1,

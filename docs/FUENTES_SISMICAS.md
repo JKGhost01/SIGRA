@@ -21,6 +21,34 @@ Esto acredita la conexión desde el entorno local de prueba, no desde el hosting
 El diagnóstico comparativo, los límites de la evidencia y los pasos de despliegue
 están en [Recuperación de SGC](SGC_CONEXION_2026-11-19.md).
 
+## Un sismo con varias fuentes
+
+Cada sismo tiene una fuente preferida para sus parámetros científicos y una lista
+de referencias de otras agencias. Se prioriza SGC, seguido de USGS, EMSC, GeoNet,
+GEOFON e INGV. El catálogo compara las observaciones con las ya guardadas, también
+cuando una agencia llega más tarde o falta durante una actualización. Una revisión
+de la fuente preferida actualiza sus datos sin borrar las otras referencias.
+
+La correlación exige una coincidencia única en ambos sentidos, hasta 120 segundos,
+75 km y 1 unidad de magnitud según la configuración. Dos IDs distintos de una
+misma agencia y las coincidencias ambiguas se mantienen separados. Una referencia
+ya conocida identifica el mismo evento aunque el proveedor revise sus parámetros.
+Las referencias son observaciones históricas; no certifican una confirmación
+independiente ni que todas las agencias sigan publicando el evento ahora.
+
+Listado, mapa e histórico muestran las agencias juntas. El detalle incluye sus
+identificadores y los enlaces oficiales disponibles. La API conserva `fuente`
+como fuente preferida y añade `fuentes` y `source_references`. El filtro `fuente`
+encuentra el sismo si cualquiera de sus agencias coincide.
+
+Antes de desplegar este cambio se necesita `php spark migrate --all`. La migración
+añade `sismos.canonical_event_id`; la siguiente sincronización consolida los
+duplicados dentro de la ventana procesada. Las filas originales se conservan
+como alias para auditoría, se excluyen de las consultas públicas y sus URLs
+resuelven al sismo unificado. Los reportes ciudadanos se trasladan en la misma
+transacción. La escritura comparte el bloqueo de conciliación de reportes para
+evitar que dos actualizaciones creen eventos separados o pierdan evidencia.
+
 ## Estado de las conexiones
 
 En `/acerca-de#sources-health` se muestra una tarjeta por fuente con el estado
