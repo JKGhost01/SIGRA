@@ -1,6 +1,8 @@
 # SIGRA · 世界の地震情報と市民ネットワーク
 
-**v1.3.1.3 · SGC 接続の復旧** · ビルド `20261119.1` · 2026年11月19日
+**v1.4.0-beta.1 · 実験版3D地球 · BETA** · `20261119.beta1` · 2026-11-19
+
+> CesiumJS、予備の2D地図、SGCの全件フィードを備えたテスト用ベータ版です。安定版は1.3.1.3のままです。 [1.4.0-beta.1](docs/BETA_1.4.0.md)
 
 [Español](README.md) · [English](README.en.md) · [Português](README.pt.md) · [Français](README.fr.md) · [Deutsch](README.de.md) · [Italiano](README.it.md) · [日本語](README.ja.md) · [简体中文](README.zh-CN.md) · [العربية](README.ar.md)
 

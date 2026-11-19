@@ -1,6 +1,8 @@
 # SIGRA · Suivi sismique mondial et réseau citoyen
 
-**v1.3.1.3 · Connexion SGC rétablie** · build `20261119.1` · 19/11/2026
+**v1.4.0-beta.1 · Globe 3D expérimental · BETA** · `20261119.beta1` · 2026-11-19
+
+> Bêta de test avec CesiumJS, carte 2D de secours et catalogue SGC complet. La version stable reste 1.3.1.3. [1.4.0-beta.1](docs/BETA_1.4.0.md)
 
 [Español](README.md) · [English](README.en.md) · [Português](README.pt.md) · [Français](README.fr.md) · [Deutsch](README.de.md) · [Italiano](README.it.md) · [日本語](README.ja.md) · [简体中文](README.zh-CN.md) · [العربية](README.ar.md)
 

@@ -18,11 +18,11 @@ class Sigra extends BaseConfig
 
     public string $project = 'SIGRA';
     public string $tagline = 'Monitor sísmico global y red ciudadana';
-    public string $version = '1.3.1.3';
-    public string $releaseName = 'Conexión SGC recuperada';
+    public string $version = '1.4.0-beta.1';
+    public string $releaseName = 'Globo 3D experimental';
     public string $releaseDate = '2026-11-19';
-    public string $build = '20261119.1';
-    public string $channel = 'stable';
+    public string $build = '20261119.beta1';
+    public string $channel = 'beta';
     public string $apiVersion = 'v1';
     public string $mobileVersion = '1.0.0.0';
     public string $license = 'MIT';
@@ -44,6 +44,18 @@ class Sigra extends BaseConfig
      * @var array<string, array{date: string, name: string, summary: string, changes: list<string>}>
      */
     public array $changelog = [
+        '1.4.0-beta.1' => [
+            'date' => '2026-11-19',
+            'name' => 'Globo 3D experimental',
+            'summary' => 'Primera beta del mapa CesiumJS, con respaldo 2D y catálogo SGC completo.',
+            'changes' => [
+                'Globo CesiumJS 1.146 en el mapa principal, con filtros, radio, ubicación y reproducción conservados.',
+                'Controles de vistas y cuatro capas agrupados a la derecha, plegables y adaptados a móvil y tema oscuro.',
+                'Mapa Leaflet 2D disponible y recuperación automática ante fallos de carga o WebGL.',
+                'Feed SGC completo de cinco días, incluidos sismos menores de magnitud 2.',
+                'Referencias históricas entre fuentes conservadas ante actualizaciones parciales y auditoría de sincronización de solo lectura.',
+            ],
+        ],
         '1.3.1.3' => [
             'date' => '2026-11-19',
             'name' => 'Conexión SGC recuperada',

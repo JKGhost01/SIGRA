@@ -9,6 +9,18 @@
  * Existing reviewed values are preserved unless --force is used.
  */
 return [
+    'mapEventDetails' => 'View earthquake details',
+    'mapEngine' => 'Map view',
+    'mapGlobe' => '3D globe',
+    'mapClassic' => '2D map',
+    'mapBaseLayer' => 'Map layers',
+    'mapClosePopup' => 'Close epicenter details',
+    'mapGlobeLoading' => 'Loading 3D globe… You can use the 2D map meanwhile.',
+    'mapGlobeReady' => 'Experimental 3D view · Epicenters at the surface',
+    'mapClassicReady' => '2D map active',
+    'mapGlobeFallback' => 'The globe is unavailable. Switched to the 2D map.',
+    'mapImageryUnavailable' => 'Some map tiles could not load. Try another layer or the 2D map.',
+
     'mobileTitle' => 'SIGRA in your pocket.',
     'mobileLead' => 'Explore seismic activity on Android and choose whether to contribute to SIGRA’s experimental phone network.',
     'mobileExperimental' => 'Experimental',
@@ -81,7 +93,7 @@ return [
 
     // Navigation and layout
     'navLive'          => 'Mobile app',
-    'releaseName'      => 'SGC connection restored',
+    'releaseName'      => 'Experimental 3D globe',
     'tagline'          => 'Global seismic monitor and citizen network',
     'navMap'           => 'Global map',
     'navHistory'       => 'History',

@@ -2,7 +2,9 @@
 
 # SIGRA · معلومات الزلازل العالمية وشبكة المواطنين
 
-**v1.3.1.3 · استعادة اتصال SGC** · رقم البناء `20261119.1` · 19 نوفمبر 2026
+**v1.4.0-beta.1 · الكرة الأرضية ثلاثية الأبعاد التجريبية · BETA** · `20261119.beta1` · 2026-11-19
+
+> نسخة بيتا للاختبار مع CesiumJS وخريطة ثنائية الأبعاد احتياطية وفهرس SGC الكامل. يبقى الإصدار المستقر 1.3.1.3. [1.4.0-beta.1](docs/BETA_1.4.0.md)
 
 [Español](README.md) · [English](README.en.md) · [Português](README.pt.md) · [Français](README.fr.md) · [Deutsch](README.de.md) · [Italiano](README.it.md) · [日本語](README.ja.md) · [简体中文](README.zh-CN.md) · [العربية](README.ar.md)
 

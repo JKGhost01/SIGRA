@@ -17,6 +17,19 @@ try {
     expectArchitecture($writer->save([$input]) === 0, 'Catalog batch is not idempotent');
     $reader = new App\Modules\SeismicCatalog\Infrastructure\Persistence\CiSeismicEventRepository(new App\Models\SismoModel($db));
     expectArchitecture($reader->get('QA-architecture')?->record['ubicacion'] === 'Fixture', 'Catalog round trip failed');
+    $references = [['source' => $input['fuente'], 'source_event_id' => $input['id']],
+        ['source' => 'EMSC', 'source_event_id' => 'QA-emsc']];
+    $input['sgc_metadata'] = json_encode(['source_id' => $input['id'], 'source_references' => $references]);
+    expectArchitecture($writer->save([$input]) === 1, 'Could not record provider provenance');
+    $input['magnitud'] = (float) $input['magnitud'] + 0.1;
+    $input['sgc_metadata'] = json_encode(['source_id' => $input['id'], 'updated' => 'new provider revision']);
+    expectArchitecture($writer->save([$input]) === 1, 'Scientific revision was not persisted');
+    $stored = $reader->get('QA-architecture')->record;
+    expectArchitecture(json_decode($stored['sgc_metadata'], true)['source_references'] === $references,
+        'Partial refresh erased correlated provider references in MySQL');
+    expectArchitecture(abs((float) $stored['magnitud'] - $input['magnitud']) < 0.000001,
+        'Retaining provenance kept an outdated magnitude');
+    expectArchitecture($writer->save([$input]) === 0, 'Repeated partial refresh is not idempotent');
     $audit = new App\Modules\SeismicIngestion\Infrastructure\Persistence\CiIngestionAuditRepository($db);
     $audit->record(['batch_id' => str_repeat('a', 32), 'started_at_utc' => gmdate('Y-m-d H:i:s'),
         'finished_at_utc' => gmdate('Y-m-d H:i:s'), 'duration_ms' => 1, 'saved_count' => 1, 'summary' => '{}']);
