@@ -11,7 +11,7 @@ SIGRA usa **versionado semántico** (`MAYOR.MENOR.PARCHE`):
 | `PARCHE` | Correcciones, mejoras visuales y cambios internos. |
 
 Para ajustes pequeños de un parche se permite un cuarto componente de revisión,
-como `1.3.1.2`.
+como `1.3.1.3`.
 
 La versión se define en `app/Config/Sigra.php` y se muestra en:
 
@@ -24,29 +24,38 @@ La versión se define en `app/Config/Sigra.php` y se muestra en:
 Se puede sobrescribir sin tocar código con:
 
 ```ini
-sigra.version = '1.3.1.2'
-sigra.build = '20261113.4'
+sigra.version = '1.3.1.3'
+sigra.build = '20261119.1'
 sigra.channel = 'stable'
 ```
 
 ## Versión actual
 
-**v1.3.1.2 · Estado de fuentes y pausas progresivas**
+**v1.3.1.3 · Conexión SGC recuperada**
 
-- Fecha: 2026-11-13
-- Build: `20261113.4`
+- Fecha: 2026-11-19
+- Build: `20261119.1`
 - Canal: `stable`
 - API: `v1`
 - App Android: consultar [SIGRA_MOBILE](https://github.com/JKGhost01/SIGRA_MOBILE); la web lee su versión y APK desde GitHub.
 - Licencia: MIT
 
-La versión de la aplicación (`1.3.1.2`) es independiente del contrato de la API
+La versión de la aplicación (`1.3.1.3`) es independiente del contrato de la API
 (`v1`). Se conservan las rutas y los campos de las respuestas válidas para Android.
 Se añaden rutas /api/v1 con errores estructurados; las rutas antiguas conservan su formato.
 La sincronización del mapa funciona automáticamente: no requiere configurar cron.
 La auditoría requiere la migración aditiva o el SQL de despliegue, sin reiniciar la base.
 
 ## Historial
+
+### v1.3.1.3 · Conexión SGC recuperada · 2026-11-19
+
+- User-Agent compatible con SGC conservando identidad, versión y repositorio de SIGRA.
+- TLS, caché compartida, intervalo de quince minutos y pausas existentes conservados.
+- Prueba local real: HTTP 200, 100 eventos normalizados y reutilización de caché sin escritura en base.
+- Funcionamiento en producción confirmado por el usuario tras desplegar el hotfix; no se inspeccionó el servidor directamente.
+- Build `20261119.1`; sin migraciones nuevas. API v1 y versión Android independientes.
+- [Diagnóstico y despliegue](SGC_CONEXION_2026-11-19.md).
 
 ### v1.3.1.2 · Estado de fuentes y pausas progresivas · 2026-11-13
 

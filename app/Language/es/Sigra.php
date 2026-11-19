@@ -78,7 +78,7 @@ return [
 
     // Navegación y layout
     'navLive'          => 'App móvil',
-    'releaseName'      => 'Estado de fuentes y pausas progresivas',
+    'releaseName'      => 'Conexión SGC recuperada',
     'tagline'          => 'Monitor sísmico global y red ciudadana',
     'navMap'           => 'Mapa global',
     'navHistory'       => 'Histórico',

@@ -2,6 +2,15 @@
 
 return [
     'history' => [
+        '1.3.1.3' => [
+            'name' => 'SGC connection restored',
+            'summary' => 'Restored HTTP compatibility for the official SGC catalog feed.',
+            'changes' => [
+                'SGC-compatible User-Agent retaining the SIGRA version and public repository.',
+                'Preserved TLS verification, shared cache, fifteen-minute interval and existing cooldowns.',
+                'Automated regression and live verification with HTTP 200 and 100 normalized events.',
+            ],
+        ],
         '1.3.1.2' => [
             'name' => 'Source status and progressive cooldowns',
             'summary' => 'Visible source connection status and progressive cooldowns after provider denials.',
