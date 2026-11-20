@@ -382,8 +382,10 @@
                         const errors = Object.keys(resultado.errors || {});
                         const lastSuccess = Number(resultado.last_success_at) || 0;
                         const failedSources = errors.filter(source => ['SGC', 'USGS', 'EMSC', 'GEONET', 'GEOFON', 'INGV'].includes(source));
-                        const statusMessage = errors.length ? (failedSources.length === errors.length
-                            ? tr('catalogSourceUnavailable', failedSources.join(', ')) : tr('catalogDegraded'))
+                        const statusMessage = errors.length ? (errors.includes('sync') ? tr('catalogProcessingFailed')
+                            : failedSources.length > 0 ? tr('catalogSourceUnavailable', failedSources.join(', '))
+                            : errors.length === 1 && errors[0] === 'reportes' ? tr('catalogReportsUnavailable')
+                            : tr('catalogProcessingFailed'))
                             : lastSuccess > 0 ? tr('catalogUpdated', new Date(lastSuccess * 1000).toLocaleString(T.locale))
                             : tr('catalogUnknown');
                         setSyncStatus(statusMessage, errors.length > 0 || lastSuccess === 0);

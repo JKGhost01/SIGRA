@@ -186,8 +186,11 @@ class SismoModel extends Model
                 continue;
             }
 
+            // Stored snapshots include counters and alias state that do not belong
+            // to provider observations. Mixing those columns with fresh rows breaks
+            // updateBatch() and can overwrite independently maintained evidence.
+            $evento = array_intersect_key($evento, array_flip($this->allowedFields));
             $evento['id'] = $id;
-            unset($evento['source_id'], $evento['created_at'], $evento['updated_at']);
             $filas[$id] = $evento;
         }
 

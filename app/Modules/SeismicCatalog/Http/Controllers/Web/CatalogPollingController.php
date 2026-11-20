@@ -20,8 +20,17 @@ final class CatalogPollingController extends \App\Controllers\BaseController
         try {
             $vm = ListEventsViewModel::fromResult(service('listEvents')->recent());
             $events = array_map(static fn(array $event) => $event + ['estado' => 'automatico'], $vm->initialEvents);
+            $errorKeys = array_keys($refresh->errors);
+            $providerErrors = array_intersect($errorKeys, ['SGC', 'USGS', 'EMSC', 'GEONET', 'GEOFON', 'INGV']);
+            $status = match (true) {
+                $errorKeys === [] => 'Sigra.apiUpToDate',
+                in_array('sync', $errorKeys, true) => 'Sigra.catalogProcessingFailed',
+                $providerErrors !== [] => 'Sigra.catalogDegraded',
+                $errorKeys === ['reportes'] => 'Sigra.catalogReportsUnavailable',
+                default => 'Sigra.catalogProcessingFailed',
+            };
             return $this->response->setHeader('Cache-Control', 'no-store, max-age=0')->setJSON([
-                'ok' => true, 'synced' => $refresh->synced, 'timestamp' => $refresh->timestamp, 'message' => lang($refresh->errors === [] ? 'Sigra.apiUpToDate' : 'Sigra.catalogDegraded'),
+                'ok' => true, 'synced' => $refresh->synced, 'timestamp' => $refresh->timestamp, 'message' => lang($status),
                 'last_success_at' => $refresh->lastSuccessAt,
                 'events' => count($events), 'saved' => $refresh->saved, 'sources' => $refresh->sources,
                 'errors' => $refresh->errors, 'eventos' => $events,

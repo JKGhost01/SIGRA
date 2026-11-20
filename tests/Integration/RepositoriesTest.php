@@ -66,6 +66,19 @@ try {
     expectArchitecture($refs === ['SGC', 'USGS', 'EMSC'], 'Persistent consolidation lost source identities');
     expectArchitecture(count(array_filter($model->obtenerRecientes(), static fn(array $e): bool => in_array($e['id'], ['QA-sgc', 'QA-us', 'QA-emsc'], true))) === 1,
         'Map query still returns multiple rows for one earthquake');
+    // A late secondary provider updates a stored snapshot while a different
+    // provider revises a normalized row in the very same updateBatch().
+    $snapshot = array_replace($input, ['id' => 'QA-mixed-sgc', 'latitud' => 10, 'longitud' => 10,
+        'fuente' => 'SGC', 'sgc_metadata' => '{}']);
+    $independent = array_replace($snapshot, ['id' => 'QA-mixed-emsc', 'latitud' => -30, 'longitud' => 70, 'fuente' => 'EMSC']);
+    $model->guardarEventos([$snapshot, $independent]);
+    $lateProvider = array_replace($snapshot, ['id' => 'QA-mixed-usgs', 'fuente' => 'USGS']);
+    $revision = array_replace($independent, ['magnitud' => 4.9]);
+    expectArchitecture($writer->save([$lateProvider, $revision]) === 2, 'Mixed stored/fresh observations rolled back the catalog transaction');
+    expectArchitecture((float) $reader->get('QA-mixed-emsc')->record['magnitud'] === 4.9, 'Mixed batch lost the independent scientific revision');
+    expectArchitecture(App\Modules\SeismicCatalog\Domain\Services\SourceProvenance::sources($reader->get('QA-mixed-sgc')->record) === ['SGC', 'USGS'],
+        'Mixed batch lost the late provider reference');
+    expectArchitecture($writer->save([$lateProvider, $revision]) === 0, 'Mixed batch replay is not idempotent');
     $audit = new App\Modules\SeismicIngestion\Infrastructure\Persistence\CiIngestionAuditRepository($db);
     $audit->record(['batch_id' => str_repeat('a', 32), 'started_at_utc' => gmdate('Y-m-d H:i:s'),
         'finished_at_utc' => gmdate('Y-m-d H:i:s'), 'duration_ms' => 1, 'saved_count' => 1, 'summary' => '{}']);
