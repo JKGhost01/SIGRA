@@ -83,6 +83,8 @@ return [
 
     'catalogLoading' => 'Consultando actualizaciones…',
     'catalogUpdated' => 'Última actualización de fuentes: {0}.',
+    'catalogProcessingFailed' => 'No se pudo completar la actualización del catálogo. Se muestran los datos guardados.',
+    'catalogReportsUnavailable' => 'El catálogo se actualizó; no se pudieron contrastar los reportes ciudadanos.',
     'catalogDegraded' => 'No se pudieron actualizar todas las fuentes. Se muestran los datos guardados.',
     'catalogSourceUnavailable' => '{0}: no se pudo actualizar. Se conservan los datos guardados de esa fuente.',
     'catalogUnknown' => 'Aún no hay una actualización de fuentes confirmada.',

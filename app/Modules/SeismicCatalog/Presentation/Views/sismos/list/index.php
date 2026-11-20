@@ -229,6 +229,8 @@ ob_start();
         'catalogLoading' => lang('Sigra.catalogLoading'),
         'catalogUpdated' => lang('Sigra.catalogUpdated'),
         'catalogDegraded' => lang('Sigra.catalogDegraded'),
+        'catalogProcessingFailed' => lang('Sigra.catalogProcessingFailed'),
+        'catalogReportsUnavailable' => lang('Sigra.catalogReportsUnavailable'),
         'catalogSourceUnavailable' => lang('Sigra.catalogSourceUnavailable'),
         'catalogUnknown' => lang('Sigra.catalogUnknown'),
         'catalogUnavailable' => lang('Sigra.catalogUnavailable'),

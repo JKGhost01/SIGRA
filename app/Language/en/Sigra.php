@@ -86,6 +86,8 @@ return [
 
     'catalogLoading' => 'Checking for updates…',
     'catalogUpdated' => 'Last source update: {0}.',
+    'catalogProcessingFailed' => 'The catalog update could not be completed. Stored data is shown.',
+    'catalogReportsUnavailable' => 'The catalog was updated; citizen reports could not be reconciled.',
     'catalogDegraded' => 'Some sources could not be updated. Stored data is shown.',
     'catalogSourceUnavailable' => '{0}: update unavailable. Stored data from that source is preserved.',
     'catalogUnknown' => 'No source update has been confirmed yet.',

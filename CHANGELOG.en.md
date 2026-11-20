@@ -4,6 +4,12 @@ All notable changes to SIGRA are documented here. The project follows
 [Semantic Versioning](https://semver.org/), with an optional fourth revision component
 for small patch adjustments such as `1.3.1.1`.
 
+## Unreleased · Beta.2 batch persistence correction
+
+- Fix rollback when fresh observations and stored catalog snapshots are updated together; restrict batch columns to observation fields, preserving independently maintained counters and aliases.
+- Distinguish provider failures, internal processing failures and citizen report reconciliation in map status messages.
+- MySQL regression covers delayed sources and scientific revisions in the same batch. No new migrations.
+
 ## [1.4.0.1-beta.2] · 2026-11-19 · Unified catalog and pagination
 
 - Correlate incoming observations with stored events, including delayed providers and partial failures.

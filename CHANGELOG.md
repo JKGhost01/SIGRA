@@ -4,6 +4,12 @@ La documentación principal se mantiene en español. SIGRA usa versionado semán
 con un cuarto componente opcional para revisiones pequeñas. El historial inglés
 se conserva en [CHANGELOG.en.md](CHANGELOG.en.md).
 
+## Sin publicar · Corrección del guardado por lotes de beta.2
+
+- Corrige el rollback al guardar simultáneamente observaciones nuevas y filas leídas del catálogo: el lote escribe solo los campos de la observación, conservando contadores y alias bajo sus operaciones específicas.
+- El mapa distingue fallos de proveedores, procesamiento interno y conciliación de reportes ciudadanos. Un error al guardar ya no se presenta como una caída de las agencias.
+- Regresión MySQL con fuentes tardías y revisiones científicas en el mismo lote. No necesita nuevas migraciones.
+
 ## [1.4.0.1-beta.2] · 2026-11-19 · Catálogo unificado y paginación
 
 - El catálogo cruza cada actualización con los eventos guardados, incluidas fuentes tardías y fallos parciales.

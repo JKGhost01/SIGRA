@@ -101,6 +101,12 @@ async function main() {
     await flush();
     assert.match(healthy.elements.get('catalog-sync-status').textContent, /^Last source update:/);
     assert.equal(healthy.elements.get('catalog-source-indicator').classList.contains('bg-success'), true);
+    for (const [error, expected] of [['sync', text.catalogProcessingFailed], ['reportes', text.catalogReportsUnavailable]]) {
+        const internal = page({ syncResult: { ok: true, eventos: [], errors: { [error]: 'internal failure' }, last_success_at: 1800000000 } });
+        await flush();
+        assert.equal(internal.elements.get('catalog-sync-status').textContent, expected, 'Internal failure was reported as a provider outage');
+        assert.equal(internal.elements.get('catalog-source-indicator').classList.contains('bg-warning'), true);
+    }
     const multiple = page({ syncResult: { ok: true, errors: {}, eventos: [
         { id: 'emsc', fuente: 'EMSC', lat: 4, lng: -74, magnitud: 4 },
         { id: 'geonet', fuente: 'GEONET', lat: -40, lng: 174, magnitud: 4 },

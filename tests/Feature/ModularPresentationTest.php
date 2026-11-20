@@ -85,6 +85,13 @@ $poll = json_decode($sync->index()->getBody(), true);
 expectArchitecture($poll['ok'] && !$poll['synced'] && count($poll['eventos']) === 1 && isset($poll['errors']['sync']), 'Refresh failure removed stored map events');
 expectArchitecture(!str_contains(json_encode($poll), 'private provider detail'), 'Refresh failure leaked internals');
 expectArchitecture($poll['message'] !== lang('Sigra.apiUpToDate'), 'Failed refresh falsely reports up-to-date data');
+expectArchitecture($poll['message'] === lang('Sigra.catalogProcessingFailed'), 'Internal processing failure was blamed on the providers');
+Config\Services::injectMock('catalogRefresh', new class {
+    public function handle(): App\Modules\SeismicIngestion\Application\DTO\CatalogRefreshResult
+    { return new App\Modules\SeismicIngestion\Application\DTO\CatalogRefreshResult(true, 1800000000, 1, ['SGC' => 1], ['reportes' => 'unavailable'], 1800000000); }
+});
+$poll = json_decode($sync->index()->getBody(), true);
+expectArchitecture($poll['synced'] && $poll['message'] === lang('Sigra.catalogReportsUnavailable'), 'Citizen reconciliation failure was blamed on the providers');
 expectArchitecture(lang('Sigra.releaseName') === config(Config\Sigra::class)->releaseName, 'Spanish release name is stale');
 Config\Services::injectMock('mobileRelease', new class {
     public function snapshot(): array { return ['version' => '1.0.0.0', 'published' => false, 'apk' => null,
