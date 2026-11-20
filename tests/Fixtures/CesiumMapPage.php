@@ -31,5 +31,6 @@ foreach ([['SGC-demo', 4.6, -74.1, 4.2, 'SGC'], ['USGS-demo', 18.8925, 145.6025,
 }
 echo view('App\Modules\SeismicCatalog\Presentation\Views\sismos\list\index', [
     'vm' => App\Modules\SeismicCatalog\Presentation\ViewModels\ListEventsViewModel::fromResult($records),
+    'mapSettings' => config(Config\SeismicMap::class),
     'locale' => $locale, 'message' => null, 'mapEngine' => config(Config\SeismicMap::class)->engine,
 ]);

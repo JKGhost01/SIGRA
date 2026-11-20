@@ -1,8 +1,8 @@
 # SIGRA · Suivi sismique mondial et réseau citoyen
 
-**v1.4.0.1-beta.2 · Catalogue unifié et pagination · BETA** · `20261119.beta2` · 2026-11-19
+**v1.4.0.0 · Carte mondiale et expérience mobile** · `20261120.1` · 2026-11-20
 
-> Bêta de test avec CesiumJS, carte 2D de secours et catalogue SGC complet. La version stable reste 1.3.1.3. [1.4.0.1-beta.2](docs/BETA_1.4.0.md)
+> Version stable avec carte mobile, zonage mondial de l’aléa sismique et catalogue unifié. [1.4.0.0](docs/PRODUCCION.md)
 
 [Español](README.md) · [English](README.en.md) · [Português](README.pt.md) · [Français](README.fr.md) · [Deutsch](README.de.md) · [Italiano](README.it.md) · [日本語](README.ja.md) · [简体中文](README.zh-CN.md) · [العربية](README.ar.md)
 

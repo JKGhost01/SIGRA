@@ -344,16 +344,53 @@
         const mobileEventsToggle = document.getElementById('mobile-events-toggle');
         const mobileEventsClose = document.getElementById('mobile-events-close');
         if (eventosSidebar && mobileEventsToggle && mobileEventsClose) {
-            function cerrarListadoMovil() {
+            const sheet = document.getElementById('eventos-detalle');
+            const backdrop = document.getElementById('mobile-events-backdrop');
+            const stage = document.querySelector('.map-stage');
+            const mobile = window.matchMedia('(max-width: 850px)');
+            function cerrarListadoMovil(restoreFocus = true) {
                 eventosSidebar.classList.remove('details-open');
                 mobileEventsToggle.setAttribute('aria-expanded', 'false');
+                sheet.inert = mobile.matches;
+                sheet.removeAttribute('role');
+                sheet.removeAttribute('aria-modal');
+                if (backdrop) backdrop.hidden = true;
+                if (stage) stage.inert = false;
+                if (restoreFocus === true && mobile.matches) mobileEventsToggle.focus();
             }
 
             mobileEventsToggle.addEventListener('click', function () {
+                if (!mobile.matches) return;
+                window.plegarControlesMapa?.(true);
                 eventosSidebar.classList.add('details-open');
                 mobileEventsToggle.setAttribute('aria-expanded', 'true');
+                sheet.inert = false;
+                sheet.setAttribute('role', 'dialog');
+                sheet.setAttribute('aria-modal', 'true');
+                if (backdrop) backdrop.hidden = false;
+                if (stage) stage.inert = true;
+                mobileEventsClose.focus();
             });
-            mobileEventsClose.addEventListener('click', cerrarListadoMovil);
+            mobileEventsClose.addEventListener('click', () => cerrarListadoMovil());
+            backdrop?.addEventListener('click', () => cerrarListadoMovil());
+            mobile.addEventListener?.('change', () => cerrarListadoMovil(false));
+            document.addEventListener('keydown', function (event) {
+                if (!mobile.matches || !eventosSidebar.classList.contains('details-open')) return;
+                if (event.key === 'Escape') { event.preventDefault(); cerrarListadoMovil(); return; }
+                if (event.key !== 'Tab') return;
+                const controls = Array.from(sheet.querySelectorAll('button, input, select, summary, a[href], [tabindex="0"]'))
+                    .filter(control => !control.disabled && control.getClientRects().length > 0);
+                const first = controls[0];
+                const last = controls[controls.length - 1];
+                if (!sheet.contains(document.activeElement)) {
+                    event.preventDefault(); first?.focus();
+                } else if (event.shiftKey && document.activeElement === first) {
+                    event.preventDefault(); last?.focus();
+                } else if (!event.shiftKey && document.activeElement === last) {
+                    event.preventDefault(); first?.focus();
+                }
+            });
+            cerrarListadoMovil(false);
         }
 
         const urlSincronizacion = SIGRA_MAP_URLS.sync;

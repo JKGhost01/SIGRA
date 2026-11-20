@@ -1,8 +1,8 @@
 # SIGRA · Monitor sísmico global e rede cidadã
 
-**v1.4.0.1-beta.2 · Catálogo unificado e paginação · BETA** · `20261119.beta2` · 2026-11-19
+**v1.4.0.0 · Mapa mundial e experiência móvel** · `20261120.1` · 2026-11-20
 
-> Beta de teste com CesiumJS, mapa 2D de reserva e catálogo SGC completo. A versão estável continua sendo 1.3.1.3. [1.4.0.1-beta.2](docs/BETA_1.4.0.md)
+> Versão estável com mapa móvel, zonificação mundial de ameaça sísmica e catálogo unificado. [1.4.0.0](docs/PRODUCCION.md)
 
 [Español](README.md) · [English](README.en.md) · [Português](README.pt.md) · [Français](README.fr.md) · [Deutsch](README.de.md) · [Italiano](README.it.md) · [日本語](README.ja.md) · [简体中文](README.zh-CN.md) · [العربية](README.ar.md)
 

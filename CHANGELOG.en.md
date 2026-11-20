@@ -4,6 +4,15 @@ All notable changes to SIGRA are documented here. The project follows
 [Semantic Versioning](https://semver.org/), with an optional fourth revision component
 for small patch adjustments such as `1.3.1.1`.
 
+## [1.4.0.0] · 2026-11-20 · Worldwide map and mobile experience
+
+- Responsive 2D/3D map, compact touch controls, accessible event dialog, orientation and visual keyboard handling.
+- Fixed global seismic hazard zones from GEM v2026.1, with visible source and license; independent of recent catalog filters.
+- Restore Esri satellite and dark layers; remove terrain and 3D building downloads.
+- Center on the available user location without storing camera coordinates.
+- True-depth hypocenters, proximity sphere and resizable desktop event panel.
+- Build `20261120.1`, stable channel; no additional migrations or Composer dependencies beyond beta.2.
+
 ## Unreleased · Beta.2 batch persistence correction
 
 - Fix rollback when fresh observations and stored catalog snapshots are updated together; restrict batch columns to observation fields, preserving independently maintained counters and aliases.

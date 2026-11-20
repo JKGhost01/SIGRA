@@ -20,6 +20,7 @@ This file records them so deployments remain legally compliant.
 | **OpenStreetMap** | Base map data via raster tiles | © OpenStreetMap contributors, **ODbL 1.0**. <https://www.openstreetmap.org/copyright> · <https://opendatacommons.org/licenses/odbl/1-0/> |
 | **OpenStreetMap Foundation tile servers** | `tile.openstreetmap.org` | Subject to the **OSMF Tile Usage Policy** (attribution, no heavy scraping, valid User-Agent). <https://operations.osmfoundation.org/policies/tiles/> |
 | **OpenTopoMap** | Topographic tile layer | Map data © OpenStreetMap contributors, SRTM. Tiles under **CC-BY-SA**. <https://opentopomap.org/about> |
+| **GEM Foundation — Global Seismic Hazard Map v2026.1** | Optional global hazard tiles from the official OpenQuake viewer; PGA on reference rock, 10% exceedance in 50 years | © GEM Foundation, **CC BY-NC-SA 4.0**. Source attribution retained; rendered without changing scientific values. Johnson K, Bayliss K, Villani M, Brooks C, Styron R, Simionato M, Chen Y, Rood A, Pagani M (2026), DOI: <https://doi.org/10.5281/zenodo.20208536>. Pagani et al. (2020), DOI: <https://doi.org/10.1177/8755293020931866>. <https://maps.openquake.org/map/gshm-v2026_1/> · <https://creativecommons.org/licenses/by-nc-sa/4.0/> |
 | **Esri / ArcGIS Online** | World Imagery and World Dark Gray Canvas | Subject to Esri terms and attribution requirements. <https://www.esri.com/en-us/legal/terms/full-master-agreement> |
 | **ipapi.co** | Optional IP-based approximate location fallback | Subject to ipapi.co terms and privacy policy. <https://ipapi.co/terms/> |
 
@@ -75,3 +76,14 @@ you ship. The main texts are available at:
 - CC-BY-SA: <https://creativecommons.org/licenses/by-sa/4.0/>
 - PHP License 3.01: <https://www.php.net/license/3_01.txt>
 - GPLv2: <https://www.gnu.org/licenses/old-licenses/gpl-2.0.html>
+
+Open data does not imply unrestricted capacity on a public server. Respect OSM,
+OpenTopoMap and Esri service policies; configure self-hosted endpoints
+when independent traffic capacity is required. Self-hosting still uses storage
+and bandwidth resources.
+
+The unmodified test tile `tests/Fixtures/gem-hazard-world.png` was retrieved on
+2026-11-20 from the official GEM v2026.1 viewer endpoint:
+<https://maps.openquake.org/mapproxy/gshm-2026-06-04-nobg/wmts/v20260/webmercator/1/0/0.png>.
+It is separately licensed CC BY-NC-SA 4.0, with attribution as above. The application
+code license does not replace the source dataset license.

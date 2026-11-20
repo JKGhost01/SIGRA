@@ -18,11 +18,11 @@ class Sigra extends BaseConfig
 
     public string $project = 'SIGRA';
     public string $tagline = 'Monitor sísmico global y red ciudadana';
-    public string $version = '1.4.0.1-beta.2';
-    public string $releaseName = 'Catálogo unificado y paginación';
-    public string $releaseDate = '2026-11-19';
-    public string $build = '20261119.beta2';
-    public string $channel = 'beta';
+    public string $version = '1.4.0.0';
+    public string $releaseName = 'Mapa mundial y experiencia móvil';
+    public string $releaseDate = '2026-11-20';
+    public string $build = '20261120.1';
+    public string $channel = 'stable';
     public string $apiVersion = 'v1';
     public string $mobileVersion = '1.0.0.0';
     public string $license = 'MIT';
@@ -44,6 +44,18 @@ class Sigra extends BaseConfig
      * @var array<string, array{date: string, name: string, summary: string, changes: list<string>}>
      */
     public array $changelog = [
+        '1.4.0.0' => [
+            'date' => '2026-11-20',
+            'name' => 'Mapa mundial y experiencia móvil',
+            'summary' => 'Mapa 2D/3D adaptable a móviles y zonificación mundial de amenaza sísmica.',
+            'changes' => [
+                'Diseño móvil y tablet con controles plegados, panel de eventos accesible y ajuste al teclado y orientación.',
+                'Capa mundial de amenaza sísmica GEM v2026.1, con escala fija de colores independiente de los sismos recientes.',
+                'Capas Esri de la beta.2 recuperadas; elimina relieve, edificios 3D y sus descargas.',
+                'Inicio sobre la ubicación disponible, sin guardar la posición de la cámara.',
+                'Hipocentros a profundidad real, radio de cercanía y listado lateral redimensionable.',
+            ],
+        ],
         '1.4.0.1-beta.2' => [
             'date' => '2026-11-19',
             'name' => 'Catálogo unificado y paginación',

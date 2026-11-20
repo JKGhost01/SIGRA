@@ -4,6 +4,16 @@ Instalación canónica: [INSTALLATION.md](INSTALLATION.md). Android está en des
 en otro repositorio. La red sensorial es experimental; estas comprobaciones operativas
 no acreditan utilidad para emergencias.
 
+## Versión 1.4.0.0
+
+Identidad: **1.4.0.0**, build **20261120.1**, canal **stable**. Sobre beta.2 y su
+hotfix no añade migraciones ni dependencias. Incluye mapa móvil, amenaza mundial
+GEM, capas Esri y mejoras de navegación. No incluye relieve ni edificios 3D.
+Conserva `.env`, `vendor/` y `writable/`; si hay overrides de `sigra.version`,
+`sigra.build` o `sigra.channel`, actualízalos a estos valores. Los dos service
+workers usan `sigra-static-1.4.0.0`. El despliegue se realiza mediante el mecanismo
+configurado en el hosting; publicar en GitHub no confirma por sí solo la subida.
+
 ## Beta 1.4.0-beta.1
 
 Esta rama es una pre-release; la estable sigue en 1.3.1.3. Usa la
@@ -48,7 +58,7 @@ el archivo original no retira copias con otro nombre.
 Abre mapa, histórico, detalle, formulario de reporte, `/red` y `/acerca-de`.
 `/api/health` comprueba acceso a la base; no certifica frescura del catálogo.
 `/api/red/health` indica actividad del backend; no certifica detección en campo.
-La versión esperada de este cambio es **1.4.0-beta.1**, build **20261119.beta1**, canal **beta**; un override en `.env` puede prevalecer.
+La versión esperada de este cambio es **1.4.0.0**, build **20261120.1**, canal **stable**; un override en `.env` puede prevalecer.
 Comprueba assets, manifest y service worker, y revisa errores del hosting sin exponerlos.
 Las APIs autenticadas deben rechazar claves ausentes o incorrectas.
 

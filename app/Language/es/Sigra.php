@@ -6,6 +6,16 @@
  * correspondiente y traduce los valores.
  */
 return [
+    'mapHazard' => 'Amenaza sísmica mundial',
+    'mapHazardSummary' => 'GEM v2026.1 · zonificación mundial de referencia',
+    'mapHazardScale' => 'PGA en roca · 10 % de probabilidad de excedencia en 50 años',
+    'mapHazardLower' => 'Menor amenaza',
+    'mapHazardHigher' => 'Mayor amenaza',
+    'mapHazardSource' => 'Fuente y leyenda: GEM · CC BY-NC-SA 4.0',
+    'mapHazardUnavailable' => 'No se pudieron cargar algunas zonas de GEM. Desactiva y vuelve a activar la capa para reintentar.',
+    'mapHazardNote' => 'Los colores representan amenaza sísmica a largo plazo, no el número de sismos recientes ni una predicción. Los filtros solo cambian los marcadores.',
+
+
     'mapEventDetails' => 'Ver detalle del sismo',
     'mapEngine' => 'Vista del mapa',
     'mapGlobe' => 'Globo 3D',
@@ -13,7 +23,17 @@ return [
     'mapBaseLayer' => 'Capas del mapa',
     'mapClosePopup' => 'Cerrar detalle del epicentro',
     'mapGlobeLoading' => 'Cargando globo 3D… Puedes usar el mapa 2D mientras tanto.',
-    'mapGlobeReady' => 'Vista 3D experimental · Epicentros en superficie',
+    'mapGlobeReady' => 'Vista 3D experimental · Inclina o activa «Ver profundidades»',
+    'mapDepthView' => 'Ver profundidades',
+    'mapNavigation' => 'Navegación del globo',
+    'mapZoomIn' => 'Acercar',
+    'mapZoomOut' => 'Alejar',
+    'mapNorth' => 'Orientar al norte',
+    'catalogResize' => 'Ajustar ancho del listado sísmico',
+    'catalogCollapse' => 'Contraer listado sísmico',
+    'catalogExpand' => 'Mostrar listado sísmico',
+    'mapDepthSurface' => 'Superficie',
+    'mapDepthFocus' => 'Hipocentro · escala real',
     'mapClassicReady' => 'Mapa 2D activo',
     'mapGlobeFallback' => 'El globo no está disponible. Se activó el mapa 2D.',
     'mapImageryUnavailable' => 'No se pudo cargar parte de la capa. Prueba otra capa o el mapa 2D.',
@@ -92,7 +112,7 @@ return [
 
     // Navegación y layout
     'navLive'          => 'App móvil',
-    'releaseName'      => 'Catálogo unificado y paginación',
+    'releaseName'      => 'Mapa mundial y experiencia móvil',
     'tagline'          => 'Monitor sísmico global y red ciudadana',
     'navMap'           => 'Mapa global',
     'navHistory'       => 'Histórico',

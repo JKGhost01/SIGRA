@@ -10,7 +10,8 @@ ob_start();
 <?php endif; ?>
 
 <div class="dashboard-shell">
-    <aside class="event-sidebar">
+    <div id="mobile-events-backdrop" class="mobile-events-backdrop" hidden aria-hidden="true"></div>
+    <aside class="event-sidebar" id="catalog-panel">
         <div class="p-4 border-bottom">
             <div class="d-flex justify-content-between align-items-start gap-3">
                 <div>
@@ -23,14 +24,15 @@ ob_start();
             <button id="mobile-events-toggle" class="mobile-events-toggle" type="button" aria-controls="eventos-detalle" aria-expanded="false"><span class="list-icon"><?= sigra_icon('list') ?></span><span><?= esc(lang('Sigra.mobileEvents')) ?></span></button>
         </div>
 
-        <div id="eventos-detalle" class="event-details">
+        <div id="eventos-detalle" class="event-details" aria-labelledby="mobile-events-title">
             <div class="event-details-header">
                 <div>
-                    <h2 class="h6 mb-1"><?= esc(lang('Sigra.listTitle')) ?></h2>
+                    <h2 class="h6 mb-1" id="mobile-events-title"><?= esc(lang('Sigra.listTitle')) ?></h2>
                     <p class="small text-secondary mb-0"><span id="mobile-contador-eventos"><?= count($sismos) ?></span> <?= esc(lang('Sigra.eventsLast5Days')) ?></p>
                 </div>
                 <button id="mobile-events-close" class="mobile-events-close" type="button" aria-label="<?= esc(lang('Sigra.mobileEventsClose')) ?>">×</button>
             </div>
+            <div id="mobile-catalog-status" class="mobile-catalog-status"></div>
             <details class="event-filters border-bottom" id="filtros-panel" open>
                 <summary class="event-filters-summary"><?= esc(lang('Sigra.filtersAndNearby')) ?> <span id="filtros-resumen" class="fw-normal text-secondary"></span></summary>
                 <div class="p-3 pb-2">
@@ -164,6 +166,10 @@ ob_start();
             </div>
         </div>
     </aside>
+    <div id="catalog-panel-resizer" class="catalog-panel-resizer" role="separator" tabindex="0" aria-orientation="vertical" aria-controls="catalog-panel" aria-label="<?= esc(lang('Sigra.catalogResize')) ?>" aria-valuemin="300" aria-valuemax="640" aria-valuenow="360"></div>
+    <button id="catalog-panel-toggle" class="catalog-panel-toggle" type="button" aria-controls="catalog-panel" aria-expanded="true" aria-label="<?= esc(lang('Sigra.catalogCollapse')) ?>" data-collapse-label="<?= esc(lang('Sigra.catalogCollapse')) ?>" data-expand-label="<?= esc(lang('Sigra.catalogExpand')) ?>">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="m14 6-6 6 6 6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+    </button>
 
     <section class="map-stage">
         <div class="map-engine-toolbar">
@@ -195,6 +201,20 @@ ob_start();
                     <?php endforeach; ?>
                 </div>
             </div>
+            <button type="button" id="map-hazard-toggle" class="map-depth-toggle" aria-pressed="false" aria-controls="map-hazard-legend"><?= esc(lang('Sigra.mapHazard')) ?></button>
+            <div id="map-hazard-legend" class="map-hazard-legend" hidden>
+                <p id="map-hazard-summary" aria-live="polite"></p>
+                <span class="map-hazard-gradient" aria-hidden="true"></span>
+                <div class="map-hazard-labels"><span><?= esc(lang('Sigra.mapHazardLower')) ?></span><span><?= esc(lang('Sigra.mapHazardHigher')) ?></span></div>
+                <p><?= esc(lang('Sigra.mapHazardScale')) ?></p>
+                <a href="https://maps.openquake.org/map/gshm-v2026_1/" target="_blank" rel="noopener noreferrer"><?= esc(lang('Sigra.mapHazardSource')) ?></a>
+                <p><?= esc(lang('Sigra.mapHazardNote')) ?></p>
+            </div>
+            <button type="button" id="map-depth-toggle" class="map-depth-toggle" aria-pressed="false" hidden><?= esc(lang('Sigra.mapDepthView')) ?></button>
+            <div id="map-depth-legend" class="map-depth-legend" hidden>
+                <span><i class="map-depth-surface" aria-hidden="true"></i><?= esc(lang('Sigra.mapDepthSurface')) ?></span>
+                <span><i class="map-depth-focus" aria-hidden="true"></i><?= esc(lang('Sigra.mapDepthFocus')) ?></span>
+            </div>
             <div class="map-engine-caption"><span class="map-engine-dot" aria-hidden="true"></span><span id="map-engine-status" role="status" aria-live="polite"></span></div>
             </div>
         </div>
@@ -217,6 +237,11 @@ ob_start();
             </div>
         </div>
         <div id="mapa"></div>
+        <div id="map-navigation" class="map-navigation" role="group" aria-label="<?= esc(lang('Sigra.mapNavigation')) ?>" hidden>
+            <button type="button" data-map-zoom="in" aria-label="<?= esc(lang('Sigra.mapZoomIn')) ?>" title="<?= esc(lang('Sigra.mapZoomIn')) ?>">+</button>
+            <button type="button" data-map-zoom="out" aria-label="<?= esc(lang('Sigra.mapZoomOut')) ?>" title="<?= esc(lang('Sigra.mapZoomOut')) ?>">−</button>
+            <button type="button" id="map-north" aria-label="<?= esc(lang('Sigra.mapNorth')) ?>" title="<?= esc(lang('Sigra.mapNorth')) ?>">N</button>
+        </div>
     </section>
 </div>
 
@@ -271,6 +296,12 @@ ob_start();
 
     const SIGRA_MAP_URLS = <?= json_encode(['sync' => parse_url(site_url('sismos/sync'), PHP_URL_PATH), 'detail' => parse_url(site_url('sismos/detalle'), PHP_URL_PATH)], JSON_HEX_TAG | JSON_HEX_AMP | JSON_HEX_APOS | JSON_HEX_QUOT) ?>;
     window.SIGRA_GLOBE_CONFIG = <?= json_encode(['engine' => $mapEngine,
+        'cesiumBaseUrl' => $mapSettings->cesiumBaseUrl,
+        'osmUrl' => $mapSettings->osmUrl,
+        'topoUrl' => $mapSettings->topoUrl,
+        'satelliteUrl' => $mapSettings->satelliteUrl,
+        'satelliteCredit' => $mapSettings->satelliteCredit,
+        'satelliteMaxLevel' => $mapSettings->satelliteMaxLevel,
         'detail' => parse_url(site_url('sismos/detalle'), PHP_URL_PATH), 'text' => [
         'details' => lang('Sigra.mapEventDetails'),
         'loading' => lang('Sigra.mapGlobeLoading'),
@@ -278,11 +309,15 @@ ob_start();
         'classic' => lang('Sigra.mapClassicReady'),
         'fallback' => lang('Sigra.mapGlobeFallback'),
         'imageryUnavailable' => lang('Sigra.mapImageryUnavailable'),
+        'hazardSummary' => lang('Sigra.mapHazardSummary'),
+        'hazardUnavailable' => lang('Sigra.mapHazardUnavailable'),
         'expand' => lang('Sigra.expandLayers'),
         'collapse' => lang('Sigra.collapseLayers'),
     ]], JSON_HEX_TAG | JSON_HEX_AMP | JSON_HEX_APOS | JSON_HEX_QUOT) ?>;
 </script>
+<script src="<?= sigra_public_url('assets/js/modules/seismic-map/hazard.js') ?>"></script>
 <script src="<?= sigra_public_url('assets/js/modules/seismic-map/globe.js') ?>"></script>
+<script src="<?= sigra_public_url('assets/js/modules/seismic-map/layout.js') ?>"></script>
 <script src="<?= sigra_public_url('assets/js/modules/seismic-map/catalog.js') ?>"></script>
 <?php
 $contenido = ob_get_clean();
