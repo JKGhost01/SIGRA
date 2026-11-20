@@ -1,8 +1,8 @@
 # SIGRA · Globale Erdbebenbeobachtung und Bürgernetzwerk
 
-**v1.4.0.1-beta.2 · Vereinheitlichter Katalog und Seitennavigation · BETA** · `20261119.beta2` · 2026-11-19
+**v1.4.0.0 · Weltkarte und mobile Nutzung** · `20261120.1` · 2026-11-20
 
-> Test-Beta mit CesiumJS, 2D-Ersatzkarte und vollständigem SGC-Katalog. Die stabile Version bleibt 1.3.1.3. [1.4.0.1-beta.2](docs/BETA_1.4.0.md)
+> Stabile Version mit mobiler Karte, weltweiter Erdbebengefährdung und vereinheitlichtem Katalog. [1.4.0.0](docs/PRODUCCION.md)
 
 [Español](README.md) · [English](README.en.md) · [Português](README.pt.md) · [Français](README.fr.md) · [Deutsch](README.de.md) · [Italiano](README.it.md) · [日本語](README.ja.md) · [简体中文](README.zh-CN.md) · [العربية](README.ar.md)
 

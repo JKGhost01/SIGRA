@@ -65,14 +65,25 @@ function iconoEpicentro() {
     });
 }
 
+// Una misma casita vectorial para Leaflet y el billboard de Cesium.
+function svgUbicacionUsuario() {
+    return '<svg xmlns="http://www.w3.org/2000/svg" width="40" height="48" viewBox="0 0 48 56">'
+        + '<path d="M24 52 17 42a20 20 0 1 1 14 0Z" fill="#087f78" stroke="#102b39" stroke-width="5" stroke-linejoin="round"/>'
+        + '<path d="M24 52 17 42a20 20 0 1 1 14 0Z" fill="#087f78" stroke="#fff" stroke-width="2.5" stroke-linejoin="round"/>'
+        + '<path d="m12 25 12-11 12 11M16 22v14h16V22M21 36V27h6v9" fill="none" stroke="#fff" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>'
+        + '</svg>';
+}
+
 function iconoUsuario() {
     return L.divIcon({
-        html: window.SIGRA_ICONS.home,
-        className: 'icono-vector',
-        iconSize: [24, 24],
-        iconAnchor: [12, 22],
+        html: svgUbicacionUsuario(),
+        className: 'icono-ubicacion-usuario',
+        iconSize: [40, 48],
+        iconAnchor: [20, 46],
+        popupAnchor: [0, -44],
     });
 }
+
 
 /**
  * Fórmula de Haversine: distancia aproximada en km entre dos coordenadas.
@@ -214,27 +225,29 @@ function pintarMarcadoresListado(sismos, ajustarVista) {
     }
 }
 
+// Capas de la beta.2; los endpoints se pueden sustituir por servidores propios.
+function capasBaseMapa() {
+    const c = window.SIGRA_GLOBE_CONFIG || {};
+    const osm = c.osmUrl || 'https://tile.openstreetmap.org/{z}/{x}/{y}.png';
+    return {
+        osm: { url: osm, credit: '© OpenStreetMap contributors', level: 19 },
+        dark: { url: 'https://server.arcgisonline.com/ArcGIS/rest/services/Canvas/World_Dark_Gray_Base/MapServer/tile/{z}/{y}/{x}', credit: 'Tiles © Esri, DeLorme, NAVTEQ', level: 16 },
+        satellite: { url: c.satelliteUrl || 'https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}',
+            credit: c.satelliteCredit || 'Tiles © Esri', level: c.satelliteMaxLevel || 16 },
+        topo: { url: c.topoUrl || 'https://tile.opentopomap.org/{z}/{x}/{y}.png', credit: '© OpenStreetMap contributors, SRTM · © OpenTopoMap', level: 17 },
+    };
+}
+
 function agregarControlCapasMapa(mapa) {
     const contenedor = document.createElement('div');
     contenedor.style.cssText = 'position:absolute; top:12px; right:12px; z-index:500; display:flex; gap:8px; padding:6px; border-radius:999px; background:rgba(15, 23, 42, 0.78); box-shadow:0 10px 25px rgba(15, 23, 42, 0.18); backdrop-filter:blur(4px);';
 
+    const bases = capasBaseMapa();
     const capas = {
-        osm: L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-            attribution: '&copy; OpenStreetMap contributors',
-            maxZoom: 18,
-        }),
-        cartoDark: L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/Canvas/World_Dark_Gray_Base/MapServer/tile/{z}/{y}/{x}', {
-            attribution: 'Tiles &copy; Esri &mdash; Esri, DeLorme, NAVTEQ',
-            maxZoom: 16,
-        }),
-        satelite: L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}', {
-            attribution: 'Tiles &copy; Esri',
-            maxZoom: 16,
-        }),
-        topo: L.tileLayer('https://{s}.tile.opentopomap.org/{z}/{x}/{y}.png', {
-            attribution: 'Map data: &copy; OpenStreetMap contributors, SRTM | Map style: &copy; OpenTopoMap',
-            maxZoom: 17,
-        }),
+        osm: L.tileLayer(bases.osm.url, { attribution: bases.osm.credit, maxNativeZoom: bases.osm.level, maxZoom: 22 }),
+        cartoDark: L.tileLayer(bases.dark.url, { attribution: bases.dark.credit, maxNativeZoom: bases.dark.level, maxZoom: 22 }),
+        satelite: L.tileLayer(bases.satellite.url, { attribution: bases.satellite.credit, maxNativeZoom: bases.satellite.level, maxZoom: 22 }),
+        topo: L.tileLayer(bases.topo.url, { attribution: bases.topo.credit, maxNativeZoom: bases.topo.level, maxZoom: 22 }),
     };
 
     const botones = [
@@ -347,9 +360,9 @@ function actualizarMapaListado(sismos) {
 }
 
 function inicializarMapaListado(elementId, sismos, elementoDistanciaId) {
-    const centroDefault = [20, 0]; // vista mundial
+    const centroDefault = [4.6, -74.1]; // Colombia mientras se obtiene la ubicación
     const mapa = L.map(elementId, { worldCopyJump: true, minZoom: 2,
-        maxBounds: [[-85.05112878, -180], [85.05112878, 180]], maxBoundsViscosity: 1 }).setView(centroDefault, 2);
+        maxBounds: [[-85.05112878, -180], [85.05112878, 180]], maxBoundsViscosity: 1 }).setView(centroDefault, 5);
     const capaSismos = L.layerGroup().addTo(mapa);
     const contenedorDistancia = document.getElementById(elementoDistanciaId);
 
@@ -415,7 +428,7 @@ function ajustarVistaListado(sismos) {
         .filter(function (punto) { return Number.isFinite(punto[0]) && Number.isFinite(punto[1]); });
 
     if (puntos.length === 0) {
-        mapa.setView([20, 0], 2);
+        mapa.setView([4.6, -74.1], 5);
 
         return;
     }
@@ -426,6 +439,23 @@ function ajustarVistaListado(sismos) {
 /**
  * Dibuja el círculo del radio activo y, opcionalmente, ajusta la vista.
  */
+// Cristal suave: centro transparente y luz concentrada en el límite real.
+function svgRadioCercania() {
+    return '<svg xmlns="http://www.w3.org/2000/svg" width="512" height="512" viewBox="0 0 512 512">'
+        + '<defs><radialGradient id="radius-bubble-fill">'
+        + '<stop offset="0" stop-color="#59dbd0" stop-opacity="0.015"/>'
+        + '<stop offset="0.6" stop-color="#59dbd0" stop-opacity="0.025"/>'
+        + '<stop offset="0.86" stop-color="#6ce9dc" stop-opacity="0.06"/>'
+        + '<stop offset="0.96" stop-color="#8df1e5" stop-opacity="0.14"/>'
+        + '<stop offset="1" stop-color="#b5fff3" stop-opacity="0.3"/>'
+        + '</radialGradient></defs>'
+        + '<circle cx="256" cy="256" r="255" fill="url(#radius-bubble-fill)"/>'
+        + '<circle cx="256" cy="256" r="249" fill="none" stroke="#6feada" stroke-width="12" opacity="0.12"/>'
+        + '<circle cx="256" cy="256" r="254" fill="none" stroke="#adfff1" stroke-width="2" opacity="0.85"/>'
+        + '<path d="M51 110A252 252 0 0 1 292 7" fill="none" stroke="#fff" stroke-width="3" stroke-linecap="round" opacity="0.55"/>'
+        + '</svg>';
+}
+
 function dibujarRadioListado(centro, radioKm, ajustarVista) {
     if (!estadoMapaListado) {
         return;
@@ -447,11 +477,33 @@ function dibujarRadioListado(centro, radioKm, ajustarVista) {
 
     const circulo = L.circle([centro.lat, centro.lng], {
         radius: radioKm * 1000,
-        color: '#087f78',
-        weight: 1.5,
-        fillColor: '#087f78',
-        fillOpacity: 0.08,
+        color: '#91f0e6',
+        weight: 1.8,
+        opacity: 0.9,
+        fillColor: '#56dbcf',
+        fillOpacity: 1,
+        interactive: false,
+        className: 'sigra-radius-bubble',
     }).addTo(mapa);
+
+    // SVG radial fill follows Leaflet's actual geodesic circle; no image bounds
+    // approximation that could change the selected distance.
+    const element = circulo.getElement();
+    if (element && element.ownerSVGElement) {
+        const svg = element.ownerSVGElement;
+        let defs = svg.querySelector('defs[data-radius-bubble]');
+        if (!defs) {
+            defs = document.createElementNS('http://www.w3.org/2000/svg', 'defs');
+            defs.setAttribute('data-radius-bubble', '');
+            svg.prepend(defs);
+        }
+        const gradientId = 'sigra-radius-' + L.Util.stamp(mapa);
+        const parsed = new DOMParser().parseFromString(svgRadioCercania(), 'image/svg+xml');
+        const gradient = document.importNode(parsed.querySelector('radialGradient'), true);
+        gradient.id = gradientId;
+        defs.replaceChildren(gradient);
+        element.setAttribute('fill', 'url(#' + gradientId + ')');
+    }
 
     estadoMapaListado.circuloRadio = circulo;
 

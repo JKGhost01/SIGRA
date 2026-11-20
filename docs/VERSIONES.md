@@ -24,33 +24,39 @@ La versión se define en `app/Config/Sigra.php` y se muestra en:
 Se puede sobrescribir sin tocar código con:
 
 ```ini
-sigra.version = '1.4.0.1-beta.2'
-sigra.build = '20261119.beta2'
-sigra.channel = 'beta'
+sigra.version = '1.4.0.0'
+sigra.build = '20261120.1'
+sigra.channel = 'stable'
 ```
 
 ## Versión actual
 
-**v1.4.0.1-beta.2 · Catálogo unificado y paginación**
+**v1.4.0.0 · Mapa mundial y experiencia móvil**
 
-- Fecha: 2026-11-19
-- Build: `20261119.beta2`
-- Canal: `beta` (pre-release)
+- Fecha: 2026-11-20
+- Build: `20261120.1`
+- Canal: `stable`
 - API: `v1`
 - App Android: consultar [SIGRA_MOBILE](https://github.com/JKGhost01/SIGRA_MOBILE); la web lee su versión y APK desde GitHub.
 - Licencia: MIT
 
-La versión de la aplicación (`1.4.0.1-beta.2`) es independiente del contrato de la API
+La versión de la aplicación (`1.4.0.0`) es independiente del contrato de la API
 (`v1`). Se conservan las rutas y los campos de las respuestas válidas para Android.
 Se añaden rutas /api/v1 con errores estructurados; las rutas antiguas conservan su formato.
 La sincronización del mapa funciona automáticamente: no requiere configurar cron.
 La auditoría requiere la migración aditiva o el SQL de despliegue, sin reiniciar la base.
 
-La última versión estable es **1.3.1.3**. Esta beta se publica en una rama y tag
-propios, sin integrar automáticamente en main ni sustituir la release estable.
-Véase [la guía de la beta](BETA_1.4.0.md).
+La versión estable actual es **1.4.0.0**, con API v1 compatible.
+Véase [la guía de despliegue](PRODUCCION.md).
 
 ## Historial
+
+### v1.4.0.0 · Mapa mundial y experiencia móvil · 2026-11-20
+
+- Mapa adaptable a móviles y tabletas, panel de eventos accesible y ajuste al teclado.
+- Zonificación mundial GEM v2026.1, capas Esri y cámara centrada en la ubicación disponible.
+- Sin relieve ni edificios 3D; hipocentros científicos y radio de cercanía conservados.
+- Build `20261120.1`, canal `stable`; no añade migraciones ni dependencias sobre beta.2.
 
 ### v1.4.0.1-beta.2 · Catálogo unificado y paginación · 2026-11-19
 

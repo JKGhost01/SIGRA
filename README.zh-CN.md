@@ -1,8 +1,8 @@
 # SIGRA · 全球地震信息与公民网络
 
-**v1.4.0.1-beta.2 · 统一目录与分页 · BETA** · `20261119.beta2` · 2026-11-19
+**v1.4.0.0 · 全球地图与移动体验** · `20261120.1` · 2026-11-20
 
-> 测试版包含CesiumJS、备用2D地图和SGC完整数据源。稳定版仍为1.3.1.3。 [1.4.0.1-beta.2](docs/BETA_1.4.0.md)
+> 稳定版本，提供移动端地图、全球地震危险性分区和统一目录。 [1.4.0.0](docs/PRODUCCION.md)
 
 [Español](README.md) · [English](README.en.md) · [Português](README.pt.md) · [Français](README.fr.md) · [Deutsch](README.de.md) · [Italiano](README.it.md) · [日本語](README.ja.md) · [简体中文](README.zh-CN.md) · [العربية](README.ar.md)
 

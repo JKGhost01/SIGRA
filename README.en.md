@@ -1,13 +1,13 @@
 # SIGRA · Global Seismic Monitor & Citizen Network
 
-> **v1.4.0.1-beta.2 · Unified catalog and pagination · PRE-RELEASE** — Published earthquakes from six official sources in one map, with experimental citizen monitoring.
+> **v1.4.0.0 · Worldwide map and mobile experience** — Published earthquakes from six official sources in one map, with experimental citizen monitoring.
 
-[![Version](https://img.shields.io/badge/version-1.4.0.1--beta.2-d89926.svg)](#versioning)
+[![Version](https://img.shields.io/badge/version-1.4.0.0-d89926.svg)](#versioning)
 [![PHP](https://img.shields.io/badge/PHP-%3E%3D8.2-777bb4.svg)](https://www.php.net/)
 [![CodeIgniter](https://img.shields.io/badge/CodeIgniter-4.7-ee4323.svg)](https://codeigniter.com/)
 [![License](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
 
-**Test beta.** The latest stable release remains 1.3.1.3. [Deployment and rollback](docs/BETA_1.4.0.md).
+**Stable release 1.4.0.0.** [Deployment and rollback](docs/BETA_1.4.0.md).
 
 [Español](README.md) · [English](README.en.md) · [Português](README.pt.md) · [Français](README.fr.md) · [Deutsch](README.de.md) · [Italiano](README.it.md) · [日本語](README.ja.md) · [简体中文](README.zh-CN.md) · [العربية](README.ar.md)
 
@@ -278,13 +278,13 @@ a voluntary donation. Thank you for supporting the project!
 | **Nequi** | `315 9287929` |
 | **Bancolombia** | Account `912-982627-76` |
 
-## Upgrade to 1.4.0.1-beta.2
+## Upgrade to 1.4.0.0
 
 When upgrading from 1.3.1.3 or beta.1, upload the files and run `php spark migrate --all`
 before opening the map. Beta.2 adds canonical event identity for multiple sources,
 and pages of 20, 50 or 100 earthquakes in the map list and history. No Composer changes.
 Preserve `.env` and `writable/cache/providers`; review version, channel and feed overrides.
-See [the beta deployment guide](docs/BETA_1.4.0.md).
+No new migration is needed from beta.2. See [the 1.4.0.0 deployment guide](deploy/LEEME-1.4.0.0.md).
 
 ### SGC recovery in 1.3.1.3 (historical)
 
@@ -303,7 +303,7 @@ in 1.3.1.3; complete coverage is not guaranteed. See [provider details](docs/FUE
 
 ## Versioning
 
-SIGRA follows semantic versioning with an optional fourth revision component for small patch adjustments. The current pre-release is **1.4.0.1-beta.2 · Unified catalog and pagination** (2026-11-19, build `20261119.beta2`, channel `beta`). The stable release remains 1.3.1.3. See [docs/VERSIONES.md](docs/VERSIONES.md).
+SIGRA follows semantic versioning with an optional fourth revision component for small patch adjustments. The current stable release is **1.4.0.0 · Worldwide map and mobile experience** (2026-11-20, build `20261120.1`, channel `stable`). See [docs/VERSIONES.md](docs/VERSIONES.md).
 
 API contracts: [Earthquakes](docs/API_SISMOS.md) · [Citizen network](docs/API_RED.md).
 

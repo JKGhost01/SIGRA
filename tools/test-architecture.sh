@@ -17,6 +17,8 @@ php tests/ApiResponsesTest.php
 php tests/PwaveFusionTest.php
 php tests/Feature/ModularPresentationTest.php
 node tools/test-map-filters.js
+node tools/test-map-initial-view.js
+node tools/test-map-hazard.js
 node tools/test-service-worker.js
 python3 tests/SetupLocalTest.py
 python3 tests/ApiHttpTest.py

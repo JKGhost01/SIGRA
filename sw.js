@@ -3,10 +3,12 @@
  * Cachea solo estáticos y sirve una pantalla offline. Las APIs y páginas
  * dinámicas siempre van a la red para no mostrar datos sísmicos obsoletos.
  */
-const CACHE = 'sigra-static-1.4.0.1-beta.2';
+const CACHE = 'sigra-static-1.4.0.0';
 const CORE = [
   '/public/assets/css/seismic-globe.css',
   '/public/assets/js/modules/seismic-map/globe.js',
+  '/public/assets/js/modules/seismic-map/hazard.js',
+  '/public/assets/js/modules/seismic-map/layout.js',
   '/public/assets/images/sigra-logo.png',
   '/public/assets/images/icon-192.png',
   '/public/assets/images/icon-512.png',

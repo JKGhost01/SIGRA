@@ -4,6 +4,33 @@ La documentación principal se mantiene en español. SIGRA usa versionado semán
 con un cuarto componente opcional para revisiones pequeñas. El historial inglés
 se conserva en [CHANGELOG.en.md](CHANGELOG.en.md).
 
+## [1.4.0.0] · 2026-11-20 · Mapa mundial y experiencia móvil
+
+- Ajusta el mapa a móviles y tabletas: alto según viewport visible, controles plegados, panel de eventos con desplazamiento independiente y gestión de foco, objetivos táctiles de 44 px y filtros sin desbordamiento. Mantiene créditos, estado de sincronización y preferencias del panel de escritorio. Pruebas de navegador en 2D/3D, vertical, horizontal y modo oscuro.
+
+- Capa opcional «Amenaza sísmica mundial» en 2D y 3D con GEM v2026.1: zonas de colores sobre continentes y océanos, escala fija independiente del catálogo reciente, atribución y licencia visibles. Carga de teselas limitada y sin recrear la capa con cada filtro; avisa si el servicio falla.
+
+- Elimina el relieve 3D, su control, configuración y descargas de elevación; el globo utiliza únicamente el elipsoide.
+- Mayor acercamiento de cámara, controles de zoom/norte y detección de colisiones. Recupera las capas OSM, Esri World Imagery, Esri World Dark Gray Canvas y OpenTopoMap de la beta.2; elimina el procesamiento de píxeles de la capa oscura.
+- Elimina los edificios 3D, su control, configuración y consultas a Overpass.
+- Inicio del mapa centrado en la ubicación disponible, con Colombia como vista provisional. No persiste la cámara y conserva el centro del usuario al cargar 3D/2D y con el radio desactivado.
+
+- Vista de profundidad con interior atmosférico claro, fondo de cielo suave y ajuste moderado de brillo/gamma; restaura la apariencia normal al salir.
+
+- Radio de «Cerca de mí» con acabado de burbuja: relleno radial transparente, borde turquesa y reflejo suave; el círculo mantiene su distancia real en Cesium y Leaflet.
+- Burbuja con volumen esférico real y cristal según el ángulo de cámara en Cesium. Mantiene seleccionables los sismos y libera la geometría al quitar el radio.
+
+- Listado lateral redimensionable de 300 a 640 px, limitado por el espacio disponible para el mapa, y contraíble con una pestaña. Guarda ancho y estado; compatible con teclado, Cesium, Leaflet y listado móvil.
+
+- Desactiva el seguimiento de entidades por doble clic en Cesium para mantener estable la cámara al pulsar la ubicación o la selección y alternar la vista de profundidad.
+
+- Cesium sin token ion, terreno elipsoidal y selección persistente de las cuatro capas entre 3D y 2D.
+- Hipocentros a profundidad real, epicentros seleccionables en superficie y líneas verticales con transparencia al inclinar la cámara.
+- Corrige discos recortados contra el globo y el radio de cercanía, con ocultación explícita del hemisferio opuesto. Prueba del contorno en cuatro direcciones.
+- Hipocentros con contornos claros, referencias de superficie pequeñas, líneas discretas y énfasis del evento seleccionado; leyenda de superficie/hipocentro.
+- Vista superficial con tamaños estables, líneas de profundidad de mayor contraste y botón «Ver profundidades» con enfoque e inclinación.
+- Colecciones primitivas para el catálogo; regresión en Chromium con 1.800 eventos, filtrado, selección y respaldo Leaflet.
+
 ## Sin publicar · Corrección del guardado por lotes de beta.2
 
 - Corrige el rollback al guardar simultáneamente observaciones nuevas y filas leídas del catálogo: el lote escribe solo los campos de la observación, conservando contadores y alias bajo sus operaciones específicas.

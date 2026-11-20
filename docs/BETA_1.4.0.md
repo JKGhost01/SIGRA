@@ -1,3 +1,7 @@
+> La entrega actual es **1.4.0.0**, build **20261120.1**, canal **stable**.
+> Esta guía conserva el historial y las instrucciones de actualización desde las
+> betas; consulta [PRODUCCION.md](PRODUCCION.md) para la identidad de publicación.
+
 # SIGRA v1.4.0.1-beta.2 · Catálogo unificado y paginación
 
 | Identidad | Valor |
@@ -48,15 +52,135 @@ el operador; las comprobaciones descritas abajo corresponden al entorno local.
 - **Auditoría de solo lectura:** `php tools/audit-source-sync.php` compara las
   últimas respuestas guardadas con el catálogo y las referencias entre agencias.
 
+## Ancho del listado
+
+En escritorio, arrastra el separador entre el listado y el mapa para ajustar el
+ancho entre 300 y 640 px, dejando al menos 360 px para el mapa. La pestaña de
+flecha permite contraerlo y volver a abrirlo con el ancho anterior. El navegador
+guarda estas preferencias; si el almacenamiento está bloqueado, los controles
+siguen funcionando durante la visita. Con el separador enfocado, usa las flechas
+izquierda/derecha para ajustar, Inicio/Fin para los límites y Escape para cancelar
+un arrastre. En móvil se conserva el listado desplegable, independiente del
+estado guardado en escritorio. Ambos motores reajustan su área al cambiar el panel.
+
+El radio de **Cerca de mí** usa un acabado de burbuja con centro transparente,
+borde iluminado y halo suave. La representación respeta el mismo radio en metros:
+Cesium aplica una textura SVG con una separación visual de 200 m sobre el
+elipsoide para evitar recortes del borde; Leaflet usa un degradado SVG sobre
+su círculo. Esa separación es decorativa y no cambia el radio del filtro. En
+Cesium se añade además una esfera de geometría real centrada en la ubicación,
+con un material de cristal cuyo borde y reflejo cambian con el ángulo de cámara.
+Es un volumen decorativo: el aro del suelo sigue indicando el radio del filtro.
+No captura clics ni activa seguimiento, y se elimina al quitar el radio o cambiar
+de motor. Solo se renderiza al cambiar la vista, sin animación continua. El filtro de eventos mantiene el cálculo de distancia existente.
+
+## Uso en móviles y tabletas
+
+Hasta 850 px el mapa ocupa el espacio visible entre la barra superior y el pie.
+El alto se recalcula al rotar, cambiar el tamaño o reducirse el viewport visual
+(por ejemplo, al aparecer el teclado). Los controles empiezan plegados y se
+pueden desplegar con desplazamiento propio, incluso en horizontal. Los controles
+principales tienen áreas táctiles de al menos 44 px y los campos usan texto de
+16 px para evitar ampliaciones automáticas al enfocar en móviles.
+
+**Eventos sísmicos** abre un panel con filtros, estado de actualización y listado.
+El panel tiene desplazamiento independiente; se cierra con su botón, el fondo o
+Escape. El foco permanece dentro al usar Tab y vuelve al botón que lo abrió al
+cerrar. Mientras está abierto el mapa queda inactivo. Al pasar a escritorio se
+restaura el panel lateral y se conserva su preferencia de ancho, sin dejar
+bloqueados los controles por el estado móvil. El pie y los créditos siguen visibles.
+
+La prueba `tools/test-map-responsive.js` utiliza el HTML PHP real y motores
+Leaflet y Cesium con recursos locales. Comprueba anchos de 320 a 1366 px,
+vertical, horizontal, español e inglés, paneles, foco, modo oscuro, viewport
+reducido y ausencia de desbordamientos. Las dependencias se indican al inicio del
+script; no consulta catálogos externos ni requiere bases de datos.
+
+## Amenaza sísmica mundial por colores
+
+El botón **Amenaza sísmica mundial** muestra la zonificación de referencia
+[GEM Global Seismic Hazard Map v2026.1](https://www.globalquakemodel.org/product/global-seismic-hazard-map),
+con cobertura mundial de continentes y océanos. Reemplaza la cuadrícula de
+conteos recientes: los colores del modelo tienen una escala fija, de menor a
+mayor amenaza, y no cambian con la fuente, magnitud, radio, paginación o
+reproducción del catálogo. Los sismos actuales siguen visibles como marcadores.
+
+El modelo representa la aceleración máxima del suelo (PGA, en unidades de g) con
+10 % de probabilidad de excedencia en 50 años, sobre roca de referencia
+(Vs30 = 800 m/s). No es una predicción del próximo terremoto ni una clasificación
+de riesgo de edificios. El panel muestra el significado de la capa y enlaza la
+fuente y su leyenda oficial; las áreas de baja amenaza pueden sufrir sismos.
+
+Se utiliza el endpoint Web Mercator publicado por el
+[visor oficial de GEM](https://maps.openquake.org/map/gshm-v2026_1/). Leaflet y
+Cesium cargan las mismas teselas, con crédito visible y licencia **CC BY-NC-SA 4.0**.
+La capa es opcional, usa opacidad moderada, no cambia la cámara, no solicita
+consultas de eventos y no guarda posiciones. La descarga de teselas se limita
+al nivel 8; los acercamientos posteriores reutilizan esa resolución de referencia.
+Los cambios de filtros conservan la capa existente y cambiar de base o motor
+libera la anterior antes de crear otra. Si fallan teselas se informa en el panel;
+no se sustituyen por colores inventados. Se puede desactivar y activar para reintentar.
+
 ## Qué representa el globo
 
-Los epicentros se dibujan en la superficie del elipsoide. La profundidad se
-conserva como dato científico en la ficha; no se transforma en una posición bajo
-la superficie. Esta beta **no añade terreno con relieve, edificios 3D ni Cesium
-ion**. No requiere token de ion.
+El visor desactiva explícitamente el token de Cesium ion y utiliza un elipsoide,
+sin relieve 3D ni descargas de elevación.
+
+Las cuatro capas recuperan las fuentes de la versión 1.4.0.1-beta.2: OSM,
+Esri World Imagery, Esri World Dark Gray Canvas y OpenTopoMap. La capa satelital
+reemplaza NASA Blue Marble y vuelve al nivel máximo 16 de la beta.2. La capa
+oscura usa directamente las teselas de Esri, sin procesar píxeles en el navegador.
+Se puede configurar otra fuente mediante `seismicMap.satelliteUrl`, su crédito y
+nivel máximo. Se eliminan los edificios 3D y las consultas a Overpass.
+
+La cámara puede acercarse hasta 10 m, con controles de acercar/alejar y
+orientación al norte. El detalle final depende de la cobertura y resolución de
+las imágenes. No se incluyen edificios fotogramétricos ni servicios de Google.
+La ubicación y los epicentros se representan sobre el elipsoide; los hipocentros
+mantienen su altura científica negativa. Al volver a Leaflet se conservan capas,
+radio y ubicación.
+
+El mapa inicia sobre la ubicación del usuario si ya está disponible o cuando
+el navegador la entrega con permiso concedido. Mientras tanto muestra Colombia.
+La cámara no se guarda ni se restaura desde caché o almacenamiento local. Si hay
+un radio de cercanía activo, la vista se ajusta a ese radio sobre la ubicación.
+
+
+Los hipocentros usan altura `-profundidad * 1000` sobre el elipsoide WGS84, sin
+exageración vertical. La profundidad de la agencia es una aproximación respecto
+a esta superficie, no un modelo de la corteza local. Los valores ausentes o no
+numéricos se sitúan en superficie; las profundidades negativas se conservan como
+altitudes positivas. Desde arriba se muestran los epicentros con su tamaño por magnitud y color por
+profundidad; los puntos subterráneos permanecen ocultos. Al inclinar la cámara
+más de 15° se activa la transparencia por distancia y se muestran los hipocentros,
+referencias pequeñas de superficie y líneas claras entre ambos. Se vuelve a la
+vista opaca al bajar de 8°, evitando parpadeos cerca del umbral. La vista de
+profundidad sustituye el interior negro por un tono atmosférico claro, conserva
+el detalle con un ajuste suave de brillo/gamma y usa un fondo de cielo en lugar
+del espacio negro. Al salir restaura las propiedades normales de la capa y el
+cielo espacial. Las nuevas capas reciben el mismo ambiente si se cambian mientras
+la profundidad está activa.
+
+El botón **Ver profundidades** centra e inclina la cámara sobre el evento
+seleccionado o uno cercano al centro visible. Permite mantener la vista de
+profundidad al filtrar; al desactivarlo vuelve a la vertical. Las líneas conservan
+su longitud real: las profundidades pequeñas requieren acercarse para distinguir
+la separación. Los símbolos de superficie se dibujan como discos completos,
+sin recorte contra el búfer de profundidad del globo ni el círculo de cercanía.
+La ocultación por horizonte impide mostrar los del hemisferio opuesto. Los
+hipocentros mantienen las pruebas de profundidad y sus coordenadas científicas.
+Los puntos blancos pequeños indican la superficie, los puntos de color el
+hipocentro; la leyenda lo aclara al activar la vista. Las líneas son discretas
+y la del evento seleccionado se resalta para seguirlo dentro de una agrupación.
+
+El catálogo utiliza colecciones de puntos y polilíneas primitivas, reutilizadas
+por ID durante filtros y reproducción. Solo la selección, la ubicación y el
+radio usan entidades; los mapas de candidatos TDOA de la red mantienen su flujo
+actual.
 
 Cesium y sus recursos se cargan desde la versión fijada en `cesium.com`. Las
-capas necesitan acceso a OpenStreetMap, Esri u OpenTopoMap. Los créditos de los
+capas necesitan acceso a OpenStreetMap, Esri u OpenTopoMap; la capa de amenaza
+utiliza maps.openquake.org. Los créditos de los
 proveedores y de Cesium permanecen visibles. Las condiciones y atribuciones
 figuran en [THIRD_PARTY_NOTICES.md](../THIRD_PARTY_NOTICES.md).
 
@@ -186,3 +310,13 @@ LEAFLET_JS=/ruta/leaflet.js LEAFLET_CSS=/ruta/leaflet.css \
 BOOTSTRAP_CSS=/ruta/bootstrap.min.css CHROME_PATH=/ruta/chrome \
 node tools/test-cesium-map.js
 ```
+
+## Fuentes del mapa y autoalojamiento
+
+La configuración predeterminada no usa token de Cesium ion. Las capas de Esri
+conservan sus créditos y condiciones de uso. Los
+servidores públicos mantienen sus propias políticas y disponibilidad; datos
+abiertos no significan capacidad de tráfico ilimitada garantizada. Se pueden
+reemplazar las URL de las capas, y servir el Build/Cesium 1.146 completo
+mediante `seismicMap.cesiumBaseUrl`. La configuración está en `.env.example`.
+El autoalojamiento utiliza almacenamiento, capacidad de cómputo y ancho de banda.
