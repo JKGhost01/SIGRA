@@ -27,11 +27,13 @@ final class SubmitCitizenReportHandler
         // Raw IP addresses and session identifiers are never stored in these tables.
         $reporter = hash_hmac('sha256', 'visitor:' . $visitor, $this->policy->hashKey);
         $network = hash_hmac('sha256', 'network:' . $this->networkAddress($ip), $this->policy->hashKey);
-        $id = $this->reports->transaction(function () use ($report, $reporter, $network, $now): int {
+        $id = $this->reports->transaction(function () use ($report, $reporter, $network, $now, $command): int {
             if (!$this->reports->canSubmit($reporter, $network, $now, $this->policy->hourlyLimit, $this->policy->dailyLimit)) {
                 throw new ReportRejected('Sigra.reportRateLimited', 429);
             }
-            return $this->reports->insert($report + ['reporter_key' => $reporter, 'network_key' => $network,
+            $consent = $command->consentVersion === null ? [] : ['consent_version' => $command->consentVersion,
+                'consent_at' => (new \DateTimeImmutable('@' . $now))->setTimezone($this->storageTimezone)->format('Y-m-d H:i:s')];
+            return $this->reports->insert($report + $consent + ['reporter_key' => $reporter, 'network_key' => $network,
                 'status' => 'pending', 'created_at' => (new \DateTimeImmutable('@' . $now))->setTimezone($this->storageTimezone)->format('Y-m-d H:i:s')]);
         });
         // A saved report remains pending if reconciliation temporarily fails.

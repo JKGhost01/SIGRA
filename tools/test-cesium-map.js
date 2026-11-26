@@ -283,7 +283,7 @@ async function main() {
         await page.waitForSelector('#map-globe-popup:not([hidden])');
         assert.match(await page.locator('#map-globe-popup a').last().getAttribute('href'), /detalle\/deep$/);
         await page.keyboard.press('Escape');
-        await page.getByText('Aceptar cookies', { exact: true }).click();
+        await page.locator('#accept-cookies').click();
         await page.screenshot({ path: '/tmp/sigra-cesium-hypocenters.png' });
         // Use the public control, including repeated toggles and a normal camera drag.
         await page.locator('#map-depth-toggle').click();

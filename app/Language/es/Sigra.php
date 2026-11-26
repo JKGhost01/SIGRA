@@ -6,6 +6,11 @@
  * correspondiente y traduce los valores.
  */
 return [
+    'reportPrivacyConsent' => 'He leído las políticas y autorizo enviar la ubicación, hora e intensidad de este reporte para su contraste sísmico. No incluyo datos sensibles ni de terceros.',
+    'reportPrivacyRequired' => 'Debes autorizar el tratamiento de este reporte mediante el aviso vigente.',
+    'reportPolicyNotReady' => 'El operador aún debe completar su canal de protección de datos antes de recibir reportes.',
+
+    'footerProcessing' => 'Tratamiento de datos',
     'mapHazard' => 'Amenaza sísmica mundial',
     'mapHazardSummary' => 'GEM v2026.1 · zonificación mundial de referencia',
     'mapHazardScale' => 'PGA en roca · 10 % de probabilidad de excedencia en 50 años',
@@ -112,7 +117,7 @@ return [
 
     // Navegación y layout
     'navLive'          => 'App móvil',
-    'releaseName'      => 'Mapa mundial y experiencia móvil',
+    'releaseName'      => 'Sincronización autónoma y privacidad',
     'tagline'          => 'Monitor sísmico global y red ciudadana',
     'navMap'           => 'Mapa global',
     'navHistory'       => 'Histórico',
@@ -137,8 +142,8 @@ return [
     'footerCookies'    => 'Cookies',
     'footerPrivacy'    => 'Privacidad',
     'footerTerms'      => 'Términos',
-    'cookieText'       => 'Usamos cookies técnicas necesarias para mantener la sesión, recordar tu idioma y guardar tus preferencias. No vendemos datos personales.',
-    'cookieAccept'     => 'Aceptar cookies',
+    'cookieText'       => 'Usamos sesión, protección CSRF y almacenamiento técnico para preferencias y archivos sin conexión. No es una autorización de publicidad ni de funciones opcionales. Consulta la información antes de activar ubicación, avisos o sensores.',
+    'cookieAccept'     => 'Entendido',
     'updatedToast'     => 'Se han actualizado los datos sísmicos',
     'apiUpToDate'      => 'Los datos están actualizados.',
     'apiSyncFailed'    => 'No fue posible actualizar las fuentes sísmicas.',

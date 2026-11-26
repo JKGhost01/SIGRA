@@ -11,11 +11,14 @@ php tests/Unit/ProviderHealthTest.php
 php tests/Unit/MobileReleaseTest.php
 php tests/Unit/ProviderHeadersTest.php
 php tests/Unit/AutomaticRefreshTest.php
+python3 tests/ScheduledSyncTest.py
+php tests/Feature/ScheduledSyncCommandTest.php
 php tests/Unit/SensorAlertingTest.php
 php tests/CitizenReportLogicTest.php
 php tests/ApiResponsesTest.php
 php tests/PwaveFusionTest.php
 php tests/Feature/ModularPresentationTest.php
+php tests/Feature/LegalPresentationTest.php
 node tools/test-map-filters.js
 node tools/test-map-initial-view.js
 node tools/test-map-hazard.js

@@ -58,9 +58,9 @@ php -S 127.0.0.1:8080 -t public
 
 Con `app.baseURL = 'http://127.0.0.1:8080/'`, abre
 `http://127.0.0.1:8080/index.php/sismos`. No es obligatorio ejecutar una sincronización
-manual: el mapa consulta el caso de uso de ingesta al cargar, con caché de 60 segundos
+manual: el mapa consulta el caso de uso de ingesta al cargar, con caché de al menos 300 segundos
 y exclusión de concurrencia. Fallos externos muestran estado degradado y no borran el
-histórico. También existe `php spark sigra:sync` para uso manual o cron opcional.
+histórico. En producción instala la [sincronización autónoma](SINCRONIZACION_AUTONOMA.md) para mantener el catálogo disponible para Android sin visitas al mapa.
 
 ## Despliegue existente y Hostinger
 

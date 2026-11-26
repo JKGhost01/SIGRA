@@ -71,10 +71,12 @@ La API móvil conserva claves de compatibilidad y tokens por dispositivo; esta
 refactorización no incorpora un proveedor de identidad ni resuelve ataques Sybil.
 Android permanece en desarrollo y en repositorio separado; no se añade `mobile/`.
 
-## Actualización automática sin cron
+## Actualización autónoma y compatibilidad del mapa
 
 Por petición del usuario se conserva la ruta de compatibilidad `/sismos/sync` como
 disparador explícito de actualización. El render inicial no descarga feeds: el navegador
 consulta esa ruta al cargar y cada 15 segundos. `RefreshCatalogHandler` invoca la ingesta
 si venció el intervalo; el coordinador de archivos controla caché, exclusión y reintentos.
 Las demás lecturas siguen separadas de la ingesta. La excepción se documenta en ADR-009.
+
+Desde 1.4.1.0, el despliegue incluye una [tarea programada del servidor](../SINCRONIZACION_AUTONOMA.md) para ejecutar el mismo caso de uso CLI sin visitantes. Comparte caché, bloqueo y restricciones por proveedor; las lecturas móviles siguen sin descargar fuentes.

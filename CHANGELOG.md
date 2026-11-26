@@ -4,6 +4,15 @@ La documentación principal se mantiene en español. SIGRA usa versionado semán
 con un cuarto componente opcional para revisiones pequeñas. El historial inglés
 se conserva en [CHANGELOG.en.md](CHANGELOG.en.md).
 
+## [1.4.1.0] · 2026-11-26 · Sincronización autónoma y privacidad
+
+- Instalador idempotente de cron y ejecución CLI cada minuto, sin visitas a la web; conserva caché compartida, bloqueo y pausas por proveedor.
+- Logs diarios UTC y código de salida de error si no se consigue actualizar ninguna fuente.
+- Documentos ES/EN de privacidad, tratamiento, términos y cookies; reportes con autorización explícita y evidencia de versión/fecha.
+- El mapa deja de recurrir a geolocalización por IP; formulario de reportes corregido y caché PWA renovada.
+- Build `20261126.1`, canal `stable`, API v1 compatible. Migración aditiva `20261120000001_AddReportConsent` y contactos `legal.*` requeridos para reportes.
+- La tarea debe instalarse en el hosting: [despliegue y verificación](docs/SINCRONIZACION_AUTONOMA.md).
+
 ## [1.4.0.0] · 2026-11-20 · Mapa mundial y experiencia móvil
 
 - Ajusta el mapa a móviles y tabletas: alto según viewport visible, controles plegados, panel de eventos con desplazamiento independiente y gestión de foco, objetivos táctiles de 44 px y filtros sin desbordamiento. Mantiene créditos, estado de sincronización y preferencias del panel de escritorio. Pruebas de navegador en 2D/3D, vertical, horizontal y modo oscuro.

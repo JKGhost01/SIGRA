@@ -62,7 +62,7 @@ Los registros anteriores a este panel pueden carecer de fechas o código HTTP:
 se muestran como «Sin registro», sin inferir fechas a partir de la pausa.
 Las siguientes consultas registran esos datos automáticamente. Un éxito cuyo
 intervalo ya venció se presenta como pendiente de actualización. La próxima
-consulta requiere actividad del mapa o cron; no es una ejecución programada.
+consulta se ejecuta con la [tarea programada del servidor](SINCRONIZACION_AUTONOMA.md) o actividad del mapa; la fecha mostrada por sí sola no garantiza una ejecución.
 Los fallos de conexión y las respuestas inválidas se distinguen de los errores
 HTTP sin publicar mensajes de excepción ni credenciales de configuración.
 

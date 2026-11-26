@@ -13,8 +13,8 @@ reinterpreta fechas. No se ejecuta automáticamente al servir peticiones.
 La auditoría debe estar disponible antes de evaluar/publicar nuevas alertas. La alerta
 y su decisión se guardan en una transacción; la entrega ocurre después del commit.
 
-La actualización automática del mapa funciona sin cron. Opcionalmente, para mantener
-el catálogo actualizado incluso cuando no hay visitantes:
+La actualización automática del mapa funciona sin cron. Para mantener el catálogo actualizado incluso cuando no hay visitantes, instala
+la [tarea del servidor](../SINCRONIZACION_AUTONOMA.md). Ejemplo manual:
 
 ```cron
 */5 * * * * cd /ruta/sigra && php spark sigra:sync >> writable/logs/sync.log 2>&1

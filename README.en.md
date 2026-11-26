@@ -1,13 +1,13 @@
 # SIGRA · Global Seismic Monitor & Citizen Network
 
-> **v1.4.0.0 · Worldwide map and mobile experience** — Published earthquakes from six official sources in one map, with experimental citizen monitoring.
+> **v1.4.1.0 · Autonomous synchronization and privacy** — Published earthquakes from six official sources in one map, with experimental citizen monitoring.
 
-[![Version](https://img.shields.io/badge/version-1.4.0.0-d89926.svg)](#versioning)
+[![Version](https://img.shields.io/badge/version-1.4.1.0-d89926.svg)](#versioning)
 [![PHP](https://img.shields.io/badge/PHP-%3E%3D8.2-777bb4.svg)](https://www.php.net/)
 [![CodeIgniter](https://img.shields.io/badge/CodeIgniter-4.7-ee4323.svg)](https://codeigniter.com/)
 [![License](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
 
-**Stable release 1.4.0.0.** [Deployment and rollback](docs/BETA_1.4.0.md).
+**Stable release 1.4.1.0.** [Deployment and rollback](docs/SINCRONIZACION_AUTONOMA.md).
 
 [Español](README.md) · [English](README.en.md) · [Português](README.pt.md) · [Français](README.fr.md) · [Deutsch](README.de.md) · [Italiano](README.it.md) · [日本語](README.ja.md) · [简体中文](README.zh-CN.md) · [العربية](README.ar.md)
 
@@ -129,16 +129,17 @@ php -S 127.0.0.1:8080 -t public
 
 Open <http://127.0.0.1:8080/index.php/sismos>. Use `app.baseURL = 'http://127.0.0.1:8080/'` locally. New deployments should expose only `public/`; existing Hostinger root deployments remain compatible with their protection rules.
 
-The map requests updates automatically, sharing a minimum 300-second cache and ingestion lock with cron. Persistent host budgets, conditional caching, Retry-After and 403/429 cooldowns limit provider traffic. Provider failure keeps stored events visible and displays a degraded status. Cron remains optional.
+A server schedule keeps the shared catalog fresh for the web and Android even without visitors. Browser refreshes continue to share cache, locking and provider backoff with CLI.
 
-### Keep the archive up to date (recommended)
+### Autonomous updates (required production step)
 
-The map automatically refreshes sources while it is open, at most once every
-`quakes.cacheSeconds` across visitors. Optionally run cron to update without visitors:
+On the server, as the SIGRA account with PHP CLI 8.2+:
 
-```cron
-*/5 * * * * cd /var/www/sigra && php spark sigra:sync >> writable/logs/sync.log 2>&1
+```bash
+python3 tools/install-sync-cron.py --php /usr/bin/php --install
 ```
+
+The job checks every minute and respects `quakes.cacheSeconds` (minimum 300 seconds) and provider restrictions. Omit `--install` to preview the entry. See [hosting setup, logs and verification without visitors](docs/SINCRONIZACION_AUTONOMA.md), including hPanel setup without Python. Publishing to GitHub does not install the hosting schedule.
 
 ## Languages
 
@@ -278,13 +279,11 @@ a voluntary donation. Thank you for supporting the project!
 | **Nequi** | `315 9287929` |
 | **Bancolombia** | Account `912-982627-76` |
 
-## Upgrade to 1.4.0.0
+## Upgrade to 1.4.1.0
 
-When upgrading from 1.3.1.3 or beta.1, upload the files and run `php spark migrate --all`
-before opening the map. Beta.2 adds canonical event identity for multiple sources,
-and pages of 20, 50 or 100 earthquakes in the map list and history. No Composer changes.
-Preserve `.env` and `writable/cache/providers`; review version, channel and feed overrides.
-No new migration is needed from beta.2. See [the 1.4.0.0 deployment guide](deploy/LEEME-1.4.0.0.md).
+Run `php spark migrate --all` to add report consent evidence, configure `legal.*` contacts,
+review version/build overrides and install the server schedule. Preserve `.env`, `vendor/`
+and `writable/`. No Composer changes. See [deployment and rollback](docs/SINCRONIZACION_AUTONOMA.md).
 
 ### SGC recovery in 1.3.1.3 (historical)
 
@@ -303,7 +302,7 @@ in 1.3.1.3; complete coverage is not guaranteed. See [provider details](docs/FUE
 
 ## Versioning
 
-SIGRA follows semantic versioning with an optional fourth revision component for small patch adjustments. The current stable release is **1.4.0.0 · Worldwide map and mobile experience** (2026-11-20, build `20261120.1`, channel `stable`). See [docs/VERSIONES.md](docs/VERSIONES.md).
+SIGRA follows semantic versioning with an optional fourth revision component for small patch adjustments. The current stable release is **1.4.1.0 · Autonomous synchronization and privacy** (2026-11-26, build `20261126.1`, channel `stable`). See [docs/VERSIONES.md](docs/VERSIONES.md).
 
 API contracts: [Earthquakes](docs/API_SISMOS.md) · [Citizen network](docs/API_RED.md).
 
@@ -320,3 +319,5 @@ MIT. See [LICENSE](LICENSE) and [THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md)
 Citizen report verification: [flow and setup](docs/REPORTES_CIUDADANOS.md).
 
 Consulta la [arquitectura modular](docs/architecture/README.md), los [pasos de migración](docs/architecture/migration.md) y el [contrato OpenAPI](docs/api/openapi.yaml).
+
+Server scheduling (PHP CLI 8.2+): `python3 tools/install-sync-cron.py --php /usr/bin/php --install`. The task checks every minute and respects shared cache, locks and provider backoff. Publishing code alone does not install the hosting schedule.

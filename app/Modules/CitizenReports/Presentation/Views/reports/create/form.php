@@ -33,6 +33,8 @@ ob_start();
         <?php endif; ?>
 
         <form method="POST" action="<?= site_url('sismos/create') ?>">
+            <?php if (!$privacyContactReady): ?><p class="alert alert-warning"><?= esc(lang('Sigra.reportPolicyNotReady')) ?></p><?php endif; ?>
+            <fieldset<?= $privacyContactReady ? '' : ' disabled' ?>>
             <?= csrf_field() ?>
             <input type="hidden" name="report_token" value="<?= esc($reportToken, 'attr') ?>">
             <div style="position:absolute;left:-10000px;width:1px;height:1px;overflow:hidden" aria-hidden="true">
@@ -79,8 +81,15 @@ ob_start();
 
 
 
+            <div class="form-check mt-3">
+                <input class="form-check-input" type="checkbox" id="privacy-consent" name="privacy_consent" value="1" required>
+                <label class="form-check-label" for="privacy-consent"><?= esc(lang('Sigra.reportPrivacyConsent')) ?></label>
+                <p class="small"><a href="<?= site_url('tratamiento-datos') ?>"><?= esc(lang('Sigra.footerProcessing')) ?></a> · <a href="<?= site_url('politica-privacidad') ?>"><?= esc(lang('Sigra.footerPrivacy')) ?></a></p>
+                <input type="hidden" name="privacy_version" value="<?= esc($privacyVersion, 'attr') ?>">
+            </div>
             <button type="submit" class="btn btn-report w-100 mt-2"><?= esc(lang('Sigra.reportSubmit')) ?></button>
             <a href="<?= site_url('sismos') ?>" class="btn btn-link text-secondary w-100 mt-2"><?= esc(lang('Sigra.reportBack')) ?></a>
+            </fieldset>
         </form>
     </section>
 

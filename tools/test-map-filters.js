@@ -229,32 +229,20 @@ async function main() {
     assert.equal(pending.elements.get('radio-filtro').value, '0');
     assert.equal(pending.visible.length, 2, 'A pending location must not undo clear filters');
 
-    // Test the real geolocation fallback with an abortable, stalled IP provider.
-    let abort;
+    // Denied GPS must not silently transmit the user's IP to a third party.
+    let ipRequests = 0;
     const geo = { navigator: { geolocation: { getCurrentPosition(ok, fail) { fail(Error('Denied')); } } },
-        AbortController, mt: key => key,
-        setTimeout(callback) { abort = callback; return 1; }, clearTimeout() {},
-        fetch(url, { signal }) { return new Promise((resolve, reject) => {
-            signal.addEventListener('abort', () => reject(Error('Aborted')));
-        }); },
+        mt: key => key, fetch() { ipRequests++; return Promise.reject(Error('Unexpected IP lookup')); },
     };
     geo.window = geo;
     vm.createContext(geo);
     vm.runInContext(mapScript, geo);
-    const location = vm.runInContext('obtenerUbicacionUsuario()', geo);
-    const rejected = assert.rejects(location, /Aborted/);
-    await flush();
-    abort();
-    await rejected;
-
-    geo.fetch = async () => ({ ok: true, json: async () => ({ latitude: 4.6, longitude: -74.1 }) });
-    const approximate = await vm.runInContext('obtenerUbicacionUsuario()', geo);
-    assert.equal(approximate.coords.latitude, 4.6, 'IP fallback can recover from denied GPS');
+    await assert.rejects(vm.runInContext('obtenerUbicacionUsuario()', geo), /Denied/);
+    assert.equal(ipRequests, 0);
     geo.navigator.geolocation = null;
-    assert.equal((await vm.runInContext('obtenerUbicacionUsuario()', geo)).coords.longitude, -74.1);
-    geo.fetch = async () => ({ ok: true, json: async () => ({ latitude: 200, longitude: 0 }) });
-    await assert.rejects(vm.runInContext('obtenerUbicacionUsuario()', geo));
-    console.log('OK: source-specific partial refresh, stored-data fallback, healthy refresh, initial load, radius filtering, saved preferences, denied location, retry, blocked storage, pending clear and IP timeout.');
+    await assert.rejects(vm.runInContext('obtenerUbicacionUsuario()', geo), /geoUnsupported/);
+    assert.equal(ipRequests, 0);
+    console.log('OK: source-specific partial refresh, stored-data fallback, healthy refresh, initial load, radius filtering, saved preferences, denied location, retry, blocked storage, pending clear and no silent IP geolocation.');
 }
 
 main().catch(error => { console.error(error); process.exitCode = 1; });

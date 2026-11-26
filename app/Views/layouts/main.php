@@ -416,11 +416,13 @@ window.SIGRA_ICONS = <?= json_encode(array_combine(['pin', 'home', 'sun', 'moon'
     <span><?= esc(lang('Sigra.footerSources')) ?></span>
     <a href="<?= site_url('politica-cookies') ?>"><?= esc(lang('Sigra.footerCookies')) ?></a>
     <a href="<?= site_url('politica-privacidad') ?>"><?= esc(lang('Sigra.footerPrivacy')) ?></a>
+    <a href="<?= site_url('tratamiento-datos') ?>"><?= esc(lang('Sigra.footerProcessing')) ?></a>
     <a href="<?= site_url('terminos-uso') ?>"><?= esc(lang('Sigra.footerTerms')) ?></a>
 </footer>
 
 <section id="cookie-banner" class="cookie-banner" hidden aria-label="<?= esc(lang('Sigra.footerCookies')) ?>">
     <p><?= esc(lang('Sigra.cookieText')) ?></p>
+    <p><a href="<?= site_url('politica-cookies') ?>"><?= esc(lang('Sigra.footerCookies')) ?></a> · <a href="<?= site_url('tratamiento-datos') ?>"><?= esc(lang('Sigra.footerProcessing')) ?></a></p>
     <button id="accept-cookies" type="button" class="btn btn-report btn-sm"><?= esc(lang('Sigra.cookieAccept')) ?></button>
 </section>
 

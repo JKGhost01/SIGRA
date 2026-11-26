@@ -310,7 +310,7 @@ están descritas en [OpenAPI](api/openapi.yaml). Los errores legacy se conservan
 los versionados contienen `error.code`, `error.message` y `request_id`.
 `X-Request-ID` se genera en el servidor para correlación. Health ya no expone `environment`.
 Las lecturas API no descargan fuentes ni escriben entregas. La ruta de compatibilidad
-`GET /sismos/sync` sí solicita la ingesta al vencer la caché compartida; no necesita cron.
+`GET /sismos/sync` sí solicita la ingesta al vencer la caché compartida. La actualización sin visitantes requiere la [tarea del servidor](SINCRONIZACION_AUTONOMA.md).
 
 ## Nuevo registro y rotación de identidad
 

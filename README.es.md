@@ -1,13 +1,13 @@
 # SIGRA · Monitor sísmico global y red ciudadana
 
-> **v1.4.0.1-beta.2 · Catálogo unificado y paginación · PRE-RELEASE** — eventos de seis fuentes oficiales en un mapa, con monitoreo ciudadano experimental.
+> **v1.4.1.0 · Sincronización autónoma y privacidad** — eventos de seis fuentes oficiales en un mapa, con monitoreo ciudadano experimental.
 
-[![Versión](https://img.shields.io/badge/versi%C3%B3n-1.4.0.1--beta.2-d89926.svg)](#versionado)
+[![Versión](https://img.shields.io/badge/versi%C3%B3n-1.4.1.0-d89926.svg)](#versionado)
 [![PHP](https://img.shields.io/badge/PHP-%3E%3D8.2-777bb4.svg)](https://www.php.net/)
 [![CodeIgniter](https://img.shields.io/badge/CodeIgniter-4.7-ee4323.svg)](https://codeigniter.com/)
 [![Licencia](https://img.shields.io/badge/licencia-MIT-blue.svg)](LICENSE)
 
-**Beta de prueba.** La última versión estable es 1.3.1.3. [Guía de despliegue y reversión](docs/BETA_1.4.0.md).
+**Versión estable 1.4.1.0.** [Guía de despliegue y reversión](docs/SINCRONIZACION_AUTONOMA.md).
 
 **Documentación principal en español.**
 
@@ -127,16 +127,17 @@ php -S 127.0.0.1:8080 -t public
 
 Abre <http://127.0.0.1:8080/index.php/sismos>. En local configura `app.baseURL = 'http://127.0.0.1:8080/'`. Las instalaciones nuevas deben publicar únicamente `public/`; el hosting existente desde la raíz sigue siendo compatible con sus reglas de protección.
 
-El mapa solicita actualizaciones automáticamente, con caché compartida de al menos 300 segundos y bloqueo de ingesta compartido con cron. Los presupuestos por host, caché condicional, Retry-After y pausas 403/429 limitan las consultas externas. Si una fuente falla, conserva los eventos guardados y muestra el estado degradado. Cron es opcional.
+El catálogo debe actualizarse desde una tarea programada del servidor para abastecer la web y Android sin visitas. El mapa conserva la actualización bajo demanda y comparte caché, bloqueo y pausas con CLI.
 
-### Mantener el archivo actualizado (recomendado)
+### Actualización autónoma (paso necesario en producción)
 
-El mapa actualiza automáticamente las fuentes al vencer `quakes.cacheSeconds`.
-Cron es opcional para actualizar también cuando no hay visitantes:
+En el servidor, con el usuario de SIGRA y PHP CLI 8.2+:
 
-```cron
-*/5 * * * * cd /var/www/sigra && php spark sigra:sync >> writable/logs/sync.log 2>&1
+```bash
+python3 tools/install-sync-cron.py --php /usr/bin/php --install
 ```
+
+Comprueba cada minuto si corresponde sincronizar; respeta `quakes.cacheSeconds` (mínimo 300 segundos) y las restricciones por proveedor. Sin `--install` imprime la entrada para revisarla. En hosting con hPanel usa la [guía de sincronización autónoma](docs/SINCRONIZACION_AUTONOMA.md), que incluye instalación sin Python, logs y verificación sin abrir el mapa.
 
 ## Idiomas
 
@@ -276,13 +277,12 @@ donación voluntaria. ¡Gracias por aportar al proyecto!
 | **Nequi** | `315 9287929` |
 | **Bancolombia** | Cuenta `912-982627-76` |
 
-## Actualizar a 1.4.0.1-beta.2
+## Actualizar a 1.4.1.0
 
-Sobre 1.3.1.3 o beta.1, sube los archivos y ejecuta `php spark migrate --all`
-antes de abrir el mapa: beta.2 añade la identidad canónica para unificar fuentes.
-Incluye páginas de 20, 50 o 100 sismos en listado e histórico. No cambia Composer.
-Conserva `.env` y `writable/cache/providers`; revisa overrides de versión, canal y feed.
-Consulta [los archivos y la reversión](docs/BETA_1.4.0.md).
+Ejecuta `php spark migrate --all` para añadir la evidencia de consentimiento a los reportes.
+Configura los contactos `legal.*`, revisa los overrides de versión/build e instala la tarea
+programada del servidor. Conserva `.env`, `vendor/` y `writable/`. No cambia Composer.
+Consulta [el despliegue y la reversión](docs/SINCRONIZACION_AUTONOMA.md).
 
 ### Recuperación SGC en 1.3.1.3 (histórico)
 
@@ -302,8 +302,8 @@ se incorporó después, en 1.3.1.3; la cobertura completa no está garantizada. 
 
 ## Versionado
 
-SIGRA usa versionado semántico con un cuarto componente opcional para revisiones pequeñas de un parche. La pre-release actual es **1.4.0.1-beta.2 · Catálogo unificado y paginación**
-(2026-11-19, build `20261119.beta2`, canal `beta`). La estable sigue en 1.3.1.3. Ver [docs/VERSIONES.md](docs/VERSIONES.md).
+SIGRA usa versionado semántico con un cuarto componente opcional para revisiones pequeñas de un parche. La versión estable actual es **1.4.1.0 · Sincronización autónoma y privacidad**
+(2026-11-26, build `20261126.1`, canal `stable`). Ver [docs/VERSIONES.md](docs/VERSIONES.md).
 
 Contratos API: [Sismos](docs/API_SISMOS.md) · [Red ciudadana](docs/API_RED.md).
 
