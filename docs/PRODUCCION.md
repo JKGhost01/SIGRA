@@ -4,7 +4,16 @@ Instalación canónica: [INSTALLATION.md](INSTALLATION.md). Android está en des
 en otro repositorio. La red sensorial es experimental; estas comprobaciones operativas
 no acreditan utilidad para emergencias.
 
-## Versión 1.4.0.0
+## Versión 1.4.1.0
+
+Identidad: **1.4.1.0**, build **20261126.1**, canal **stable**. Instala la
+[tarea programada del servidor](SINCRONIZACION_AUTONOMA.md) para mantener el catálogo
+sin visitantes. Aplica la migración `20261120000001_AddReportConsent` y configura
+los contactos `legal.*` descritos en `.env.example`; sin ellos los reportes quedan
+bloqueados. Sin cambios de dependencias ni del contrato API v1. Actualiza overrides
+de versión/build y comprueba `sigra-static-1.4.1.0` en ambos service workers.
+
+## Versión anterior 1.4.0.0
 
 Identidad: **1.4.0.0**, build **20261120.1**, canal **stable**. Sobre beta.2 y su
 hotfix no añade migraciones ni dependencias. Incluye mapa móvil, amenaza mundial
@@ -58,7 +67,7 @@ el archivo original no retira copias con otro nombre.
 Abre mapa, histórico, detalle, formulario de reporte, `/red` y `/acerca-de`.
 `/api/health` comprueba acceso a la base; no certifica frescura del catálogo.
 `/api/red/health` indica actividad del backend; no certifica detección en campo.
-La versión esperada de este cambio es **1.4.0.0**, build **20261120.1**, canal **stable**; un override en `.env` puede prevalecer.
+La versión esperada de este cambio es **1.4.1.0**, build **20261126.1**, canal **stable**; un override en `.env` puede prevalecer.
 Comprueba assets, manifest y service worker, y revisa errores del hosting sin exponerlos.
 Las APIs autenticadas deben rechazar claves ausentes o incorrectas.
 
@@ -67,7 +76,7 @@ Las APIs autenticadas deben rechazar claves ausentes o incorrectas.
 - **Fuente caída:** conserva el catálogo existente. El mapa muestra última actualización
   exitosa o consulta degradada; usa el registro de ingestión para diagnosticar. Reintentos
   y bloqueo están acotados. Sin visitas no hay sincronización automática del mapa;
-  cron con `php spark sigra:sync` sigue siendo opcional para actualizar sin visitantes.
+  instala la tarea de [sincronización autónoma](SINCRONIZACION_AUTONOMA.md) para actualizar sin visitantes.
 - **Base caída:** health devuelve indisponibilidad. Corrige conexión/permisos y verifica
   integridad antes de reanudar escritura; no recrees tablas para tratar un error de conexión.
 - **Código incompatible:** restaura el conjunto completo de archivos anterior. No ejecutes

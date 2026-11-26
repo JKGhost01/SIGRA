@@ -1,4 +1,18 @@
-# Subida de SIGRA modular con actualización automática
+# Subida de SIGRA 1.4.1.0
+
+La entrega actual requiere aplicar `php spark migrate --all` (incluida la migración
+aditiva de consentimiento), configurar los contactos `legal.*` e instalar la tarea
+programada del servidor según `docs/SINCRONIZACION_AUTONOMA.md`, incluida en el ZIP.
+El paquete generado por `python3 tools/build-upload.py` se llama
+`dist/sigra-actualizacion.zip` e incluye `tools/sync-catalog.sh` y el instalador.
+No contiene `.env`, `vendor/` ni datos de `writable/`; conserva los del servidor.
+Actualizar GitHub no activa cron ni despliega el hosting.
+
+Las instrucciones siguientes conservan el historial de la migración modular y no
+sustituyen el despliegue completo de 1.4.1.0.
+
+## Historial: subida modular con actualización desde el navegador
+
 
 El ZIP actualiza la instalación existente. Sus rutas empiezan en `app/`, `public/`
 y `docs/deployment/`; extráelo en la misma raíz que contiene `index.php` y `.env`.

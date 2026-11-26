@@ -22,12 +22,17 @@ final class CitizenReportController extends BaseController
         try {
             // Reject invalid input before constructing persistence adapters.
             service('reportValidator')->validate(SubmitCitizenReportRequest::canonical($datos), service('sigraClock')->now()->getTimestamp());
+            $legal = config(\Config\Legal::class);
+            if (!$legal->contactReady()) throw new ReportRejected('Sigra.reportPolicyNotReady', 503);
+            if ($this->request->getPost('privacy_consent') !== '1' || $this->request->getPost('privacy_version') !== $legal->policyVersion) {
+                throw new ReportRejected('Sigra.reportPrivacyRequired', 422);
+            }
             $visitor = session()->get('citizen_reporter');
             if (!is_string($visitor) || $visitor === '') {
                 $visitor = bin2hex(random_bytes(32));
                 session()->set('citizen_reporter', $visitor);
             }
-            service('submitCitizenReport')->handle(new SubmitReportCommand(SubmitCitizenReportRequest::canonical($datos), $visitor, $this->request->getIPAddress()));
+            service('submitCitizenReport')->handle(new SubmitReportCommand(SubmitCitizenReportRequest::canonical($datos), $visitor, $this->request->getIPAddress(), $legal->policyVersion));
         } catch (ReportRejected $error) {
             $this->response->setStatusCode($error->statusCode);
             if ($error->statusCode === 429) $this->response->setHeader('Retry-After', '60');
@@ -43,7 +48,8 @@ final class CitizenReportController extends BaseController
     private function form(array $datos, array $errores): string
     {
         return view('App\Modules\CitizenReports\Presentation\Views\reports\create\form', [
-            'datos' => $datos, 'errores' => $errores, 'reportToken' => ReportFormGuard::issue(),
+            'datos' => $datos, 'errores' => $errores, 'privacyVersion' => config(\Config\Legal::class)->policyVersion,
+            'privacyContactReady' => config(\Config\Legal::class)->contactReady(), 'reportToken' => ReportFormGuard::issue(),
         ]);
     }
 }

@@ -29,6 +29,8 @@ def request(route, expected=200, *, payload=None, form=None, device=''):
                 'red.fcmEnabled': 'false', 'red.alertingEnabled': 'false',
                 'cache.prefix': 'sigra_architecture_test_', 'red.statsCacheSeconds': '0',
                 'reports.hashKey': 'isolated-test-key-which-is-at-least-32-bytes',
+                'legal.responsible': 'SIGRA test controller', 'legal.email': 'privacy@example.test', 'legal.address': 'Test-only address',
+                'legal.city': 'Bogotá, Colombia', 'legal.phone': '+57 000 0000000',
                 'SCRIPT_FILENAME': str(root / 'tests/Support/cgi.php'), 'SCRIPT_NAME': '/index.php',
                 'REQUEST_URI': route, 'QUERY_STRING': url.query,
                 'REQUEST_METHOD': 'POST' if payload is not None or form is not None else 'GET',
@@ -88,7 +90,8 @@ request('/api/red/estado', 401, payload={}, device=token)
 html = request('/sismos/create')
 fields = dict(re.findall(r'<input[^>]+name="([^"]+)"[^>]+value="([^"]*)"', html))
 time.sleep(3.1)
-request('/sismos/create', 303, form={k: fields[k] for k in ['csrf_test_name', 'report_token']} |
-        {'latitud': '4.6', 'longitud': '-74.1', 'magnitud': '5', 'ubicacion': 'QA-http-modular',
+request('/sismos/create', 303, form={k: fields[k] for k in ['csrf_test_name', 'report_token', 'privacy_version']} |
+        {'privacy_consent': '1', 'latitud': '4.6', 'longitud': '-74.1', 'magnitud': '5', 'ubicacion': 'QA-http-modular',
          'fecha_hora': datetime.now(timezone(timedelta(hours=-5))).strftime('%Y-%m-%dT%H:%M')})
+subprocess.run(['php', 'tests/Integration/ReportConsentEvidenceTest.php'], cwd=root, env=os.environ, check=True)
 print(f'{checks} CGI/MySQL success-path checks passed; public_root={os.environ.get("SIGRA_TEST_PUBLIC_ROOT")}; notifications disabled.')

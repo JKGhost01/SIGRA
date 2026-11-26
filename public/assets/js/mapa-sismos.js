@@ -106,39 +106,14 @@ const opcionesGeolocalizacion = {
     timeout: 15000,
 };
 
-// Cada intento termina, incluso si el proveedor por IP no responde.
+// Ubicación elegida por el usuario: nunca sustituir un rechazo por una consulta IP.
 function obtenerUbicacionUsuario() {
-    function ubicacionPorIp(error) {
-        if (typeof fetch !== 'function') return Promise.reject(error);
-        const controller = new AbortController();
-        const timeout = setTimeout(function () { controller.abort(); }, 7000);
-        return fetch('https://ipapi.co/json/', {
-            headers: { Accept: 'application/json' },
-            cache: 'no-store',
-            signal: controller.signal,
-        })
-            .then(function (respuesta) {
-                if (!respuesta.ok) throw error;
-                return respuesta.json();
-            })
-            .then(function (datos) {
-                if (!Number.isFinite(datos.latitude) || !Number.isFinite(datos.longitude)
-                    || Math.abs(datos.latitude) > 90 || Math.abs(datos.longitude) > 180) {
-                    throw error;
-                }
-                return {
-                    coords: { latitude: datos.latitude, longitude: datos.longitude, accuracy: 2000 },
-                };
-            })
-            .finally(function () { clearTimeout(timeout); });
-    }
-
     if (!navigator.geolocation) {
-        return ubicacionPorIp(new Error(mt('geoUnsupported')));
+        return Promise.reject(new Error(mt('geoUnsupported')));
     }
     return new Promise(function (resolve, reject) {
         navigator.geolocation.getCurrentPosition(resolve, reject, opcionesGeolocalizacion);
-    }).catch(ubicacionPorIp);
+    });
 }
 
 function nivelIntensidad(valor) {

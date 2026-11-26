@@ -24,32 +24,39 @@ La versión se define en `app/Config/Sigra.php` y se muestra en:
 Se puede sobrescribir sin tocar código con:
 
 ```ini
-sigra.version = '1.4.0.0'
-sigra.build = '20261120.1'
+sigra.version = '1.4.1.0'
+sigra.build = '20261126.1'
 sigra.channel = 'stable'
 ```
 
 ## Versión actual
 
-**v1.4.0.0 · Mapa mundial y experiencia móvil**
+**v1.4.1.0 · Sincronización autónoma y privacidad**
 
-- Fecha: 2026-11-20
-- Build: `20261120.1`
+- Fecha: 2026-11-26
+- Build: `20261126.1`
 - Canal: `stable`
 - API: `v1`
 - App Android: consultar [SIGRA_MOBILE](https://github.com/JKGhost01/SIGRA_MOBILE); la web lee su versión y APK desde GitHub.
 - Licencia: MIT
 
-La versión de la aplicación (`1.4.0.0`) es independiente del contrato de la API
+La versión de la aplicación (`1.4.1.0`) es independiente del contrato de la API
 (`v1`). Se conservan las rutas y los campos de las respuestas válidas para Android.
 Se añaden rutas /api/v1 con errores estructurados; las rutas antiguas conservan su formato.
-La sincronización del mapa funciona automáticamente: no requiere configurar cron.
+La actualización sin visitantes requiere instalar la tarea del servidor según [esta guía](SINCRONIZACION_AUTONOMA.md).
 La auditoría requiere la migración aditiva o el SQL de despliegue, sin reiniciar la base.
 
-La versión estable actual es **1.4.0.0**, con API v1 compatible.
+La versión estable actual es **1.4.1.0**, con API v1 compatible.
 Véase [la guía de despliegue](PRODUCCION.md).
 
 ## Historial
+
+### v1.4.1.0 · Sincronización autónoma y privacidad · 2026-11-26
+
+- Instalador idempotente de cron por usuario y logs diarios; catálogo sin visitas al mapa.
+- Consentimiento de reportes con versión y fecha; documentos ES/EN y contactos del responsable configurables.
+- Elimina geolocalización por IP; formulario corregido y caché PWA renovada.
+- Build `20261126.1`, canal `stable`, API v1 compatible. Requiere migración aditiva de consentimiento y tarea programada en el hosting.
 
 ### v1.4.0.0 · Mapa mundial y experiencia móvil · 2026-11-20
 

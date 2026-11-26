@@ -4,6 +4,15 @@ All notable changes to SIGRA are documented here. The project follows
 [Semantic Versioning](https://semver.org/), with an optional fourth revision component
 for small patch adjustments such as `1.3.1.1`.
 
+## [1.4.1.0] · 2026-11-26 · Autonomous synchronization and privacy
+
+- Idempotent per-user cron installer and browser-independent CLI execution; shared cache, ingestion lock and provider backoff preserved.
+- Daily UTC logs and failure exit codes when no provider can be refreshed.
+- ES/EN privacy, processing, terms and cookie documents; explicit citizen-report consent with policy version and server timestamp.
+- Remove IP geolocation fallback; fix report form markup and renew PWA cache.
+- Build `20261126.1`, stable channel, compatible API v1. Apply additive migration `20261120000001_AddReportConsent` and configure `legal.*` contacts.
+- Install the hosting schedule separately: [deployment and verification](docs/SINCRONIZACION_AUTONOMA.md).
+
 ## [1.4.0.0] · 2026-11-20 · Worldwide map and mobile experience
 
 - Responsive 2D/3D map, compact touch controls, accessible event dialog, orientation and visual keyboard handling.

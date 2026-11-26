@@ -18,10 +18,10 @@ class Sigra extends BaseConfig
 
     public string $project = 'SIGRA';
     public string $tagline = 'Monitor sísmico global y red ciudadana';
-    public string $version = '1.4.0.0';
-    public string $releaseName = 'Mapa mundial y experiencia móvil';
-    public string $releaseDate = '2026-11-20';
-    public string $build = '20261120.1';
+    public string $version = '1.4.1.0';
+    public string $releaseName = 'Sincronización autónoma y privacidad';
+    public string $releaseDate = '2026-11-26';
+    public string $build = '20261126.1';
     public string $channel = 'stable';
     public string $apiVersion = 'v1';
     public string $mobileVersion = '1.0.0.0';
@@ -44,6 +44,18 @@ class Sigra extends BaseConfig
      * @var array<string, array{date: string, name: string, summary: string, changes: list<string>}>
      */
     public array $changelog = [
+        '1.4.1.0' => [
+            'date' => '2026-11-26',
+            'name' => 'Sincronización autónoma y privacidad',
+            'summary' => 'Catálogo actualizado por cron sin visitas y autorización explícita de reportes ciudadanos.',
+            'changes' => [
+                'Instalador de cron por usuario, idempotente, con comprobación cada minuto y límites compartidos con el mapa.',
+                'Ejecución CLI independiente del navegador, logs diarios UTC y códigos de salida ante fallos de sincronización.',
+                'Documentos de privacidad, tratamiento de datos, cookies y términos en español e inglés.',
+                'Consentimiento con versión y fecha en reportes ciudadanos; configuración de contacto requerida.',
+                'El mapa deja de usar geolocalización por IP tras denegar GPS.',
+            ],
+        ],
         '1.4.0.0' => [
             'date' => '2026-11-20',
             'name' => 'Mapa mundial y experiencia móvil',

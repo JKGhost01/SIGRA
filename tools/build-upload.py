@@ -16,15 +16,17 @@ def paths(*arguments):
     return {path.decode() for path in raw.split(b'\0') if path}
 
 
-files = paths('diff', '--name-only', '--diff-filter=ACMRT', '-z', args.base, '--', 'app', 'public', 'sw.js', 'offline.html', 'composer.json', 'composer.lock', 'tools/setup-remoto.php')
-files |= paths('ls-files', '--others', '--exclude-standard', '-z', '--', 'app', 'public', 'sw.js', 'offline.html', 'composer.json', 'composer.lock', 'tools/setup-remoto.php')
+schedule_files = ('tools/sync-catalog.sh', 'tools/install-sync-cron.py', 'docs/SINCRONIZACION_AUTONOMA.md')
+
+files = paths('diff', '--name-only', '--diff-filter=ACMRT', '-z', args.base, '--', 'app', 'public', 'sw.js', 'offline.html', 'composer.json', 'composer.lock', 'tools/setup-remoto.php', *schedule_files)
+files |= paths('ls-files', '--others', '--exclude-standard', '-z', '--', 'app', 'public', 'sw.js', 'offline.html', 'composer.json', 'composer.lock', 'tools/setup-remoto.php', *schedule_files)
 files = sorted(path for path in files if (root / path).is_file())
-removed = sorted(paths('diff', '--name-only', '--diff-filter=D', '-z', args.base, '--', 'app', 'public', 'sw.js', 'offline.html', 'composer.json', 'composer.lock', 'tools/setup-remoto.php'))
+removed = sorted(paths('diff', '--name-only', '--diff-filter=D', '-z', args.base, '--', 'app', 'public', 'sw.js', 'offline.html', 'composer.json', 'composer.lock', 'tools/setup-remoto.php', *schedule_files))
 for path in files:
-    assert (path.startswith(('app/', 'public/')) or path in {'sw.js', 'offline.html', 'composer.json', 'composer.lock', 'tools/setup-remoto.php'}) and '..' not in Path(path).parts
+    assert (path.startswith(('app/', 'public/')) or path in {'sw.js', 'offline.html', 'composer.json', 'composer.lock', 'tools/setup-remoto.php', *schedule_files}) and '..' not in Path(path).parts
     assert Path(path).name != '.env'
 
-output = root / 'dist' / 'sigra-modular-sin-cron.zip'
+output = root / 'dist' / 'sigra-actualizacion.zip'
 output.parent.mkdir(exist_ok=True)
 with zipfile.ZipFile(output, 'w', zipfile.ZIP_DEFLATED) as archive:
     for path in files:

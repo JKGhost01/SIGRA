@@ -9,6 +9,11 @@
  * Existing reviewed values are preserved unless --force is used.
  */
 return [
+    'reportPrivacyConsent' => 'I have read the policies and authorize the location, time and intensity of this report to be processed for seismic reconciliation. I include no sensitive or third-party personal data.',
+    'reportPrivacyRequired' => 'Authorize this report using the current privacy notice before sending it.',
+    'reportPolicyNotReady' => 'The operator must complete the data rights contact before receiving reports.',
+
+    'footerProcessing' => 'Data processing',
     'mapHazard' => 'Global seismic hazard',
     'mapHazardSummary' => 'GEM v2026.1 · fixed worldwide hazard zones',
     'mapHazardScale' => 'PGA on rock · 10% probability of exceedance in 50 years',
@@ -115,7 +120,7 @@ return [
 
     // Navigation and layout
     'navLive'          => 'Mobile app',
-    'releaseName'      => 'Worldwide map and mobile experience',
+    'releaseName'      => 'Autonomous synchronization and privacy',
     'tagline'          => 'Global seismic monitor and citizen network',
     'navMap'           => 'Global map',
     'navHistory'       => 'History',
@@ -140,8 +145,8 @@ return [
     'footerCookies'    => 'Cookies',
     'footerPrivacy'    => 'Privacy',
     'footerTerms'      => 'Terms',
-    'cookieText'       => 'We use technical cookies required to keep the session, remember your language and store your preferences. We never sell personal data.',
-    'cookieAccept'     => 'Accept cookies',
+    'cookieText'       => 'We use session/CSRF controls and technical storage for preferences and offline files. This acknowledgment does not authorize advertising or optional data collection. Review the information before enabling location, notifications or sensors.',
+    'cookieAccept'     => 'Understood',
     'updatedToast'     => 'Seismic data updated',
     'apiUpToDate'      => 'Data is up to date.',
     'apiSyncFailed'    => 'Could not update the seismic sources.',
